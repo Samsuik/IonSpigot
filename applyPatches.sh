@@ -56,5 +56,6 @@ fi
 applyPatch Bukkit Spigot-API HEAD && applyPatch CraftBukkit Spigot-Server patched
 applyPatch Spigot-API PaperSpigot-API HEAD && applyPatch Spigot-Server PaperSpigot-Server HEAD
 applyPatch PaperSpigot-API TacoSpigot-API HEAD && applyPatch PaperSpigot-Server TacoSpigot-Server HEAD
+applyPatch TacoSpigot-API IdkSpigot-API HEAD && applyPatch TacoSpigot-Server IdkSpigot-Server HEAD
 
 enableCommitSigningIfNeeded

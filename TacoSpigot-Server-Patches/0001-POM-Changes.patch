@@ -1,0 +1,60 @@
+From 097c6ca9dbfc9f862fd2e7b32093a5a73c93552d Mon Sep 17 00:00:00 2001
+From: SuicidalKids <kfian294ma4@gmail.com>
+Date: Thu, 20 Aug 2020 21:26:50 +0100
+Subject: [PATCH] POM-Changes
+
+
+diff --git a/pom.xml b/pom.xml
+index d116fa455..aa09e9b7c 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -1,12 +1,12 @@
+ <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+     <modelVersion>4.0.0</modelVersion>
+-    <groupId>net.techcable.tacospigot</groupId>
++    <groupId>me.suicidalkids.idkspigot</groupId>
+     <artifactId>server</artifactId>
+     <packaging>jar</packaging>
+     <version>1.8.8-R0.2-SNAPSHOT</version>
+-    <name>TacoSpigot</name>
+-    <url>https://github.com/TacoSpigot</url>
++    <name>IdkSpigot</name>
++    <url>https://github.com/SuicidalKids/IdkSpigot</url>
+ 
+     <properties>
+         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+@@ -22,7 +22,7 @@
+     </properties>
+ 
+     <parent>
+-        <groupId>net.techcable.tacospigot</groupId>
++        <groupId>me.suicidalkids.idkspigot</groupId>
+         <artifactId>parent</artifactId>
+         <version>dev-SNAPSHOT</version>
+         <relativePath>../pom.xml</relativePath>
+@@ -37,7 +37,7 @@
+         <dependency>
+             <groupId>it.unimi.dsi</groupId>
+             <artifactId>fastutil</artifactId>
+-            <version>7.0.12</version>
++            <version>8.4.1</version>
+         </dependency>
+         <dependency>
+             <groupId>net.techcable.tacospigot</groupId>
+diff --git a/src/main/java/org/bukkit/craftbukkit/util/Versioning.java b/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
+index 6549e73bc..77ad3168a 100644
+--- a/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
++++ b/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
+@@ -11,7 +11,7 @@ public final class Versioning {
+     public static String getBukkitVersion() {
+         String result = "Unknown-Version";
+ 
+-        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/net.techcable.tacospigot/api/pom.properties");
++        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/me.suicidalkids.idkspigot/api/pom.properties");
+         Properties properties = new Properties();
+ 
+         if (stream != null) {
+-- 
+2.20.1.windows.1
+

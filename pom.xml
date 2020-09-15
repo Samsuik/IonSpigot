@@ -9,18 +9,18 @@
         <version>7</version>
     </parent>
 
-    <groupId>net.techcable.tacospigot</groupId>
+    <groupId>me.suicidalkids.idkspigot</groupId>
     <artifactId>parent</artifactId>
     <version>dev-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>TacoSpigot-Parent</name>
-    <description>Parent project for all TacoSpigot modules.</description>
-    <url>https://github.com/TacoSpigot/TacoSpigot</url>
+    <name>IdkSpigot-Parent</name>
+    <description>Parent project for all IdkSpigot modules.</description>
+    <url>https://github.com/SuicidalKids/IdkSpigot</url>
 
     <modules>
-        <module>TacoSpigot-Server</module>
-        <module>TacoSpigot-API</module>
+        <module>IdkSpigot-Server</module>
+        <module>IdkSpigot-API</module>
     </modules>
 
     <properties>

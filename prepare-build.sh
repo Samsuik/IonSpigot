@@ -5,6 +5,7 @@ git submodule update --init && ./remap.sh && ./decompile.sh && ./init.sh && ./ap
 # Generate paperclip jar in this stage
 mkdir -p work/Paperclip
 PAPERCLIP_JAR=paperclip.jar
+PAPERCLIP_NAME=paperclip-1.0-SNAPSHOT.jar
 
 if [ ! -f work/Paperclip/$PAPERCLIP_JAR ]; then
     if [ ! -d Paperclip ]; then
@@ -14,10 +15,10 @@ if [ ! -f work/Paperclip/$PAPERCLIP_JAR ]; then
     echo "Generating Paperclip Jar"
     pushd Paperclip
     mvn -P '!generate' clean install
-    if [ ! -f target/paperclip*.jar ]; then
+    if [ ! -f "target/$PAPERCLIP_NAME" ]; then
         echo "Couldn't generate paperclip jar"
         exit;
     fi;
     popd
-    cp Paperclip/target/paperclip*.jar work/Paperclip/$PAPERCLIP_JAR
+    cp Paperclip/target/$PAPERCLIP_NAME work/Paperclip/$PAPERCLIP_JAR
 fi;
