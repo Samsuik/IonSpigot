@@ -38,9 +38,9 @@ function savePatches {
 }
 
 if [ "$1" == "clean" ]; then
-	rm -rf TacoSpigot*-Patches
+	rm -rf IdkSpigot*-Patches
 fi
-savePatches PaperSpigot-API TacoSpigot-API
-savePatches PaperSpigot-Server TacoSpigot-Server
+#savePatches PaperSpigot-API TacoSpigot-API
+#savePatches PaperSpigot-Server TacoSpigot-Server
 savePatches TacoSpigot-API IdkSpigot-API
 savePatches TacoSpigot-Server IdkSpigot-Server

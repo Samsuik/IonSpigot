@@ -1,0 +1,47 @@
+From 06328b20644f7e925c2c5b112057b396bff52075 Mon Sep 17 00:00:00 2001
+From: SuicidalKids <kfian294ma4@gmail.com>
+Date: Tue, 15 Sep 2020 05:04:13 +0100
+Subject: [PATCH] IdkSpigot Configuration Files
+
+
+diff --git a/src/main/java/co/aikar/timings/TimingsExport.java b/src/main/java/co/aikar/timings/TimingsExport.java
+index fe19ea00..57ea7d03 100644
+--- a/src/main/java/co/aikar/timings/TimingsExport.java
++++ b/src/main/java/co/aikar/timings/TimingsExport.java
+@@ -202,7 +202,9 @@ class TimingsExport extends Thread {
+         parent.put("config", createObject(
+             pair("spigot", mapAsJSON(Bukkit.spigot().getSpigotConfig(), null)),
+             pair("bukkit", mapAsJSON(Bukkit.spigot().getBukkitConfig(), null)),
+-            pair("paperspigot", mapAsJSON(Bukkit.spigot().getPaperSpigotConfig(), null))
++            pair("paperspigot", mapAsJSON(Bukkit.spigot().getPaperSpigotConfig(), null)),
++            pair("tacospigot", mapAsJSON(Bukkit.spigot().getTacoSpigotConfig(), null)), // IdkSpigot - Fill in for tacospigot
++            pair("idkspigot", mapAsJSON(Bukkit.spigot().getIdkSpigotConfig(), null)) // IdkSpigot
+         ));
+ 
+         new TimingsExport(sender, parent, history).start();
+diff --git a/src/main/java/org/bukkit/Server.java b/src/main/java/org/bukkit/Server.java
+index 1b62463a..d1b1b285 100644
+--- a/src/main/java/org/bukkit/Server.java
++++ b/src/main/java/org/bukkit/Server.java
+@@ -973,6 +973,18 @@ public interface Server extends PluginMessageRecipient {
+             throw new UnsupportedOperationException("Not supported yet.");
+         }
+ 
++        // IdkSpigot start - Configuration Files
++        public org.bukkit.configuration.file.YamlConfiguration getTacoSpigotConfig()
++        {
++            throw new UnsupportedOperationException("Not supported yet.");
++        }
++
++        public org.bukkit.configuration.file.YamlConfiguration getIdkSpigotConfig()
++        {
++            throw new UnsupportedOperationException("Not supported yet.");
++        }
++        // IdkSpigot end
++
+         /**
+          * Sends the component to the player
+          *
+-- 
+2.20.1.windows.1
+

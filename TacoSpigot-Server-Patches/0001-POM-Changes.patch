@@ -1,11 +1,11 @@
-From 097c6ca9dbfc9f862fd2e7b32093a5a73c93552d Mon Sep 17 00:00:00 2001
+From c6a1e70ddc669b24534deaeddad39a9f3e52bb09 Mon Sep 17 00:00:00 2001
 From: SuicidalKids <kfian294ma4@gmail.com>
-Date: Thu, 20 Aug 2020 21:26:50 +0100
+Date: Tue, 15 Sep 2020 04:24:57 +0100
 Subject: [PATCH] POM-Changes
 
 
 diff --git a/pom.xml b/pom.xml
-index d116fa455..aa09e9b7c 100644
+index d116fa455..e2559484e 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -1,12 +1,12 @@
@@ -43,7 +43,7 @@ index d116fa455..aa09e9b7c 100644
          <dependency>
              <groupId>net.techcable.tacospigot</groupId>
 diff --git a/src/main/java/org/bukkit/craftbukkit/util/Versioning.java b/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
-index 6549e73bc..77ad3168a 100644
+index 6549e73bc..c5d4226b8 100644
 --- a/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
 +++ b/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
 @@ -11,7 +11,7 @@ public final class Versioning {

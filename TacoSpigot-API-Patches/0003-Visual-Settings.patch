@@ -1,0 +1,232 @@
+From a83d9dbfd8b35f595d6de2c6f6820ea6c99f0004 Mon Sep 17 00:00:00 2001
+From: SuicidalKids <kfian294ma4@gmail.com>
+Date: Tue, 15 Sep 2020 19:37:02 +0100
+Subject: [PATCH] Visual Settings
+
+
+diff --git a/src/main/java/me/suicidalkids/idkspigot/visuals/Visuals.java b/src/main/java/me/suicidalkids/idkspigot/visuals/Visuals.java
+new file mode 100644
+index 00000000..bef0f353
+--- /dev/null
++++ b/src/main/java/me/suicidalkids/idkspigot/visuals/Visuals.java
+@@ -0,0 +1,57 @@
++package me.suicidalkids.idkspigot.visuals;
++
++/**
++ * Visual Settings, this is used to keep track of the visuals the player has enabled.
++ */
++public interface Visuals {
++
++    /**
++     * Toggles the provided visual type.
++     *
++     * @param visualType the visual type
++     */
++    void toggle(VisualType visualType);
++
++    /**
++     * Toggles the provided visual type.
++     *
++     * @param visualType the visual type
++     */
++    void setEnabled(VisualType visualType, boolean enabled);
++
++    /**
++     * Checks if the provided visual type is enabled.
++     *
++     * @param visualType the visual type
++     * @return if the visual type is enabled.
++     */
++    boolean isEnabled(VisualType visualType);
++
++    /**
++     * Checks if the setting of the provided visual type has been modified.
++     *
++     * @param visualType the visual type
++     * @return if the setting of the visual type has been modified.
++     */
++    boolean isToggled(VisualType visualType);
++
++    enum VisualType {
++
++        TNT_VISIBILITY(true),
++        SAND_VISIBILITY(true),
++        FLASHING_TNT(true),
++        ;
++
++        private final boolean defaultValue;
++
++        VisualType(boolean defaultValue) {
++            this.defaultValue = defaultValue;
++        }
++
++        public boolean getDefault() {
++            return defaultValue;
++        }
++
++    }
++
++}
+diff --git a/src/main/java/me/suicidalkids/idkspigot/visuals/commands/BaseCommand.java b/src/main/java/me/suicidalkids/idkspigot/visuals/commands/BaseCommand.java
+new file mode 100644
+index 00000000..027ed08c
+--- /dev/null
++++ b/src/main/java/me/suicidalkids/idkspigot/visuals/commands/BaseCommand.java
+@@ -0,0 +1,13 @@
++package me.suicidalkids.idkspigot.visuals.commands;
++
++import org.bukkit.command.Command;
++
++public abstract class BaseCommand extends Command {
++
++    public BaseCommand(String name) {
++        super(name);
++        this.description = "IdkSpigot Command " + name;
++        this.setPermission("bukkit.command." + name);
++    }
++
++}
+diff --git a/src/main/java/me/suicidalkids/idkspigot/visuals/commands/FlashingTNTCommand.java b/src/main/java/me/suicidalkids/idkspigot/visuals/commands/FlashingTNTCommand.java
+new file mode 100644
+index 00000000..6342c83c
+--- /dev/null
++++ b/src/main/java/me/suicidalkids/idkspigot/visuals/commands/FlashingTNTCommand.java
+@@ -0,0 +1,34 @@
++package me.suicidalkids.idkspigot.visuals.commands;
++
++import me.suicidalkids.idkspigot.visuals.Visuals;
++import org.bukkit.ChatColor;
++import org.bukkit.command.CommandSender;
++import org.bukkit.entity.Player;
++
++public class FlashingTNTCommand extends BaseCommand {
++
++    public FlashingTNTCommand(String name) {
++        super(name);
++    }
++
++    @Override
++    public boolean execute(CommandSender sender, String currentAlias, String[] args) {
++        if (!testPermission(sender) || !(sender instanceof Player)) {
++            return true;
++        }
++
++        Player player = (Player) sender;
++        Visuals visuals = player.getVisuals();
++
++        visuals.toggle(Visuals.VisualType.FLASHING_TNT);
++
++        String action = "Disabled";
++        if (visuals.isEnabled(Visuals.VisualType.FLASHING_TNT)) {
++            action = "Enabled";
++        }
++
++        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', String.format("&8(&7!&8) &f%s Flashing TNT!", action)));
++        return true;
++    }
++
++}
+diff --git a/src/main/java/me/suicidalkids/idkspigot/visuals/commands/SandToggleCommand.java b/src/main/java/me/suicidalkids/idkspigot/visuals/commands/SandToggleCommand.java
+new file mode 100644
+index 00000000..6d231e0b
+--- /dev/null
++++ b/src/main/java/me/suicidalkids/idkspigot/visuals/commands/SandToggleCommand.java
+@@ -0,0 +1,34 @@
++package me.suicidalkids.idkspigot.visuals.commands;
++
++import me.suicidalkids.idkspigot.visuals.Visuals;
++import org.bukkit.ChatColor;
++import org.bukkit.command.CommandSender;
++import org.bukkit.entity.Player;
++
++public class SandToggleCommand extends BaseCommand {
++
++    public SandToggleCommand(String name) {
++        super(name);
++    }
++
++    @Override
++    public boolean execute(CommandSender sender, String currentAlias, String[] args) {
++        if (!testPermission(sender) || !(sender instanceof Player)) {
++            return true;
++        }
++
++        Player player = (Player) sender;
++        Visuals visuals = player.getVisuals();
++
++        visuals.toggle(Visuals.VisualType.SAND_VISIBILITY);
++
++        String action = "Disabled";
++        if (visuals.isEnabled(Visuals.VisualType.SAND_VISIBILITY)) {
++            action = "Enabled";
++        }
++
++        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', String.format("&8(&7!&8) &f%s Sand Visibility!", action)));
++        return true;
++    }
++
++}
+diff --git a/src/main/java/me/suicidalkids/idkspigot/visuals/commands/TNTToggleCommand.java b/src/main/java/me/suicidalkids/idkspigot/visuals/commands/TNTToggleCommand.java
+new file mode 100644
+index 00000000..5de12b9b
+--- /dev/null
++++ b/src/main/java/me/suicidalkids/idkspigot/visuals/commands/TNTToggleCommand.java
+@@ -0,0 +1,34 @@
++package me.suicidalkids.idkspigot.visuals.commands;
++
++import me.suicidalkids.idkspigot.visuals.Visuals;
++import org.bukkit.ChatColor;
++import org.bukkit.command.CommandSender;
++import org.bukkit.entity.Player;
++
++public class TNTToggleCommand extends BaseCommand {
++
++    public TNTToggleCommand(String name) {
++        super(name);
++    }
++
++    @Override
++    public boolean execute(CommandSender sender, String currentAlias, String[] args) {
++        if (!testPermission(sender) || !(sender instanceof Player)) {
++            return true;
++        }
++
++        Player player = (Player) sender;
++        Visuals visuals = player.getVisuals();
++
++        visuals.toggle(Visuals.VisualType.TNT_VISIBILITY);
++
++        String action = "Disabled";
++        if (visuals.isEnabled(Visuals.VisualType.TNT_VISIBILITY)) {
++            action = "Enabled";
++        }
++
++        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', String.format("&8(&7!&8) &f%s TNT Visibility!", action)));
++        return true;
++    }
++
++}
+diff --git a/src/main/java/org/bukkit/entity/Player.java b/src/main/java/org/bukkit/entity/Player.java
+index 59fa188c..192aa40a 100644
+--- a/src/main/java/org/bukkit/entity/Player.java
++++ b/src/main/java/org/bukkit/entity/Player.java
+@@ -1203,6 +1203,16 @@ public interface Player extends HumanEntity, Conversable, CommandSender, Offline
+     // Paper - Undeprecate
+     public void resetTitle();
+ 
++    /**
++     * This returns the visuals of the player.
++     *
++     * <p>Visuals is used to keep track the visual settings of the player.</p>
++     *
++     * @return the player visuals
++     */
++    // IdkSpigot - Visual Settings API
++    public me.suicidalkids.idkspigot.visuals.Visuals getVisuals();
++
+     // TacoSpigot start
+     /**
+      * Request that the player's client download and switch resource packs.
+-- 
+2.20.1.windows.1
+

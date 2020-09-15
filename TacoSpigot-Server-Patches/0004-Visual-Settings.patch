@@ -1,0 +1,208 @@
+From 5a88bcb47792a6dad755cbfeaedb709684082d8e Mon Sep 17 00:00:00 2001
+From: SuicidalKids <kfian294ma4@gmail.com>
+Date: Tue, 15 Sep 2020 19:36:22 +0100
+Subject: [PATCH] Visual Settings
+
+
+diff --git a/src/main/java/me/suicidalkids/idkspigot/IdkSpigotConfig.java b/src/main/java/me/suicidalkids/idkspigot/IdkSpigotConfig.java
+index 636b9a86a..0216dadbd 100644
+--- a/src/main/java/me/suicidalkids/idkspigot/IdkSpigotConfig.java
++++ b/src/main/java/me/suicidalkids/idkspigot/IdkSpigotConfig.java
+@@ -1,6 +1,9 @@
+ package me.suicidalkids.idkspigot;
+ 
+ import com.google.common.base.Throwables;
++import me.suicidalkids.idkspigot.visuals.commands.FlashingTNTCommand;
++import me.suicidalkids.idkspigot.visuals.commands.SandToggleCommand;
++import me.suicidalkids.idkspigot.visuals.commands.TNTToggleCommand;
+ import net.minecraft.server.MinecraftServer;
+ import org.bukkit.Bukkit;
+ import org.bukkit.command.Command;
+@@ -56,6 +59,9 @@ public class IdkSpigotConfig {
+     }
+ 
+     private static void commands() {
++        commands.put("tnttoggle", new TNTToggleCommand("tnttoggle"));
++        commands.put("sandtoggle", new SandToggleCommand("sandtoggle"));
++        commands.put("flashingtnt", new FlashingTNTCommand("flashingtnt"));
+     }
+ 
+     static void readConfig(Class<?> clazz, Object instance) {
+diff --git a/src/main/java/me/suicidalkids/idkspigot/visuals/VisualSettings.java b/src/main/java/me/suicidalkids/idkspigot/visuals/VisualSettings.java
+new file mode 100644
+index 000000000..f59aec2f2
+--- /dev/null
++++ b/src/main/java/me/suicidalkids/idkspigot/visuals/VisualSettings.java
+@@ -0,0 +1,52 @@
++package me.suicidalkids.idkspigot.visuals;
++
++import net.minecraft.server.NBTTagCompound;
++
++import java.util.EnumMap;
++
++public class VisualSettings implements Visuals {
++
++    private final EnumMap<VisualType, Boolean> settings = new EnumMap<>(VisualType.class);
++
++    public VisualSettings() {
++        for (VisualType  visualType: VisualType.values()) {
++            settings.put(visualType, visualType.getDefault());
++        }
++    }
++
++    @Override
++    public void toggle(VisualType visualType) {
++        setEnabled(visualType, !isEnabled(visualType));
++    }
++
++    @Override
++    public void setEnabled(VisualType visualType, boolean enabled) {
++        settings.put(visualType, enabled);
++    }
++
++    @Override
++    public boolean isEnabled(VisualType visualType) {
++        return settings.get(visualType);
++    }
++
++    @Override
++    public boolean isToggled(VisualType visualType) {
++        return !(settings.get(visualType) && visualType.getDefault());
++    }
++
++    public void loadCompound(NBTTagCompound nbtTagCompound) {
++        for (VisualType visualType : VisualType.values()) {
++            if (nbtTagCompound.hasKey(visualType.name())) {
++                setEnabled(visualType, nbtTagCompound.getBoolean(visualType.name()));
++            }
++        }
++    }
++
++    public NBTTagCompound getCompound() {
++        NBTTagCompound nbtTagCompound = new NBTTagCompound();
++        for (VisualType visualType : VisualType.values())
++            nbtTagCompound.setBoolean(visualType.name(), isEnabled(visualType));
++        return nbtTagCompound;
++    }
++
++}
+diff --git a/src/main/java/net/minecraft/server/EntityPlayer.java b/src/main/java/net/minecraft/server/EntityPlayer.java
+index 0c49a256c..10e0ae4f7 100644
+--- a/src/main/java/net/minecraft/server/EntityPlayer.java
++++ b/src/main/java/net/minecraft/server/EntityPlayer.java
+@@ -10,6 +10,8 @@ import java.util.Collection;
+ import java.util.HashSet;
+ import java.util.Iterator;
+ import java.util.List;
++
++import me.suicidalkids.idkspigot.visuals.VisualSettings; // IdkSpigot - Visual Settings API
+ import org.apache.logging.log4j.LogManager;
+ import org.apache.logging.log4j.Logger;
+ 
+@@ -50,6 +52,7 @@ public class EntityPlayer extends EntityHuman implements ICrafting {
+     public boolean g;
+     public int ping;
+     public boolean viewingCredits;
++    public VisualSettings visualSettings = new VisualSettings(); // IdkSpigot - Visual Settings API
+ 
+     // CraftBukkit start
+     public String displayName;
+@@ -128,12 +131,18 @@ public class EntityPlayer extends EntityHuman implements ICrafting {
+             }
+         }
+ 
++        // IdkSpigot start - Visual Settings API
++        if (nbttagcompound.hasKey("IdkSpigot.Visuals")) {
++            this.visualSettings.loadCompound(nbttagcompound.getCompound("IdkSpigot.Visuals"));
++        }
+         this.getBukkitEntity().readExtraData(nbttagcompound); // CraftBukkit
+     }
+ 
+     public void b(NBTTagCompound nbttagcompound) {
+         super.b(nbttagcompound);
+         nbttagcompound.setInt("playerGameType", this.playerInteractManager.getGameMode().getId());
++        nbttagcompound.set("IdkSpigot.Visuals", this.visualSettings.getCompound());
++        // IdkSpigot end
+ 
+         this.getBukkitEntity().setExtraData(nbttagcompound); // CraftBukkit
+     }
+diff --git a/src/main/java/net/minecraft/server/EntityTrackerEntry.java b/src/main/java/net/minecraft/server/EntityTrackerEntry.java
+index 1fc2388ea..87f4070e4 100644
+--- a/src/main/java/net/minecraft/server/EntityTrackerEntry.java
++++ b/src/main/java/net/minecraft/server/EntityTrackerEntry.java
+@@ -5,6 +5,8 @@ import java.util.Collection;
+ import java.util.Iterator;
+ import java.util.List;
+ import java.util.Set;
++
++import me.suicidalkids.idkspigot.visuals.Visuals; // IdkSpigot
+ import org.apache.logging.log4j.LogManager;
+ import org.apache.logging.log4j.Logger;
+ 
+@@ -349,7 +351,7 @@ public class EntityTrackerEntry {
+                     entityplayer.removeQueue.remove(Integer.valueOf(this.tracker.getId()));
+                     // CraftBukkit end
+                     this.trackedPlayerMap.put(entityplayer, true); // PaperBukkit
+-                    Packet packet = this.c();
++                    Packet packet = this.createPacket(entityplayer); // IdkSpigot
+ 
+                     entityplayer.playerConnection.sendPacket(packet);
+                     if (!this.tracker.getDataWatcher().d()) {
+@@ -455,6 +457,11 @@ public class EntityTrackerEntry {
+     }
+ 
+     private Packet c() {
++        // IdkSpigot start - Visibility Toggles
++        return this.createPacket(null);
++    }
++    private Packet createPacket(EntityPlayer entityPlayer) {
++        // IdkSpigot end
+         if (this.tracker.dead) {
+             // CraftBukkit start - Remove useless error spam, just return
+             // EntityTrackerEntry.p.warn("Fetching addPacket for removed entity");
+@@ -523,12 +530,23 @@ public class EntityTrackerEntry {
+             } else if (this.tracker instanceof EntityEgg) {
+                 return new PacketPlayOutSpawnEntity(this.tracker, 62);
+             } else if (this.tracker instanceof EntityTNTPrimed) {
++                // IdkSpigot start - Visibility Toggle
++                if (entityPlayer != null) {
++                    if (entityPlayer.visualSettings.isToggled(Visuals.VisualType.TNT_VISIBILITY)) {
++                        return null;
++                    } else if (entityPlayer.visualSettings.isToggled(Visuals.VisualType.FLASHING_TNT)) {
++                        return new PacketPlayOutSpawnEntity(this.tracker, 70, Block.getCombinedId(Blocks.TNT.getBlockData()));
++                    }
++                }
+                 return new PacketPlayOutSpawnEntity(this.tracker, 50);
+             } else if (this.tracker instanceof EntityEnderCrystal) {
+                 return new PacketPlayOutSpawnEntity(this.tracker, 51);
+             } else if (this.tracker instanceof EntityFallingBlock) {
+                 EntityFallingBlock entityfallingblock = (EntityFallingBlock) this.tracker;
+-
++                if (entityPlayer != null && entityPlayer.visualSettings.isToggled(Visuals.VisualType.SAND_VISIBILITY)) {
++                    return null;
++                }
++                // IdkSpigot end
+                 return new PacketPlayOutSpawnEntity(this.tracker, 70, Block.getCombinedId(entityfallingblock.getBlock()));
+             } else if (this.tracker instanceof EntityArmorStand) {
+                 return new PacketPlayOutSpawnEntity(this.tracker, 78);
+diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
+index ad07563d2..f95db1461 100644
+--- a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
++++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
+@@ -1448,6 +1448,13 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
+         getHandle().playerConnection.sendPacket(packetReset);
+     }
+ 
++    // IdkSpigot start - Visual Settings API
++    @Override
++    public me.suicidalkids.idkspigot.visuals.Visuals getVisuals() {
++        return getHandle().visualSettings;
++    }
++    // IdkSpigot end
++
+     // Spigot start
+     private final Player.Spigot spigot = new Player.Spigot()
+     {
+-- 
+2.20.1.windows.1
+
