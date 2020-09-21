@@ -4,21 +4,21 @@ Date: Tue, 15 Sep 2020 19:36:22 +0100
 Subject: [PATCH] Visual Settings
 
 
-diff --git a/src/main/java/me/suicidalkids/idkspigot/IdkSpigotConfig.java b/src/main/java/me/suicidalkids/idkspigot/IdkSpigotConfig.java
+diff --git a/src/main/java/me/suicidalkids/ion/IonConfig.java b/src/main/java/me/suicidalkids/ion/IonConfig.java
 index 636b9a86a..0216dadbd 100644
---- a/src/main/java/me/suicidalkids/idkspigot/IdkSpigotConfig.java
-+++ b/src/main/java/me/suicidalkids/idkspigot/IdkSpigotConfig.java
+--- a/src/main/java/me/suicidalkids/ion/IonConfig.java
++++ b/src/main/java/me/suicidalkids/ion/IonConfig.java
 @@ -1,6 +1,9 @@
- package me.suicidalkids.idkspigot;
+ package me.suicidalkids.ion;
  
  import com.google.common.base.Throwables;
-+import me.suicidalkids.idkspigot.visuals.commands.FlashingTNTCommand;
-+import me.suicidalkids.idkspigot.visuals.commands.SandToggleCommand;
-+import me.suicidalkids.idkspigot.visuals.commands.TNTToggleCommand;
++import me.suicidalkids.ion.visuals.commands.FlashingTNTCommand;
++import me.suicidalkids.ion.visuals.commands.SandToggleCommand;
++import me.suicidalkids.ion.visuals.commands.TNTToggleCommand;
  import net.minecraft.server.MinecraftServer;
  import org.bukkit.Bukkit;
  import org.bukkit.command.Command;
-@@ -56,6 +59,9 @@ public class IdkSpigotConfig {
+@@ -56,6 +59,9 @@ public class IonConfig {
      }
  
      private static void commands() {
@@ -28,13 +28,13 @@ index 636b9a86a..0216dadbd 100644
      }
  
      static void readConfig(Class<?> clazz, Object instance) {
-diff --git a/src/main/java/me/suicidalkids/idkspigot/visuals/VisualSettings.java b/src/main/java/me/suicidalkids/idkspigot/visuals/VisualSettings.java
+diff --git a/src/main/java/me/suicidalkids/ion/visuals/VisualSettings.java b/src/main/java/me/suicidalkids/ion/visuals/VisualSettings.java
 new file mode 100644
 index 000000000..f59aec2f2
 --- /dev/null
-+++ b/src/main/java/me/suicidalkids/idkspigot/visuals/VisualSettings.java
++++ b/src/main/java/me/suicidalkids/ion/visuals/VisualSettings.java
 @@ -0,0 +1,52 @@
-+package me.suicidalkids.idkspigot.visuals;
++package me.suicidalkids.ion.visuals;
 +
 +import net.minecraft.server.NBTTagCompound;
 +
@@ -95,7 +95,7 @@ index 0c49a256c..10e0ae4f7 100644
  import java.util.Iterator;
  import java.util.List;
 +
-+import me.suicidalkids.idkspigot.visuals.VisualSettings; // IdkSpigot - Visual Settings API
++import me.suicidalkids.ion.visuals.VisualSettings; // IonSpigot - Visual Settings API
  import org.apache.logging.log4j.LogManager;
  import org.apache.logging.log4j.Logger;
  
@@ -103,7 +103,7 @@ index 0c49a256c..10e0ae4f7 100644
      public boolean g;
      public int ping;
      public boolean viewingCredits;
-+    public VisualSettings visualSettings = new VisualSettings(); // IdkSpigot - Visual Settings API
++    public VisualSettings visualSettings = new VisualSettings(); // IonSpigot - Visual Settings API
  
      // CraftBukkit start
      public String displayName;
@@ -111,9 +111,9 @@ index 0c49a256c..10e0ae4f7 100644
              }
          }
  
-+        // IdkSpigot start - Visual Settings API
-+        if (nbttagcompound.hasKey("IdkSpigot.Visuals")) {
-+            this.visualSettings.loadCompound(nbttagcompound.getCompound("IdkSpigot.Visuals"));
++        // IonSpigot start - Visual Settings API
++        if (nbttagcompound.hasKey("Ion.Visuals")) {
++            this.visualSettings.loadCompound(nbttagcompound.getCompound("Ion.Visuals"));
 +        }
          this.getBukkitEntity().readExtraData(nbttagcompound); // CraftBukkit
      }
@@ -121,8 +121,8 @@ index 0c49a256c..10e0ae4f7 100644
      public void b(NBTTagCompound nbttagcompound) {
          super.b(nbttagcompound);
          nbttagcompound.setInt("playerGameType", this.playerInteractManager.getGameMode().getId());
-+        nbttagcompound.set("IdkSpigot.Visuals", this.visualSettings.getCompound());
-+        // IdkSpigot end
++        nbttagcompound.set("Ion.Visuals", this.visualSettings.getCompound());
++        // IonSpigot end
  
          this.getBukkitEntity().setExtraData(nbttagcompound); // CraftBukkit
      }
@@ -135,7 +135,7 @@ index 1fc2388ea..87f4070e4 100644
  import java.util.List;
  import java.util.Set;
 +
-+import me.suicidalkids.idkspigot.visuals.Visuals; // IdkSpigot
++import me.suicidalkids.ion.visuals.Visuals; // IonSpigot
  import org.apache.logging.log4j.LogManager;
  import org.apache.logging.log4j.Logger;
  
@@ -144,7 +144,7 @@ index 1fc2388ea..87f4070e4 100644
                      // CraftBukkit end
                      this.trackedPlayerMap.put(entityplayer, true); // PaperBukkit
 -                    Packet packet = this.c();
-+                    Packet packet = this.createPacket(entityplayer); // IdkSpigot
++                    Packet packet = this.createPacket(entityplayer); // IonSpigot
  
                      entityplayer.playerConnection.sendPacket(packet);
                      if (!this.tracker.getDataWatcher().d()) {
@@ -152,11 +152,11 @@ index 1fc2388ea..87f4070e4 100644
      }
  
      private Packet c() {
-+        // IdkSpigot start - Visibility Toggles
++        // IonSpigot start - Visibility Toggles
 +        return this.createPacket(null);
 +    }
 +    private Packet createPacket(EntityPlayer entityPlayer) {
-+        // IdkSpigot end
++        // IonSpigot end
          if (this.tracker.dead) {
              // CraftBukkit start - Remove useless error spam, just return
              // EntityTrackerEntry.p.warn("Fetching addPacket for removed entity");
@@ -164,7 +164,7 @@ index 1fc2388ea..87f4070e4 100644
              } else if (this.tracker instanceof EntityEgg) {
                  return new PacketPlayOutSpawnEntity(this.tracker, 62);
              } else if (this.tracker instanceof EntityTNTPrimed) {
-+                // IdkSpigot start - Visibility Toggle
++                // IonSpigot start - Visibility Toggle
 +                if (entityPlayer != null) {
 +                    if (entityPlayer.visualSettings.isToggled(Visuals.VisualType.TNT_VISIBILITY)) {
 +                        return null;
@@ -181,7 +181,7 @@ index 1fc2388ea..87f4070e4 100644
 +                if (entityPlayer != null && entityPlayer.visualSettings.isToggled(Visuals.VisualType.SAND_VISIBILITY)) {
 +                    return null;
 +                }
-+                // IdkSpigot end
++                // IonSpigot end
                  return new PacketPlayOutSpawnEntity(this.tracker, 70, Block.getCombinedId(entityfallingblock.getBlock()));
              } else if (this.tracker instanceof EntityArmorStand) {
                  return new PacketPlayOutSpawnEntity(this.tracker, 78);
@@ -193,12 +193,12 @@ index ad07563d2..f95db1461 100644
          getHandle().playerConnection.sendPacket(packetReset);
      }
  
-+    // IdkSpigot start - Visual Settings API
++    // IonSpigot start - Visual Settings API
 +    @Override
-+    public me.suicidalkids.idkspigot.visuals.Visuals getVisuals() {
++    public me.suicidalkids.ion.visuals.Visuals getVisuals() {
 +        return getHandle().visualSettings;
 +    }
-+    // IdkSpigot end
++    // IonSpigot end
 +
      // Spigot start
      private final Player.Spigot spigot = new Player.Spigot()

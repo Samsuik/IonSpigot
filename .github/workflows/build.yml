@@ -1,4 +1,4 @@
-name: IdkSpigot Build Script
+name: IonSpigot Build Script
 
 on: [push, pull_request]
 
@@ -28,5 +28,5 @@ jobs:
     - name: Upload Artifact
       uses: actions/upload-artifact@v2-preview
       with:
-        name: IdkSpigot
-        path: build/IdkSpigot.jar
+        name: Ion
+        path: build/Ion.jar

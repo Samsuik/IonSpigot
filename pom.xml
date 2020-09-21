@@ -9,18 +9,18 @@
         <version>7</version>
     </parent>
 
-    <groupId>me.suicidalkids.idkspigot</groupId>
+    <groupId>me.suicidalkids.ion</groupId>
     <artifactId>parent</artifactId>
     <version>dev-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>IdkSpigot-Parent</name>
-    <description>Parent project for all IdkSpigot modules.</description>
-    <url>https://github.com/SuicidalKids/IdkSpigot</url>
+    <name>IonSpigot-Parent</name>
+    <description>Parent project for all IonSpigot modules.</description>
+    <url>https://github.com/SuicidalKids/IonSpigot</url>
 
     <modules>
-        <module>IdkSpigot-Server</module>
-        <module>IdkSpigot-API</module>
+        <module>IonSpigot-Server</module>
+        <module>IonSpigot-API</module>
     </modules>
 
     <properties>

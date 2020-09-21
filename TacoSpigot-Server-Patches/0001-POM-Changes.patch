@@ -1,11 +1,11 @@
-From c6a1e70ddc669b24534deaeddad39a9f3e52bb09 Mon Sep 17 00:00:00 2001
+From 5ec854a5b202161ae2dc51868425253c24ab7d0d Mon Sep 17 00:00:00 2001
 From: SuicidalKids <kfian294ma4@gmail.com>
 Date: Tue, 15 Sep 2020 04:24:57 +0100
 Subject: [PATCH] POM-Changes
 
 
 diff --git a/pom.xml b/pom.xml
-index d116fa455..e2559484e 100644
+index d116fa45..14a21787 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -1,12 +1,12 @@
@@ -13,14 +13,14 @@ index d116fa455..e2559484e 100644
           xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
      <modelVersion>4.0.0</modelVersion>
 -    <groupId>net.techcable.tacospigot</groupId>
-+    <groupId>me.suicidalkids.idkspigot</groupId>
++    <groupId>me.suicidalkids.ion</groupId>
      <artifactId>server</artifactId>
      <packaging>jar</packaging>
      <version>1.8.8-R0.2-SNAPSHOT</version>
 -    <name>TacoSpigot</name>
 -    <url>https://github.com/TacoSpigot</url>
-+    <name>IdkSpigot</name>
-+    <url>https://github.com/SuicidalKids/IdkSpigot</url>
++    <name>IonSpigot</name>
++    <url>https://github.com/SuicidalKids/IonSpigot</url>
  
      <properties>
          <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -29,11 +29,11 @@ index d116fa455..e2559484e 100644
  
      <parent>
 -        <groupId>net.techcable.tacospigot</groupId>
-+        <groupId>me.suicidalkids.idkspigot</groupId>
++        <groupId>me.suicidalkids.ion</groupId>
          <artifactId>parent</artifactId>
          <version>dev-SNAPSHOT</version>
          <relativePath>../pom.xml</relativePath>
-@@ -37,7 +37,7 @@
+@@ -37,12 +37,12 @@
          <dependency>
              <groupId>it.unimi.dsi</groupId>
              <artifactId>fastutil</artifactId>
@@ -41,9 +41,16 @@ index d116fa455..e2559484e 100644
 +            <version>8.4.1</version>
          </dependency>
          <dependency>
-             <groupId>net.techcable.tacospigot</groupId>
+-            <groupId>net.techcable.tacospigot</groupId>
++            <groupId>me.suicidalkids.ion</groupId>
+             <artifactId>api</artifactId>
+-            <version>${project.version}</version>
++            <version>1.8.8-R0.2-SNAPSHOT</version>
+             <type>jar</type>
+             <scope>compile</scope>
+         </dependency>
 diff --git a/src/main/java/org/bukkit/craftbukkit/util/Versioning.java b/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
-index 6549e73bc..c5d4226b8 100644
+index 6549e73b..94306d32 100644
 --- a/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
 +++ b/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
 @@ -11,7 +11,7 @@ public final class Versioning {
@@ -51,7 +58,7 @@ index 6549e73bc..c5d4226b8 100644
          String result = "Unknown-Version";
  
 -        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/net.techcable.tacospigot/api/pom.properties");
-+        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/me.suicidalkids.idkspigot/api/pom.properties");
++        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/me.suicidalkids.ion/api/pom.properties");
          Properties properties = new Properties();
  
          if (stream != null) {

@@ -4,11 +4,11 @@ Date: Tue, 15 Sep 2020 05:06:25 +0100
 Subject: [PATCH] Explosion-Improvements
 
 
-diff --git a/src/main/java/me/suicidalkids/idkspigot/IdkSpigotWorldConfig.java b/src/main/java/me/suicidalkids/idkspigot/IdkSpigotWorldConfig.java
+diff --git a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
 index e05430914..b2a965636 100644
---- a/src/main/java/me/suicidalkids/idkspigot/IdkSpigotWorldConfig.java
-+++ b/src/main/java/me/suicidalkids/idkspigot/IdkSpigotWorldConfig.java
-@@ -64,4 +64,9 @@ public class IdkSpigotWorldConfig {
+--- a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
++++ b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
+@@ -64,4 +64,9 @@ public class IonWorldConfig {
          return config.getString("world-settings." + worldName + "." + path, config.getString(path));
      }
  
@@ -27,7 +27,7 @@ index f4ccd8d4d..75d6e059a 100644
          int j;
  
 -        Block b = world.getChunkAt((int)posX >> 4, (int)posZ >> 4).getBlockData(new BlockPosition(posX, posY, posZ)).getBlock(); // TacoSpigot - get block of the explosion
-+        // IdkSpigot start - Block Searching Improvements
++        // IonSpigot start - Block Searching Improvements
 +        BlockPosition pos = new BlockPosition(posX, posY, posZ);
 +        Chunk chunk = world.getChunkAt(pos.getX() >> 4, pos.getZ() >> 4);
 +        Block b = chunk.getBlockData(pos).getBlock(); // TacoSpigot - get block of the explosion
@@ -47,7 +47,7 @@ index f4ccd8d4d..75d6e059a 100644
 +            for (it.unimi.dsi.fastutil.longs.LongIterator iterator = set.iterator(); iterator.hasNext();) {
 +                this.blocks.add(BlockPosition.fromLong(iterator.nextLong()));
 +            }
-+            // IdkSpigot end
++            // IonSpigot end
          }
  
          this.blocks.addAll(hashset);
@@ -55,7 +55,7 @@ index f4ccd8d4d..75d6e059a 100644
                  Block block = this.world.getType(blockposition).getBlock();
  
                  world.spigotConfig.antiXrayInstance.updateNearbyBlocks(world, blockposition); // Spigot
-+                // IdkSpigot start - Optimise Explosions
++                // IonSpigot start - Optimise Explosions
 +                /*
                  if (flag) {
                      double d0 = (double) ((float) blockposition.getX() + this.world.random.nextFloat());
@@ -65,7 +65,7 @@ index f4ccd8d4d..75d6e059a 100644
                      this.world.addParticle(EnumParticle.SMOKE_NORMAL, d0, d1, d2, d3, d4, d5, new int[0]);
                  }
 +                */
-+                // IdkSpigot end
++                // IonSpigot end
  
                  if (block.getMaterial() != Material.AIR) {
                      if (block.a(this)) {
@@ -73,7 +73,7 @@ index f4ccd8d4d..75d6e059a 100644
      public List<BlockPosition> getBlocks() {
          return this.blocks;
      }
-+    // IdkSpigot start - Block Searching Improvements
++    // IonSpigot start - Block Searching Improvements
 +    private final static List<double[]> VECTORS = Lists.newArrayListWithCapacity(1352);
 +
 +    static {
@@ -105,7 +105,7 @@ index f4ccd8d4d..75d6e059a 100644
 +            double d1 = vector[1];
 +            double d2 = vector[2];
 +
-+            float f = this.size * (0.7F + (world.idkSpigotConfig.constantExplosions ? 0.7F : this.world.random.nextFloat()) * 0.6F);
++            float f = this.size * (0.7F + (world.ionConfig.constantExplosions ? 0.7F : this.world.random.nextFloat()) * 0.6F);
 +            float resistance = 0;
 +
 +            double stepX = this.posX;
@@ -148,7 +148,7 @@ index f4ccd8d4d..75d6e059a 100644
 +            }
 +        }
 +    }
-+    // IdkSpigot end
++    // IonSpigot end
  
      // PaperSpigot start - Optimize explosions
      private float getBlockDensity(Vec3D vec3d, AxisAlignedBB aabb) {
@@ -159,7 +159,7 @@ index f4ccd8d4d..75d6e059a 100644
 -        CacheKey key = new CacheKey(this, aabb);
 -        Float blockDensity = this.world.explosionDensityCache.get(key);
 -        if (blockDensity == null) {
-+        // IdkSpigot start - Optimise Density Cache
++        // IonSpigot start - Optimise Density Cache
 +        int key = createKey(this, aabb);
 +        float blockDensity = this.world.explosionDensityCache.get(key);
 +        if (blockDensity == -1.0f) {
@@ -194,7 +194,7 @@ index f4ccd8d4d..75d6e059a 100644
 +        result = 31 * result + (int) (temp ^ (temp >>> 32));
 +        return result;
 +    }
-+    /* // IdkSpigot - comment this out
++    /* // IonSpigot - comment this out
      static class CacheKey {
          private final World world;
          private final double posX, posY, posZ;
@@ -203,7 +203,7 @@ index f4ccd8d4d..75d6e059a 100644
          }
      }
 +    */
-+    // IdkSpigot end
++    // IonSpigot end
      // PaperSpigot end
  }
 diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
@@ -215,12 +215,12 @@ index b5a2fb3e7..328396384 100644
      private int tileTickPosition;
      public ExecutorService lightingExecutor = Executors.newSingleThreadExecutor(new ThreadFactoryBuilder().setNameFormat("PaperSpigot - Lighting Thread").build()); // PaperSpigot - Asynchronous lighting updates
 -    public final Map<Explosion.CacheKey, Float> explosionDensityCache = new HashMap<Explosion.CacheKey, Float>(); // PaperSpigot - Optimize explosions
-+    // IdkSpigot start - Optimise Density Cache
-+    public final it.unimi.dsi.fastutil.ints.Int2FloatMap explosionDensityCache = new it.unimi.dsi.fastutil.ints.Int2FloatOpenHashMap(); // IdkSpigot - Use faster collection here // PaperSpigot - Optimize explosions
++    // IonSpigot start - Optimise Density Cache
++    public final it.unimi.dsi.fastutil.ints.Int2FloatMap explosionDensityCache = new it.unimi.dsi.fastutil.ints.Int2FloatOpenHashMap(); // IonSpigot - Use faster collection here // PaperSpigot - Optimize explosions
 +    {
 +        explosionDensityCache.defaultReturnValue(-1.0f);
 +    }
-+    // IdkSpigot end
++    // IonSpigot end
  
      public static long chunkToKey(int x, int z)
      {

@@ -1,17 +1,17 @@
 From 906b6816e0a6cc069294468e01a138f68556c896 Mon Sep 17 00:00:00 2001
 From: SuicidalKids <kfian294ma4@gmail.com>
 Date: Tue, 15 Sep 2020 05:03:57 +0100
-Subject: [PATCH] IdkSpigot Configuration Files
+Subject: [PATCH] Ion Configuration Files
 
 <o/
 
-diff --git a/src/main/java/me/suicidalkids/idkspigot/IdkSpigotConfig.java b/src/main/java/me/suicidalkids/idkspigot/IdkSpigotConfig.java
+diff --git a/src/main/java/me/suicidalkids/ion/IonConfig.java b/src/main/java/me/suicidalkids/ion/IonConfig.java
 new file mode 100644
 index 000000000..636b9a86a
 --- /dev/null
-+++ b/src/main/java/me/suicidalkids/idkspigot/IdkSpigotConfig.java
++++ b/src/main/java/me/suicidalkids/ion/IonConfig.java
 @@ -0,0 +1,118 @@
-+package me.suicidalkids.idkspigot;
++package me.suicidalkids.ion;
 +
 +import com.google.common.base.Throwables;
 +import net.minecraft.server.MinecraftServer;
@@ -31,10 +31,10 @@ index 000000000..636b9a86a
 +import java.util.Map;
 +import java.util.logging.Level;
 +
-+public class IdkSpigotConfig {
++public class IonConfig {
 +
 +    private static File CONFIG_FILE;
-+    private static final String HEADER = "This is the main configuration file for IdkSpigot.\n" + "As you can see, there's tons to configure. Some options may impact gameplay, so use\n" + "with caution, and make sure you know what each option does before configuring.\n";
++    private static final String HEADER = "This is the main configuration file for Ion.\n" + "As you can see, there's tons to configure. Some options may impact gameplay, so use\n" + "with caution, and make sure you know what each option does before configuring.\n";
 +    /*========================================================================*/
 +    public static YamlConfiguration config;
 +    static int version;
@@ -45,11 +45,11 @@ index 000000000..636b9a86a
 +        CONFIG_FILE = configFile;
 +        config = new YamlConfiguration();
 +        try {
-+            System.out.println("Loading IdkSpigot config from " + configFile.getName());
++            System.out.println("Loading Ion config from " + configFile.getName());
 +            config.load(CONFIG_FILE);
 +        } catch (IOException ex) {
 +        } catch (InvalidConfigurationException ex) {
-+            Bukkit.getLogger().log(Level.SEVERE, "Could not load idk.yml, please correct your syntax errors", ex);
++            Bukkit.getLogger().log(Level.SEVERE, "Could not load ion.yml, please correct your syntax errors", ex);
 +            throw Throwables.propagate(ex);
 +        }
 +        config.options().header(HEADER);
@@ -59,12 +59,12 @@ index 000000000..636b9a86a
 +
 +        version = getInt("config-version", 1);
 +        set("config-version", 1);
-+        readConfig(IdkSpigotConfig.class, null);
++        readConfig(IonConfig.class, null);
 +    }
 +
 +    public static void registerCommands() {
 +        for (Map.Entry<String, Command> entry : commands.entrySet()) {
-+            MinecraftServer.getServer().server.getCommandMap().register( entry.getKey(), "Idk", entry.getValue() );
++            MinecraftServer.getServer().server.getCommandMap().register( entry.getKey(), "Ion", entry.getValue() );
 +        }
 +    }
 +
@@ -129,28 +129,28 @@ index 000000000..636b9a86a
 +    }
 +
 +}
-diff --git a/src/main/java/me/suicidalkids/idkspigot/IdkSpigotWorldConfig.java b/src/main/java/me/suicidalkids/idkspigot/IdkSpigotWorldConfig.java
+diff --git a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
 new file mode 100644
 index 000000000..e05430914
 --- /dev/null
-+++ b/src/main/java/me/suicidalkids/idkspigot/IdkSpigotWorldConfig.java
++++ b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
 @@ -0,0 +1,67 @@
-+package me.suicidalkids.idkspigot;
++package me.suicidalkids.ion;
 +
 +import org.bukkit.Bukkit;
 +import org.bukkit.configuration.file.YamlConfiguration;
 +
 +import java.util.List;
 +
-+public class IdkSpigotWorldConfig {
++public class IonWorldConfig {
 +
 +    private final String worldName;
 +    private final YamlConfiguration config;
 +    private boolean verbose;
 +
-+    public IdkSpigotWorldConfig(String worldName) {
++    public IonWorldConfig(String worldName) {
 +        this.worldName = worldName;
-+        this.config = IdkSpigotConfig.config;
++        this.config = IonConfig.config;
 +        init();
 +    }
 +
@@ -158,7 +158,7 @@ index 000000000..e05430914
 +        this.verbose = getBoolean("verbose", true);
 +
 +        log("-------- World Settings For [" + worldName + "] --------");
-+        IdkSpigotConfig.readConfig(IdkSpigotWorldConfig.class, this);
++        IonConfig.readConfig(IonWorldConfig.class, this);
 +    }
 +
 +    private void log(String s) {
@@ -210,7 +210,7 @@ index 088beb22b..b3ea51626 100644
              org.github.paperspigot.PaperSpigotConfig.init((File) options.valueOf("paper-settings"));
              org.github.paperspigot.PaperSpigotConfig.registerCommands();
              // PaperSpigot end
-+            me.suicidalkids.idkspigot.IdkSpigotConfig.registerCommands(); // IdkSpigot
++            me.suicidalkids.ion.IonConfig.registerCommands(); // IonSpigot
  
              DedicatedServer.LOGGER.info("Generating keypair");
              this.a(MinecraftEncryption.b());
@@ -222,7 +222,7 @@ index d4f337e22..b5a2fb3e7 100644
  
      public final co.aikar.timings.WorldTimingsHandler timings; // Spigot
      public final net.techcable.tacospigot.TacoSpigotWorldConfig tacoSpigotConfig;
-+    public final me.suicidalkids.idkspigot.IdkSpigotWorldConfig idkSpigotConfig; // IdkSpigot - TacoSpigot broke the chain ^
++    public final me.suicidalkids.ion.IonWorldConfig ionConfig; // IonSpigot - TacoSpigot broke the chain ^
  
      public CraftWorld getWorld() {
          return this.world;
@@ -230,7 +230,7 @@ index d4f337e22..b5a2fb3e7 100644
          this.spigotConfig = new org.spigotmc.SpigotWorldConfig( worlddata.getName() ); // Spigot
          this.paperSpigotConfig = new org.github.paperspigot.PaperSpigotWorldConfig( worlddata.getName() ); // PaperSpigot
          this.tacoSpigotConfig = new net.techcable.tacospigot.TacoSpigotWorldConfig(worlddata.getName()); // TacoSpigot
-+        this.idkSpigotConfig = new me.suicidalkids.idkspigot.IdkSpigotWorldConfig(worlddata.getName()); // IdkSpigot
++        this.ionConfig = new me.suicidalkids.ion.IonWorldConfig(worlddata.getName()); // IonSpigot
          this.generator = gen;
          this.world = new CraftWorld((WorldServer) this, gen, env);
          this.ticksPerAnimalSpawns = this.getServer().getTicksPerAnimalSpawns(); // CraftBukkit
@@ -243,7 +243,7 @@ index c0a716023..dcde30963 100644
      private static final String HEADER = "This is the main configuration file for TacoSpigot.\n" + "As you can see, there's tons to configure. Some options may impact gameplay, so use\n" + "with caution, and make sure you know what each option does before configuring.\n" + "\n" + "If you need help with the configuration or have any questions related to TacoSpigot,\n" + "join us at the IRC.\n" + "\n" + "IRC: #taco @ irc.spi.gt ( http://irc.spi.gt/iris/?channels=taco )\n";
      /*========================================================================*/
 -    static YamlConfiguration config;
-+    public static YamlConfiguration config; // IdkSpigot - public <- package private
++    public static YamlConfiguration config; // IonSpigot - public <- package private
      static int version;
      /*========================================================================*/
  
@@ -255,7 +255,7 @@ index a2fb03987..674ab4004 100644
          org.spigotmc.SpigotConfig.init((File) console.options.valueOf("spigot-settings")); // Spigot
          org.github.paperspigot.PaperSpigotConfig.init((File) console.options.valueOf("paper-settings")); // PaperSpigot
          net.techcable.tacospigot.TacoSpigotConfig.init((File) console.options.valueOf("taco-settings")); // TacoSpigot
-+        me.suicidalkids.idkspigot.IdkSpigotConfig.init((File) console.options.valueOf("idk-settings")); // IdkSpigot
++        me.suicidalkids.ion.IonConfig.init((File) console.options.valueOf("ion-settings")); // IonSpigot
          for (WorldServer world : console.worlds) {
              world.worldData.setDifficulty(difficulty);
              world.setSpawnFlags(monsters, animals);
@@ -263,7 +263,7 @@ index a2fb03987..674ab4004 100644
          resetRecipes();
          org.spigotmc.SpigotConfig.registerCommands(); // Spigot
          org.github.paperspigot.PaperSpigotConfig.registerCommands(); // PaperSpigot
-+        me.suicidalkids.idkspigot.IdkSpigotConfig.registerCommands(); // IdkSpigot
++        me.suicidalkids.ion.IonConfig.registerCommands(); // IonSpigot
  
          overrideAllCommandBlockCommands = commandsConfiguration.getStringList("command-block-overrides").contains("*");
  
@@ -271,7 +271,7 @@ index a2fb03987..674ab4004 100644
              return org.github.paperspigot.PaperSpigotConfig.config;
          }
  
-+        // IdkSpigot start - Configuration Files
++        // IonSpigot start - Configuration Files
 +        @Override
 +        public YamlConfiguration getTacoSpigotConfig()
 +        {
@@ -279,11 +279,11 @@ index a2fb03987..674ab4004 100644
 +        }
 +
 +        @Override
-+        public YamlConfiguration getIdkSpigotConfig()
++        public YamlConfiguration getIonConfig()
 +        {
-+            return me.suicidalkids.idkspigot.IdkSpigotConfig.config;
++            return me.suicidalkids.ion.IonConfig.config;
 +        }
-+        // IdkSpigot end
++        // IonSpigot end
 +
          @Override
          public void restart() {
@@ -297,13 +297,13 @@ index a5bbd8b71..0be1fb5a5 100644
                          .describedAs("Yml file");
                  // TacoSpigot end
 +
-+                // IdkSpigot start
-+                acceptsAll(asList("idk", "idk-settings"), "File for idkspigot settings")
++                // IonSpigot start
++                acceptsAll(asList("ion", "ion-settings"), "File for ion settings")
 +                        .withRequiredArg()
 +                        .ofType(File.class)
-+                        .defaultsTo(new File("idk.yml"))
++                        .defaultsTo(new File("ion.yml"))
 +                        .describedAs("Yml file");
-+                // IdkSpigot end
++                // IonSpigot end
              }
          };
  
@@ -311,7 +311,7 @@ index a5bbd8b71..0be1fb5a5 100644
                  }
                  // Spigot End
                  net.techcable.tacospigot.TacoSpigotConfig.init((File) options.valueOf("taco-settings")); // TacoSpigot - load config before we load libraries to allow access while loading
-+                me.suicidalkids.idkspigot.IdkSpigotConfig.init((File) options.valueOf("idk-settings")); // IdkSpigot
++                me.suicidalkids.ion.IonConfig.init((File) options.valueOf("ion-settings")); // IonSpigot
                  System.out.println("Loading libraries, please wait...");
                  MinecraftServer.main(options);
              } catch (Throwable t) {

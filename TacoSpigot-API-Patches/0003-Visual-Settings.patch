@@ -1,16 +1,16 @@
-From a83d9dbfd8b35f595d6de2c6f6820ea6c99f0004 Mon Sep 17 00:00:00 2001
+From e3373b0686fdd95fcc4fa5facd405f0b4f4a39c3 Mon Sep 17 00:00:00 2001
 From: SuicidalKids <kfian294ma4@gmail.com>
 Date: Tue, 15 Sep 2020 19:37:02 +0100
 Subject: [PATCH] Visual Settings
 
 
-diff --git a/src/main/java/me/suicidalkids/idkspigot/visuals/Visuals.java b/src/main/java/me/suicidalkids/idkspigot/visuals/Visuals.java
+diff --git a/src/main/java/me/suicidalkids/ion/visuals/Visuals.java b/src/main/java/me/suicidalkids/ion/visuals/Visuals.java
 new file mode 100644
 index 00000000..bef0f353
 --- /dev/null
-+++ b/src/main/java/me/suicidalkids/idkspigot/visuals/Visuals.java
++++ b/src/main/java/me/suicidalkids/ion/visuals/Visuals.java
 @@ -0,0 +1,57 @@
-+package me.suicidalkids.idkspigot.visuals;
++package me.suicidalkids.ion.visuals;
 +
 +/**
 + * Visual Settings, this is used to keep track of the visuals the player has enabled.
@@ -67,13 +67,13 @@ index 00000000..bef0f353
 +    }
 +
 +}
-diff --git a/src/main/java/me/suicidalkids/idkspigot/visuals/commands/BaseCommand.java b/src/main/java/me/suicidalkids/idkspigot/visuals/commands/BaseCommand.java
+diff --git a/src/main/java/me/suicidalkids/ion/visuals/commands/BaseCommand.java b/src/main/java/me/suicidalkids/ion/visuals/commands/BaseCommand.java
 new file mode 100644
 index 00000000..027ed08c
 --- /dev/null
-+++ b/src/main/java/me/suicidalkids/idkspigot/visuals/commands/BaseCommand.java
++++ b/src/main/java/me/suicidalkids/ion/visuals/commands/BaseCommand.java
 @@ -0,0 +1,13 @@
-+package me.suicidalkids.idkspigot.visuals.commands;
++package me.suicidalkids.ion.visuals.commands;
 +
 +import org.bukkit.command.Command;
 +
@@ -81,20 +81,20 @@ index 00000000..027ed08c
 +
 +    public BaseCommand(String name) {
 +        super(name);
-+        this.description = "IdkSpigot Command " + name;
++        this.description = "Ion Command " + name;
 +        this.setPermission("bukkit.command." + name);
 +    }
 +
 +}
-diff --git a/src/main/java/me/suicidalkids/idkspigot/visuals/commands/FlashingTNTCommand.java b/src/main/java/me/suicidalkids/idkspigot/visuals/commands/FlashingTNTCommand.java
+diff --git a/src/main/java/me/suicidalkids/ion/visuals/commands/FlashingTNTCommand.java b/src/main/java/me/suicidalkids/ion/visuals/commands/FlashingTNTCommand.java
 new file mode 100644
 index 00000000..6342c83c
 --- /dev/null
-+++ b/src/main/java/me/suicidalkids/idkspigot/visuals/commands/FlashingTNTCommand.java
++++ b/src/main/java/me/suicidalkids/ion/visuals/commands/FlashingTNTCommand.java
 @@ -0,0 +1,34 @@
-+package me.suicidalkids.idkspigot.visuals.commands;
++package me.suicidalkids.ion.visuals.commands;
 +
-+import me.suicidalkids.idkspigot.visuals.Visuals;
++import me.suicidalkids.ion.visuals.Visuals;
 +import org.bukkit.ChatColor;
 +import org.bukkit.command.CommandSender;
 +import org.bukkit.entity.Player;
@@ -126,15 +126,15 @@ index 00000000..6342c83c
 +    }
 +
 +}
-diff --git a/src/main/java/me/suicidalkids/idkspigot/visuals/commands/SandToggleCommand.java b/src/main/java/me/suicidalkids/idkspigot/visuals/commands/SandToggleCommand.java
+diff --git a/src/main/java/me/suicidalkids/ion/visuals/commands/SandToggleCommand.java b/src/main/java/me/suicidalkids/ion/visuals/commands/SandToggleCommand.java
 new file mode 100644
 index 00000000..6d231e0b
 --- /dev/null
-+++ b/src/main/java/me/suicidalkids/idkspigot/visuals/commands/SandToggleCommand.java
++++ b/src/main/java/me/suicidalkids/ion/visuals/commands/SandToggleCommand.java
 @@ -0,0 +1,34 @@
-+package me.suicidalkids.idkspigot.visuals.commands;
++package me.suicidalkids.ion.visuals.commands;
 +
-+import me.suicidalkids.idkspigot.visuals.Visuals;
++import me.suicidalkids.ion.visuals.Visuals;
 +import org.bukkit.ChatColor;
 +import org.bukkit.command.CommandSender;
 +import org.bukkit.entity.Player;
@@ -166,15 +166,15 @@ index 00000000..6d231e0b
 +    }
 +
 +}
-diff --git a/src/main/java/me/suicidalkids/idkspigot/visuals/commands/TNTToggleCommand.java b/src/main/java/me/suicidalkids/idkspigot/visuals/commands/TNTToggleCommand.java
+diff --git a/src/main/java/me/suicidalkids/ion/visuals/commands/TNTToggleCommand.java b/src/main/java/me/suicidalkids/ion/visuals/commands/TNTToggleCommand.java
 new file mode 100644
 index 00000000..5de12b9b
 --- /dev/null
-+++ b/src/main/java/me/suicidalkids/idkspigot/visuals/commands/TNTToggleCommand.java
++++ b/src/main/java/me/suicidalkids/ion/visuals/commands/TNTToggleCommand.java
 @@ -0,0 +1,34 @@
-+package me.suicidalkids.idkspigot.visuals.commands;
++package me.suicidalkids.ion.visuals.commands;
 +
-+import me.suicidalkids.idkspigot.visuals.Visuals;
++import me.suicidalkids.ion.visuals.Visuals;
 +import org.bukkit.ChatColor;
 +import org.bukkit.command.CommandSender;
 +import org.bukkit.entity.Player;
@@ -221,8 +221,8 @@ index 59fa188c..192aa40a 100644
 +     *
 +     * @return the player visuals
 +     */
-+    // IdkSpigot - Visual Settings API
-+    public me.suicidalkids.idkspigot.visuals.Visuals getVisuals();
++    // IonSpigot - Visual Settings API
++    public me.suicidalkids.ion.visuals.Visuals getVisuals();
 +
      // TacoSpigot start
      /**

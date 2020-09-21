@@ -1,7 +1,7 @@
-From 06328b20644f7e925c2c5b112057b396bff52075 Mon Sep 17 00:00:00 2001
+From e5270d4ff69f1f6eab17b5ad51f2b1a77fb76034 Mon Sep 17 00:00:00 2001
 From: SuicidalKids <kfian294ma4@gmail.com>
 Date: Tue, 15 Sep 2020 05:04:13 +0100
-Subject: [PATCH] IdkSpigot Configuration Files
+Subject: [PATCH] Ion Configuration Files
 
 
 diff --git a/src/main/java/co/aikar/timings/TimingsExport.java b/src/main/java/co/aikar/timings/TimingsExport.java
@@ -14,8 +14,8 @@ index fe19ea00..57ea7d03 100644
              pair("bukkit", mapAsJSON(Bukkit.spigot().getBukkitConfig(), null)),
 -            pair("paperspigot", mapAsJSON(Bukkit.spigot().getPaperSpigotConfig(), null))
 +            pair("paperspigot", mapAsJSON(Bukkit.spigot().getPaperSpigotConfig(), null)),
-+            pair("tacospigot", mapAsJSON(Bukkit.spigot().getTacoSpigotConfig(), null)), // IdkSpigot - Fill in for tacospigot
-+            pair("idkspigot", mapAsJSON(Bukkit.spigot().getIdkSpigotConfig(), null)) // IdkSpigot
++            pair("tacospigot", mapAsJSON(Bukkit.spigot().getTacoSpigotConfig(), null)), // IonSpigot - Fill in for tacospigot
++            pair("ion", mapAsJSON(Bukkit.spigot().getIonConfig(), null)) // IonSpigot
          ));
  
          new TimingsExport(sender, parent, history).start();
@@ -27,17 +27,17 @@ index 1b62463a..d1b1b285 100644
              throw new UnsupportedOperationException("Not supported yet.");
          }
  
-+        // IdkSpigot start - Configuration Files
++        // IonSpigot start - Configuration Files
 +        public org.bukkit.configuration.file.YamlConfiguration getTacoSpigotConfig()
 +        {
 +            throw new UnsupportedOperationException("Not supported yet.");
 +        }
 +
-+        public org.bukkit.configuration.file.YamlConfiguration getIdkSpigotConfig()
++        public org.bukkit.configuration.file.YamlConfiguration getIonConfig()
 +        {
 +            throw new UnsupportedOperationException("Not supported yet.");
 +        }
-+        // IdkSpigot end
++        // IonSpigot end
 +
          /**
           * Sends the component to the player

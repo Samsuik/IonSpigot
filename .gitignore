@@ -36,8 +36,8 @@ manifest.mf
 *~
 
 # other stuff
-IdkSpigot-API
-IdkSpigot-Server
+IonSpigot-API
+IonSpigot-Server
 TacoSpigot-API
 TacoSpigot-Server
 Spigot-API
