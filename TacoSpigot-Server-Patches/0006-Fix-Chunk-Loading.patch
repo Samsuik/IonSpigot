@@ -1,0 +1,46 @@
+From 0aa75396fd55ac9055341fc3cdae895cbf77fec9 Mon Sep 17 00:00:00 2001
+From: SuicidalKids <kfian294ma4@gmail.com>
+Date: Mon, 21 Sep 2020 21:46:25 +0100
+Subject: [PATCH] Fix-Chunk-Loading
+
+Fixed an oversight with loading surrounding chunks that caused entities to not load any chunks if the entity was travelling to the south or east.
+
+diff --git a/src/main/java/net/minecraft/server/Entity.java b/src/main/java/net/minecraft/server/Entity.java
+index c4bfd5fe6..8e6d516b9 100644
+--- a/src/main/java/net/minecraft/server/Entity.java
++++ b/src/main/java/net/minecraft/server/Entity.java
+@@ -422,11 +422,31 @@ public abstract class Entity implements ICommandListener {
+      * PaperSpigot - Load surrounding chunks the entity is moving through
+      */
+     public void loadChunks() {
++        // IonSpigot start - Fix Load Chunks
++        /*
++        This implementation is flawed, as it does not work properly in south and east directions.
++        The reason for this is because the motion would be negative in those directions which
++        would cause the checks to fail, as it is missing min and max checks.
++
++        Now you're going to be saying my cannon loaded chunks in those directions,
++        you are right about that, the reason it works is because theres an additional layer
++        of chunk loading, I personally believe this method is meant to ensure that the current position
++        is loaded as it isn't guaranteed that the entity will move at all.
++
++        This additional layer is located in the getCubes method, we can remove the excess logic from here
++        and take advantage of that with the triangle patch that was implemented in TacoSpigot
++        this allows for triangle chunk loading allowing to us to reduce chunks loaded by cannons.
++
+         for (int cx = (int) locX >> 4; cx <= (int) (locX + motX) >> 4; ++cx) {
+             for (int cz = (int) locZ >> 4; cz <= (int) (locZ + motZ) >> 4; ++cz) {
+                 ((ChunkProviderServer) world.chunkProvider).getChunkAt(cx, cz);
+             }
+         }
++        */
++        int chunkX = org.bukkit.util.NumberConversions.floor(locX) >> 4;
++        int chunkZ = org.bukkit.util.NumberConversions.floor(locX) >> 4;
++        ((ChunkProviderServer) world.chunkProvider).getChunkAt(chunkX, chunkZ);
++        // IonSpigot end
+     }
+ 
+ 
+-- 
+2.20.1.windows.1
+

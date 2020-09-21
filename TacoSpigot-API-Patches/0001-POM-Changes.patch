@@ -1,11 +1,11 @@
-From 27bec9ccb578b3dc7fd52c667c2816e20915bcfc Mon Sep 17 00:00:00 2001
+From 277a36b7cc0593f472045bf92dfeb99b74547ee6 Mon Sep 17 00:00:00 2001
 From: SuicidalKids <kfian294ma4@gmail.com>
 Date: Tue, 15 Sep 2020 04:23:36 +0100
 Subject: [PATCH] POM-Changes
 
 
 diff --git a/pom.xml b/pom.xml
-index b61d116d..526f892a 100644
+index b61d116d..63b46ace 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -4,18 +4,18 @@

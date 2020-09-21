@@ -1,11 +1,11 @@
-From e5270d4ff69f1f6eab17b5ad51f2b1a77fb76034 Mon Sep 17 00:00:00 2001
+From 869059ebddcf6fb09c82c6987abefb5da5a2dfa1 Mon Sep 17 00:00:00 2001
 From: SuicidalKids <kfian294ma4@gmail.com>
 Date: Tue, 15 Sep 2020 05:04:13 +0100
 Subject: [PATCH] Ion Configuration Files
 
 
 diff --git a/src/main/java/co/aikar/timings/TimingsExport.java b/src/main/java/co/aikar/timings/TimingsExport.java
-index fe19ea00..57ea7d03 100644
+index fe19ea00..1898c167 100644
 --- a/src/main/java/co/aikar/timings/TimingsExport.java
 +++ b/src/main/java/co/aikar/timings/TimingsExport.java
 @@ -202,7 +202,9 @@ class TimingsExport extends Thread {
@@ -20,7 +20,7 @@ index fe19ea00..57ea7d03 100644
  
          new TimingsExport(sender, parent, history).start();
 diff --git a/src/main/java/org/bukkit/Server.java b/src/main/java/org/bukkit/Server.java
-index 1b62463a..d1b1b285 100644
+index 1b62463a..83ba099d 100644
 --- a/src/main/java/org/bukkit/Server.java
 +++ b/src/main/java/org/bukkit/Server.java
 @@ -973,6 +973,18 @@ public interface Server extends PluginMessageRecipient {
@@ -42,6 +42,70 @@ index 1b62463a..d1b1b285 100644
          /**
           * Sends the component to the player
           *
+diff --git a/src/main/java/org/bukkit/command/defaults/VersionCommand.java b/src/main/java/org/bukkit/command/defaults/VersionCommand.java
+index 42da60a8..b472435a 100644
+--- a/src/main/java/org/bukkit/command/defaults/VersionCommand.java
++++ b/src/main/java/org/bukkit/command/defaults/VersionCommand.java
+@@ -40,7 +40,7 @@ public class VersionCommand extends BukkitCommand {
+         this.description = "Gets the version of this server including any plugins in use";
+         this.usageMessage = "/version [plugin name]";
+         this.setPermission("bukkit.command.version");
+-        this.setAliases(Arrays.asList("ver", "about"));
++        this.setAliases(Arrays.asList("ionver", "ver", "about")); // IonSpigot - additional version alias
+     }
+ 
+     @Override
+@@ -48,9 +48,20 @@ public class VersionCommand extends BukkitCommand {
+         if (!testPermission(sender)) return true;
+ 
+         if (args.length == 0) {
++            // IonSpigot start
++            /*
+             sender.sendMessage("This server is running " + Bukkit.getName() + " version " + Bukkit.getVersion() + " (Implementing API version " + Bukkit.getBukkitVersion() + ")");
+             sendVersion(sender);
+-        } else {
++            */
++            sender.sendMessage(translate(
++                    "&5/&7&m-------------------&8[&b Version &8]&7&m-------------------&5\\",
++                    "&fThis server is running &bIon&dSpigot",
++                    "&fVersion&d: &b" + Bukkit.getVersion(),
++                    "&fAPI&d: &b" + Bukkit.getBukkitVersion(),
++                    "&5\\&7&m-----------------------------------------------&5/"
++            ));
++            // IonSpigot end
++        } else if (sender.isOp()) { // IonSpigot
+             StringBuilder name = new StringBuilder();
+ 
+             for (String arg : args) {
+@@ -84,6 +95,19 @@ public class VersionCommand extends BukkitCommand {
+         }
+         return true;
+     }
++    // IonSpigot start
++    public static String translate(String... strings) {
++        StringBuilder stringBuilder = new StringBuilder();
++        for (int i = 0; i < strings.length; i++) {
++            if (i != 0) {
++                stringBuilder.append("\n");
++            }
++
++            stringBuilder.append(ChatColor.translateAlternateColorCodes('&', strings[i]));
++        }
++        return stringBuilder.toString();
++    }
++    // IonSpigot end
+ 
+     private void describeToSender(Plugin plugin, CommandSender sender) {
+         PluginDescriptionFile desc = plugin.getDescription();
+@@ -134,7 +158,7 @@ public class VersionCommand extends BukkitCommand {
+         Validate.notNull(args, "Arguments cannot be null");
+         Validate.notNull(alias, "Alias cannot be null");
+ 
+-        if (args.length == 1) {
++        if (args.length == 1 && sender.isOp()) { // IonSpigot
+             List<String> completions = new ArrayList<String>();
+             String toComplete = args[0].toLowerCase();
+             for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
 -- 
 2.20.1.windows.1
 
