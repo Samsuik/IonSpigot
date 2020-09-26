@@ -1,0 +1,124 @@
+From cad2c859057428f47e77fad486831a819ff232ee Mon Sep 17 00:00:00 2001
+From: SuicidalKids <kfian294ma4@gmail.com>
+Date: Sat, 26 Sep 2020 19:24:01 +0100
+Subject: [PATCH] Chunk Improvements
+
+Most of these changes are from Akarin, previously called TorchSpigot
+
+diff --git a/src/main/java/net/minecraft/server/ChunkProviderServer.java b/src/main/java/net/minecraft/server/ChunkProviderServer.java
+index 9753401b4..4906ba523 100644
+--- a/src/main/java/net/minecraft/server/ChunkProviderServer.java
++++ b/src/main/java/net/minecraft/server/ChunkProviderServer.java
+@@ -60,8 +60,9 @@ public class ChunkProviderServer implements IChunkProvider {
+     }
+ 
+     public void queueUnload(int i, int j) {
++        long key = LongHash.toLong(i, j); // IonSpigot - Only create key once
+         // PaperSpigot start - Asynchronous lighting updates
+-        Chunk chunk = chunks.get(LongHash.toLong(i, j));
++        Chunk chunk = chunks.get(key); // IonSpigot
+         if (chunk != null && chunk.world.paperSpigotConfig.useAsyncLighting && (chunk.pendingLightUpdates.get() > 0 || chunk.world.getTime() - chunk.lightUpdateTime < 20)) {
+             return;
+         }
+@@ -80,9 +81,9 @@ public class ChunkProviderServer implements IChunkProvider {
+         if (this.world.worldProvider.e()) {
+             if (!this.world.c(i, j)) {
+                 // CraftBukkit start
+-                this.unloadQueue.add(LongHash.toLong(i, j));  // TacoSpigot - directly invoke LongHash
++                this.unloadQueue.add(key); // IonSpigot  // TacoSpigot - directly invoke LongHash
+ 
+-                Chunk c = chunks.get(LongHash.toLong(i, j));
++                Chunk c = chunks.get(key); // IonSpigot
+                 if (c != null) {
+                     c.mustSave = true;
+                 }
+@@ -90,9 +91,9 @@ public class ChunkProviderServer implements IChunkProvider {
+             }
+         } else {
+             // CraftBukkit start
+-            this.unloadQueue.add(LongHash.toLong(i, j)); // TacoSpigot - directly invoke LongHash
++            this.unloadQueue.add(key); // IonSpigot // TacoSpigot - directly invoke LongHash
+ 
+-            Chunk c = chunks.get(LongHash.toLong(i, j));
++            Chunk c = chunks.get(key); // IonSpigot
+             if (c != null) {
+                 c.mustSave = true;
+             }
+@@ -122,8 +123,9 @@ public class ChunkProviderServer implements IChunkProvider {
+     }
+ 
+     public Chunk getChunkAt(int i, int j, Runnable runnable) {
+-        unloadQueue.remove(LongHash.toLong(i, j)); // TacoSpigot - directly invoke LongHash
+-        Chunk chunk = chunks.get(LongHash.toLong(i, j));
++        long key = LongHash.toLong(i, j); // IonSpigot - Only create key once
++        unloadQueue.remove(key); // IonSpigot // TacoSpigot - directly invoke LongHash
++        Chunk chunk = chunks.get(key); // IonSpigot
+         ChunkRegionLoader loader = null;
+ 
+         if (this.chunkLoader instanceof ChunkRegionLoader) {
+@@ -150,8 +152,9 @@ public class ChunkProviderServer implements IChunkProvider {
+         return chunk;
+     }
+     public Chunk originalGetChunkAt(int i, int j) {
+-        this.unloadQueue.remove(LongHash.toLong(i, j)); // TacoSpigot - directly invoke LongHash
+-        Chunk chunk = (Chunk) this.chunks.get(LongHash.toLong(i, j));
++        long key = LongHash.toLong(i, j); // IonSpigot - Only create key once
++        this.unloadQueue.remove(key); // IonSpigot // TacoSpigot - directly invoke LongHash
++        Chunk chunk = (Chunk) this.chunks.get(key); // IonSpigot
+         boolean newChunk = false;
+         // CraftBukkit end
+ 
+@@ -169,7 +172,7 @@ public class ChunkProviderServer implements IChunkProvider {
+                         CrashReportSystemDetails crashreportsystemdetails = crashreport.a("Chunk to be generated");
+ 
+                         crashreportsystemdetails.a("Location", (Object) String.format("%d,%d", new Object[] { Integer.valueOf(i), Integer.valueOf(j)}));
+-                        crashreportsystemdetails.a("Position hash", (Object) Long.valueOf(LongHash.toLong(i, j))); // CraftBukkit - Use LongHash
++                        crashreportsystemdetails.a("Position hash", (Object) key); // IonSpigot // CraftBukkit - Use LongHash
+                         crashreportsystemdetails.a("Generator", (Object) this.chunkProvider.getName());
+                         throw new ReportedException(crashreport);
+                     }
+@@ -177,7 +180,7 @@ public class ChunkProviderServer implements IChunkProvider {
+                 newChunk = true; // CraftBukkit
+             }
+ 
+-            this.chunks.put(LongHash.toLong(i, j), chunk);
++            this.chunks.put(key, chunk);
+             
+             chunk.addEntities();
+             
+@@ -214,13 +217,22 @@ public class ChunkProviderServer implements IChunkProvider {
+         return chunk;
+     }
+ 
++    // IonSpigot start - Cache Current Chunk
++    private Chunk cachedChunk = null;
+     public Chunk getOrCreateChunk(int i, int j) {
++        Chunk chunk; // We have to do this for thread safety
++        if (cachedChunk != null && cachedChunk.locX == i && cachedChunk.locZ == j && cachedChunk.o()) {
++            return cachedChunk;
++        }
+         // CraftBukkit start
+-        Chunk chunk = (Chunk) this.chunks.get(LongHash.toLong(i, j));
++        cachedChunk = chunk = (Chunk) this.chunks.get(LongHash.toLong(i, j));
++        // IonSpigot end
+ 
+         chunk = chunk == null ? (!this.world.ad() && !this.forceChunkLoad ? this.emptyChunk : this.getChunkAt(i, j)) : chunk;
+ 
+         if (chunk == emptyChunk) return chunk;
++        // IonSpigot start - (Torch Remove logging)
++        /*
+         if (i != chunk.locX || j != chunk.locZ) {
+             b.error("Chunk (" + chunk.locX + ", " + chunk.locZ + ") stored at  (" + i + ", " + j + ") in world '" + world.getWorld().getName() + "'");
+             b.error(chunk.getClass().getName());
+@@ -228,6 +240,8 @@ public class ChunkProviderServer implements IChunkProvider {
+             ex.fillInStackTrace();
+             ex.printStackTrace();
+         }
++        */
++        // IonSpigot end
+ 
+         return chunk;
+         // CraftBukkit end
+-- 
+2.20.1.windows.1
+

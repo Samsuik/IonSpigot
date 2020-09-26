@@ -1,11 +1,11 @@
-From e1a98474c09665fea2994dfdc50ab37b5bbc96d4 Mon Sep 17 00:00:00 2001
+From d54b8d30e7f7cacf622ec5e6f2d7191a9d0a6bcc Mon Sep 17 00:00:00 2001
 From: SuicidalKids <kfian294ma4@gmail.com>
 Date: Mon, 21 Sep 2020 22:36:19 +0100
 Subject: [PATCH] Optimise Fluids
 
 
 diff --git a/src/main/java/net/minecraft/server/BlockFlowing.java b/src/main/java/net/minecraft/server/BlockFlowing.java
-index 23130ba96..e919e3288 100644
+index 23130ba96..a22d6b73c 100644
 --- a/src/main/java/net/minecraft/server/BlockFlowing.java
 +++ b/src/main/java/net/minecraft/server/BlockFlowing.java
 @@ -28,6 +28,7 @@ public class BlockFlowing extends BlockFluids {
@@ -16,7 +16,16 @@ index 23130ba96..e919e3288 100644
          int i = ((Integer) iblockdata.get(BlockFlowing.LEVEL)).intValue();
          byte b0 = 1;
  
-@@ -43,29 +44,38 @@ public class BlockFlowing extends BlockFluids {
+@@ -35,7 +36,7 @@ public class BlockFlowing extends BlockFluids {
+             b0 = 2;
+         }
+ 
+-        int j = this.getFlowSpeed(world, blockposition); // PaperSpigot
++//        int j = this.getFlowSpeed(world, blockposition); // PaperSpigot // IonSpigot - Moved down
+         int k;
+ 
+         if (i > 0) {
+@@ -43,29 +44,40 @@ public class BlockFlowing extends BlockFluids {
  
              this.a = 0;
  
@@ -37,6 +46,8 @@ index 23130ba96..e919e3288 100644
                  i1 = -1;
              }
 +            } else if (temp == 8 && world.getType(pos) == Blocks.AIR.getBlockData()) {
++                // TODO: Look into adding an option to make this 2
++                this.f(world, blockposition, iblockdata);
 +                world.setTypeAndData(pos, iblockdata, 3);
 +                return;
 +            }
@@ -59,7 +70,29 @@ index 23130ba96..e919e3288 100644
  
                  if (iblockdata1.getBlock().getMaterial().isBuildable()) {
                      i1 = 0;
-@@ -103,29 +113,31 @@ public class BlockFlowing extends BlockFluids {
+@@ -74,9 +86,13 @@ public class BlockFlowing extends BlockFluids {
+                 }
+             }
+ 
++            // IonSpigot start - Unused logic
++            /*
+             if (!world.paperSpigotConfig.fastDrainLava && this.material == Material.LAVA && i < 8 && i1 < 8 && i1 > i && random.nextInt(4) != 0) { // PaperSpigot
+                 j *= 4;
+             }
++            */
++            // IonSpigot end
+ 
+             if (i1 == i) {
+                 this.f(world, blockposition, iblockdata);
+@@ -85,6 +101,7 @@ public class BlockFlowing extends BlockFluids {
+                 if (i1 < 0 || canFastDrain(world, blockposition)) { // PaperSpigot - Fast draining
+                     world.setAir(blockposition);
+                 } else {
++                    int j = this.getFlowSpeed(world, blockposition); // PaperSpigot // IonSpigot - From above
+                     iblockdata = iblockdata.set(BlockFlowing.LEVEL, Integer.valueOf(i1));
+                     world.setTypeAndData(blockposition, iblockdata, 2);
+                     world.a(blockposition, (Block) this, j);
+@@ -103,29 +120,31 @@ public class BlockFlowing extends BlockFluids {
          }
  
          if (world.getType(blockposition).getBlock().getMaterial() != material) return; // PaperSpigot - Stop updating flowing block if material has changed
@@ -99,7 +132,7 @@ index 23130ba96..e919e3288 100644
              Set set = this.f(world, blockposition);
  
              k = i + b0;
-@@ -149,7 +161,7 @@ public class BlockFlowing extends BlockFluids {
+@@ -149,7 +168,7 @@ public class BlockFlowing extends BlockFluids {
                  }
  
                  if (!event.isCancelled()) {
@@ -108,7 +141,7 @@ index 23130ba96..e919e3288 100644
                  }
                  // CraftBukkit end
              }
-@@ -183,7 +195,7 @@ public class BlockFlowing extends BlockFluids {
+@@ -183,7 +202,7 @@ public class BlockFlowing extends BlockFluids {
                  BlockPosition blockposition1 = blockposition.shift(enumdirection1);
                  IBlockData iblockdata = world.getType(blockposition1);
  
@@ -117,7 +150,7 @@ index 23130ba96..e919e3288 100644
                      if (!this.g(world, blockposition1.down(), iblockdata)) {
                          return i;
                      }
-@@ -212,11 +224,11 @@ public class BlockFlowing extends BlockFluids {
+@@ -212,11 +231,11 @@ public class BlockFlowing extends BlockFluids {
              BlockPosition blockposition1 = blockposition.shift(enumdirection);
              IBlockData iblockdata = world.getType(blockposition1);
  
@@ -132,7 +165,7 @@ index 23130ba96..e919e3288 100644
                  } else {
                      j = 0;
                  }
-@@ -237,6 +249,11 @@ public class BlockFlowing extends BlockFluids {
+@@ -237,6 +256,11 @@ public class BlockFlowing extends BlockFluids {
  
      private boolean g(World world, BlockPosition blockposition, IBlockData iblockdata) {
          Block block = world.getType(blockposition).getBlock();
@@ -144,7 +177,7 @@ index 23130ba96..e919e3288 100644
  
          return !(block instanceof BlockDoor) && block != Blocks.STANDING_SIGN && block != Blocks.LADDER && block != Blocks.REEDS ? (block.material == Material.PORTAL ? true : block.material.isSolid()) : true;
      }
-@@ -262,7 +279,7 @@ public class BlockFlowing extends BlockFluids {
+@@ -262,7 +286,7 @@ public class BlockFlowing extends BlockFluids {
      private boolean h(World world, BlockPosition blockposition, IBlockData iblockdata) {
          Material material = iblockdata.getBlock().getMaterial();
  
@@ -153,18 +186,17 @@ index 23130ba96..e919e3288 100644
      }
  
      public void onPlace(World world, BlockPosition blockposition, IBlockData iblockdata) {
-@@ -292,8 +309,17 @@ public class BlockFlowing extends BlockFluids {
-     /**
+@@ -293,7 +317,16 @@ public class BlockFlowing extends BlockFluids {
       * PaperSpigot - Data check method for fast draining
       */
-+    // IonSpigot start - Optimise Draining
+     public int getData(World world, BlockPosition position) {
+-        int data = this.e(world, position);
++        // IonSpigot start - Optimise Draining
++        return getData(world.getType(position));
++    }
 +    public boolean checkData(World world, BlockPosition position, Material material, int data) {
 +        IBlockData state = world.getType(position);
 +        return state.getBlock().getMaterial() == material && getData(state) < data;
-+    }
-     public int getData(World world, BlockPosition position) {
--        int data = this.e(world, position);
-+        return getData(world.getType(position));
 +    }
 +    public int getData(IBlockData iblockdata) {
 +        int data = this.e(iblockdata);
@@ -172,7 +204,7 @@ index 23130ba96..e919e3288 100644
          return data < 8 ? data : 0;
      }
  
-@@ -308,13 +334,15 @@ public class BlockFlowing extends BlockFluids {
+@@ -308,13 +341,15 @@ public class BlockFlowing extends BlockFluids {
                  result = true;
                  if (getData(world, position.down()) < 0) {
                      result = false;
@@ -192,7 +224,7 @@ index 23130ba96..e919e3288 100644
                      result = false;
                  }
              }
-@@ -323,13 +351,15 @@ public class BlockFlowing extends BlockFluids {
+@@ -323,13 +358,15 @@ public class BlockFlowing extends BlockFluids {
                  result = true;
                  if (getData(world, position.down()) < 0 || world.getType(position.up()).getBlock().getMaterial() != Material.AIR) {
                      result = false;
@@ -213,7 +245,7 @@ index 23130ba96..e919e3288 100644
                  }
              }
 diff --git a/src/main/java/net/minecraft/server/BlockFluids.java b/src/main/java/net/minecraft/server/BlockFluids.java
-index db73f5d9c..7e9ecdc6e 100644
+index db73f5d9c..27009b554 100644
 --- a/src/main/java/net/minecraft/server/BlockFluids.java
 +++ b/src/main/java/net/minecraft/server/BlockFluids.java
 @@ -27,7 +27,12 @@ public abstract class BlockFluids extends Block {
@@ -221,7 +253,7 @@ index db73f5d9c..7e9ecdc6e 100644
  
      protected int e(IBlockAccess iblockaccess, BlockPosition blockposition) {
 -        return iblockaccess.getType(blockposition).getBlock().getMaterial() == this.material ? ((Integer) iblockaccess.getType(blockposition).get(BlockFluids.LEVEL)).intValue() : -1;
-+        // IonSpigot start - Optimise Fluids
++        // IonSpigot start - Optimise Draining
 +        return e(iblockaccess.getType(blockposition));
 +    }
 +    protected int e(IBlockData iblockdata) {
