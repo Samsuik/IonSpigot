@@ -1,4 +1,4 @@
-From 3a90a6b6f18569f0e251cee43b3ae28f47459e28 Mon Sep 17 00:00:00 2001
+From 84cd903003ed9d4161e260bb5092bb3fed8bb784 Mon Sep 17 00:00:00 2001
 From: SuicidalKids <kfian294ma4@gmail.com>
 Date: Tue, 15 Sep 2020 05:03:57 +0100
 Subject: [PATCH] Ion Configuration Files
@@ -261,7 +261,7 @@ index c0a716023..ba5730a0c 100644
      /*========================================================================*/
  
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index a2fb03987..f39f488a7 100644
+index a2fb03987..4d61fc828 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 @@ -127,7 +127,7 @@ import net.md_5.bungee.api.chat.BaseComponent;
@@ -281,7 +281,15 @@ index a2fb03987..f39f488a7 100644
          for (WorldServer world : console.worlds) {
              world.worldData.setDifficulty(difficulty);
              world.setSpawnFlags(monsters, animals);
-@@ -739,6 +740,7 @@ public final class CraftServer implements Server {
+@@ -732,6 +733,7 @@ public final class CraftServer implements Server {
+             world.spigotConfig.init(); // Spigot
+             world.paperSpigotConfig.init(); // PaperSpigot
+             world.tacoSpigotConfig.init(); // TacoSpigot
++            world.ionConfig.init(); // IonSpigot
+         }
+ 
+         pluginManager.clearPlugins();
+@@ -739,6 +741,7 @@ public final class CraftServer implements Server {
          resetRecipes();
          org.spigotmc.SpigotConfig.registerCommands(); // Spigot
          org.github.paperspigot.PaperSpigotConfig.registerCommands(); // PaperSpigot
@@ -289,7 +297,7 @@ index a2fb03987..f39f488a7 100644
  
          overrideAllCommandBlockCommands = commandsConfiguration.getStringList("command-block-overrides").contains("*");
  
-@@ -1808,6 +1810,20 @@ public final class CraftServer implements Server {
+@@ -1808,6 +1811,20 @@ public final class CraftServer implements Server {
              return org.github.paperspigot.PaperSpigotConfig.config;
          }
  

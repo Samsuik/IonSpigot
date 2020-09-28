@@ -1,0 +1,45 @@
+From 1abef97f1e3f1ca5d2f7afeaffe5e03bf9fd44a3 Mon Sep 17 00:00:00 2001
+From: SuicidalKids <kfian294ma4@gmail.com>
+Date: Mon, 28 Sep 2020 18:45:16 +0100
+Subject: [PATCH] Optimise Chunk Getting
+
+Remove Logging to reduce bytecode and cache the chunk.
+
+diff --git a/src/main/java/net/minecraft/server/ChunkProviderServer.java b/src/main/java/net/minecraft/server/ChunkProviderServer.java
+index 75f729507..44e374119 100644
+--- a/src/main/java/net/minecraft/server/ChunkProviderServer.java
++++ b/src/main/java/net/minecraft/server/ChunkProviderServer.java
+@@ -218,13 +218,18 @@ public class ChunkProviderServer implements IChunkProvider {
+         return chunk;
+     }
+ 
++    // IonSpigot start - Optimise Chunk Getting
++    private Chunk cachedChunk = null;
+     public Chunk getOrCreateChunk(int i, int j) {
++        Chunk chunk = cachedChunk; // We have to do this for thread safety
++        if (chunk != null && chunk.locX == i && chunk.locZ == j && chunk.o()) {
++            return chunk;
++        }
+         // CraftBukkit start
+-        Chunk chunk = (Chunk) this.chunks.get(LongHash.toLong(i, j));
+-
+-        chunk = chunk == null ? (!this.world.ad() && !this.forceChunkLoad ? this.emptyChunk : this.getChunkAt(i, j)) : chunk;
++        cachedChunk = chunk = (Chunk) this.chunks.get(LongHash.toLong(i, j));
+ 
+         if (chunk == emptyChunk) return chunk;
++        /*
+         if (i != chunk.locX || j != chunk.locZ) {
+             b.error("Chunk (" + chunk.locX + ", " + chunk.locZ + ") stored at  (" + i + ", " + j + ") in world '" + world.getWorld().getName() + "'");
+             b.error(chunk.getClass().getName());
+@@ -232,6 +237,8 @@ public class ChunkProviderServer implements IChunkProvider {
+             ex.fillInStackTrace();
+             ex.printStackTrace();
+         }
++        */
++        // IonSpigot end
+ 
+         return chunk;
+         // CraftBukkit end
+-- 
+2.20.1.windows.1
+

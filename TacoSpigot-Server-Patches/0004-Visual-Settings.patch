@@ -1,11 +1,11 @@
-From 5a88bcb47792a6dad755cbfeaedb709684082d8e Mon Sep 17 00:00:00 2001
+From 9f8dcc67cf2c051dce58be2ba0f2bc85d9446d23 Mon Sep 17 00:00:00 2001
 From: SuicidalKids <kfian294ma4@gmail.com>
 Date: Tue, 15 Sep 2020 19:36:22 +0100
 Subject: [PATCH] Visual Settings
 
 
 diff --git a/src/main/java/me/suicidalkids/ion/IonConfig.java b/src/main/java/me/suicidalkids/ion/IonConfig.java
-index 636b9a86a..0216dadbd 100644
+index 445dd36e5..98b19dda7 100644
 --- a/src/main/java/me/suicidalkids/ion/IonConfig.java
 +++ b/src/main/java/me/suicidalkids/ion/IonConfig.java
 @@ -1,6 +1,9 @@
@@ -30,7 +30,7 @@ index 636b9a86a..0216dadbd 100644
      static void readConfig(Class<?> clazz, Object instance) {
 diff --git a/src/main/java/me/suicidalkids/ion/visuals/VisualSettings.java b/src/main/java/me/suicidalkids/ion/visuals/VisualSettings.java
 new file mode 100644
-index 000000000..f59aec2f2
+index 000000000..7bd8072c6
 --- /dev/null
 +++ b/src/main/java/me/suicidalkids/ion/visuals/VisualSettings.java
 @@ -0,0 +1,52 @@
@@ -87,7 +87,7 @@ index 000000000..f59aec2f2
 +
 +}
 diff --git a/src/main/java/net/minecraft/server/EntityPlayer.java b/src/main/java/net/minecraft/server/EntityPlayer.java
-index 0c49a256c..10e0ae4f7 100644
+index 0c49a256c..b029dbd55 100644
 --- a/src/main/java/net/minecraft/server/EntityPlayer.java
 +++ b/src/main/java/net/minecraft/server/EntityPlayer.java
 @@ -10,6 +10,8 @@ import java.util.Collection;
@@ -127,7 +127,7 @@ index 0c49a256c..10e0ae4f7 100644
          this.getBukkitEntity().setExtraData(nbttagcompound); // CraftBukkit
      }
 diff --git a/src/main/java/net/minecraft/server/EntityTrackerEntry.java b/src/main/java/net/minecraft/server/EntityTrackerEntry.java
-index 1fc2388ea..87f4070e4 100644
+index 1fc2388ea..adc80785e 100644
 --- a/src/main/java/net/minecraft/server/EntityTrackerEntry.java
 +++ b/src/main/java/net/minecraft/server/EntityTrackerEntry.java
 @@ -5,6 +5,8 @@ import java.util.Collection;
@@ -186,7 +186,7 @@ index 1fc2388ea..87f4070e4 100644
              } else if (this.tracker instanceof EntityArmorStand) {
                  return new PacketPlayOutSpawnEntity(this.tracker, 78);
 diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
-index ad07563d2..f95db1461 100644
+index ad07563d2..6a38de225 100644
 --- a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 @@ -1448,6 +1448,13 @@ public class CraftPlayer extends CraftHumanEntity implements Player {

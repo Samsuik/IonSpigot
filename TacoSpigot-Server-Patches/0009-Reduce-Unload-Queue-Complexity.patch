@@ -1,0 +1,33 @@
+From 34dc535fe8b5ed4609c0fee41d8887c95b0081bd Mon Sep 17 00:00:00 2001
+From: SuicidalKids <kfian294ma4@gmail.com>
+Date: Mon, 28 Sep 2020 18:27:04 +0100
+Subject: [PATCH] Reduce Unload Queue Complexity
+
+Revert TacoSpigots change to use a ArraySet.
+
+An ArraySet is not the correct collection for this job. It provides o(n)
+add and remove it also provides fast iteration which is severely limited
+to 100 actions in this case. Chunk Loading and Unloading modify this set
+which can be a hotspot when theres a lot of players loading chunks.
+
+diff --git a/src/main/java/net/minecraft/server/ChunkProviderServer.java b/src/main/java/net/minecraft/server/ChunkProviderServer.java
+index a77cffe17..75f729507 100644
+--- a/src/main/java/net/minecraft/server/ChunkProviderServer.java
++++ b/src/main/java/net/minecraft/server/ChunkProviderServer.java
+@@ -29,11 +29,12 @@ import it.unimi.dsi.fastutil.longs.LongArraySet;
+ import it.unimi.dsi.fastutil.longs.LongIterator;
+ import it.unimi.dsi.fastutil.longs.LongSet;
+ // TacoSpigot end
++import it.unimi.dsi.fastutil.longs.LongOpenHashSet; // IonSpigot
+ 
+ public class ChunkProviderServer implements IChunkProvider {
+ 
+     private static final Logger b = LogManager.getLogger();
+-    public LongSet unloadQueue = new LongArraySet(); // CraftBukkit - LongHashSet // TacoSpigot - LongHashSet -> HashArraySet
++    public LongSet unloadQueue = new LongOpenHashSet(); // CraftBukkit - LongHashSet // TacoSpigot - LongHashSet -> HashArraySet // IonSpigot - LongOpenHashSet
+     public Chunk emptyChunk;
+     public IChunkProvider chunkProvider;
+     private IChunkLoader chunkLoader;
+-- 
+2.20.1.windows.1
+

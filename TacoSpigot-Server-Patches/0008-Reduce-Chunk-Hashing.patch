@@ -1,12 +1,12 @@
-From cad2c859057428f47e77fad486831a819ff232ee Mon Sep 17 00:00:00 2001
+From 143b32375ef2102dfc3ca9a074403a54eee149a9 Mon Sep 17 00:00:00 2001
 From: SuicidalKids <kfian294ma4@gmail.com>
 Date: Sat, 26 Sep 2020 19:24:01 +0100
-Subject: [PATCH] Chunk Improvements
+Subject: [PATCH] Reduce Chunk Hashing
 
-Most of these changes are from Akarin, previously called TorchSpigot
+These changes are from Akarin, previously called TorchSpigot
 
 diff --git a/src/main/java/net/minecraft/server/ChunkProviderServer.java b/src/main/java/net/minecraft/server/ChunkProviderServer.java
-index 9753401b4..4906ba523 100644
+index 9753401b4..a77cffe17 100644
 --- a/src/main/java/net/minecraft/server/ChunkProviderServer.java
 +++ b/src/main/java/net/minecraft/server/ChunkProviderServer.java
 @@ -60,8 +60,9 @@ public class ChunkProviderServer implements IChunkProvider {
@@ -86,39 +86,6 @@ index 9753401b4..4906ba523 100644
              
              chunk.addEntities();
              
-@@ -214,13 +217,22 @@ public class ChunkProviderServer implements IChunkProvider {
-         return chunk;
-     }
- 
-+    // IonSpigot start - Cache Current Chunk
-+    private Chunk cachedChunk = null;
-     public Chunk getOrCreateChunk(int i, int j) {
-+        Chunk chunk; // We have to do this for thread safety
-+        if (cachedChunk != null && cachedChunk.locX == i && cachedChunk.locZ == j && cachedChunk.o()) {
-+            return cachedChunk;
-+        }
-         // CraftBukkit start
--        Chunk chunk = (Chunk) this.chunks.get(LongHash.toLong(i, j));
-+        cachedChunk = chunk = (Chunk) this.chunks.get(LongHash.toLong(i, j));
-+        // IonSpigot end
- 
-         chunk = chunk == null ? (!this.world.ad() && !this.forceChunkLoad ? this.emptyChunk : this.getChunkAt(i, j)) : chunk;
- 
-         if (chunk == emptyChunk) return chunk;
-+        // IonSpigot start - (Torch Remove logging)
-+        /*
-         if (i != chunk.locX || j != chunk.locZ) {
-             b.error("Chunk (" + chunk.locX + ", " + chunk.locZ + ") stored at  (" + i + ", " + j + ") in world '" + world.getWorld().getName() + "'");
-             b.error(chunk.getClass().getName());
-@@ -228,6 +240,8 @@ public class ChunkProviderServer implements IChunkProvider {
-             ex.fillInStackTrace();
-             ex.printStackTrace();
-         }
-+        */
-+        // IonSpigot end
- 
-         return chunk;
-         // CraftBukkit end
 -- 
 2.20.1.windows.1
 

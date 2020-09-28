@@ -1,0 +1,35 @@
+From b53196920a8cd2d9189fab2f0452d33c56d6cd98 Mon Sep 17 00:00:00 2001
+From: SuicidalKids <kfian294ma4@gmail.com>
+Date: Mon, 28 Sep 2020 19:04:22 +0100
+Subject: [PATCH] Async Spawn Chunks
+
+
+diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
+index 3edc5a882..cdc1ad372 100644
+--- a/src/main/java/net/minecraft/server/MinecraftServer.java
++++ b/src/main/java/net/minecraft/server/MinecraftServer.java
+@@ -360,7 +360,7 @@ public abstract class MinecraftServer implements Runnable, ICommandListener, IAs
+                     }
+ 
+                     ++i;
+-                    worldserver.chunkProviderServer.getChunkAt(blockposition.getX() + k >> 4, blockposition.getZ() + l >> 4);
++                    worldserver.chunkProviderServer.getChunkAt(blockposition.getX() + k >> 4, blockposition.getZ() + l >> 4, () -> {}); // IonSpigot - Async Spawn Chunks
+                 }
+             }
+         }
+diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
+index 4d61fc828..a417d4eea 100644
+--- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
++++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
+@@ -959,7 +959,7 @@ public final class CraftServer implements Server {
+                     }
+ 
+                     BlockPosition chunkcoordinates = internal.getSpawn();
+-                    internal.chunkProviderServer.getChunkAt(chunkcoordinates.getX() + j >> 4, chunkcoordinates.getZ() + k >> 4);
++                    internal.chunkProviderServer.getChunkAt(chunkcoordinates.getX() + j >> 4, chunkcoordinates.getZ() + k >> 4, () -> {}); // IonSpigot - Async Spawn Chunks
+                 }
+             }
+         }
+-- 
+2.20.1.windows.1
+

@@ -1,11 +1,11 @@
-From 5bdc97a9061aa66ef579e22c251a02206d8bb9f9 Mon Sep 17 00:00:00 2001
+From 3c49858d66964f26c533bcb6a83dc927a3d36767 Mon Sep 17 00:00:00 2001
 From: SuicidalKids <kfian294ma4@gmail.com>
 Date: Tue, 15 Sep 2020 05:06:25 +0100
-Subject: [PATCH] Explosion-Improvements
+Subject: [PATCH] Explosion Improvements
 
 
 diff --git a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-index e05430914..b2a965636 100644
+index 11d7f7d10..284308078 100644
 --- a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
 +++ b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
 @@ -64,4 +64,9 @@ public class IonWorldConfig {
@@ -19,7 +19,7 @@ index e05430914..b2a965636 100644
 +
  }
 diff --git a/src/main/java/net/minecraft/server/Explosion.java b/src/main/java/net/minecraft/server/Explosion.java
-index f4ccd8d4d..75d6e059a 100644
+index f4ccd8d4d..ccd1f50e3 100644
 --- a/src/main/java/net/minecraft/server/Explosion.java
 +++ b/src/main/java/net/minecraft/server/Explosion.java
 @@ -54,9 +54,15 @@ public class Explosion {
@@ -207,7 +207,7 @@ index f4ccd8d4d..75d6e059a 100644
      // PaperSpigot end
  }
 diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
-index b5a2fb3e7..328396384 100644
+index 72a8105fe..435c93040 100644
 --- a/src/main/java/net/minecraft/server/World.java
 +++ b/src/main/java/net/minecraft/server/World.java
 @@ -137,7 +137,12 @@ public abstract class World implements IBlockAccess {
