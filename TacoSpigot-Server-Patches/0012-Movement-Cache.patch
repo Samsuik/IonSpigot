@@ -1,0 +1,154 @@
+From 8a47744d61164f3f39bb3fb6baad4f41b61c40f9 Mon Sep 17 00:00:00 2001
+From: SuicidalKids <kfian294ma4@gmail.com>
+Date: Sun, 25 Oct 2020 00:05:32 +0100
+Subject: [PATCH] Movement Cache
+
+
+diff --git a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
+index 2afc3ad6c..3a96a606e 100644
+--- a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
++++ b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
+@@ -74,4 +74,9 @@ public class IonWorldConfig {
+         fixSandUnloading = getBoolean("sand.fix-unloading", true);
+     }
+ 
++    public boolean movementCache;
++    private void MovementCache() {
++        movementCache = getBoolean("movement.cache", false);
++    }
++
+ }
+diff --git a/src/main/java/me/suicidalkids/ion/movement/MovementCache.java b/src/main/java/me/suicidalkids/ion/movement/MovementCache.java
+new file mode 100644
+index 000000000..3da80501c
+--- /dev/null
++++ b/src/main/java/me/suicidalkids/ion/movement/MovementCache.java
+@@ -0,0 +1,51 @@
++package me.suicidalkids.ion.movement;
++
++import net.minecraft.server.AxisAlignedBB;
++import net.minecraft.server.Entity;
++
++public class MovementCache {
++
++    private AxisAlignedBB bb;
++    private double locX, locY, locZ, lastX, lastY, lastZ;
++    private double motX, motY, motZ, lastMotX, lastMotY, lastMotZ;
++    private boolean onGround;
++
++    public boolean move(Entity entity) {
++        if (entity.locX == lastX    && entity.locY == lastY    && entity.locZ == lastZ    &&
++            entity.motX == lastMotX && entity.motY == lastMotY && entity.motZ == lastMotZ) {
++            entity.boundingBox = bb;
++            entity.onGround = onGround;
++            entity.locX = locX;
++            entity.locY = locY;
++            entity.locZ = locZ;
++            entity.motX = motX;
++            entity.motY = motY;
++            entity.motZ = motZ;
++            return true;
++        }
++
++        return false;
++    }
++
++    public void cache(Entity entity) {
++        onGround = entity.onGround;
++        bb = entity.boundingBox;
++        lastX = entity.lastX;
++        lastY = entity.lastY;
++        lastZ = entity.lastZ;
++        lastMotX = entity.lastMotX;
++        lastMotY = entity.lastMotY;
++        lastMotZ = entity.lastMotZ;
++        locX = entity.locX;
++        locY = entity.locY;
++        locZ = entity.locZ;
++        motX = entity.motX;
++        motY = entity.motY;
++        motZ = entity.motZ;
++    }
++
++    public void clear() {
++        lastX = Double.MAX_VALUE;
++    }
++
++}
+diff --git a/src/main/java/net/minecraft/server/Entity.java b/src/main/java/net/minecraft/server/Entity.java
+index 8e6d516b9..72a6f842a 100644
+--- a/src/main/java/net/minecraft/server/Entity.java
++++ b/src/main/java/net/minecraft/server/Entity.java
+@@ -64,11 +64,16 @@ public abstract class Entity implements ICommandListener {
+     public double motX;
+     public double motY;
+     public double motZ;
++    // IonSpigot start - Movement Cache
++    public double lastMotX;
++    public double lastMotY;
++    public double lastMotZ;
++    // IonSpigot end
+     public float yaw;
+     public float pitch;
+     public float lastYaw;
+     public float lastPitch;
+-    private AxisAlignedBB boundingBox;
++    public AxisAlignedBB boundingBox; // IonSpigot - private -> public
+     public boolean onGround;
+     public boolean positionChanged;
+     public boolean E;
+@@ -456,6 +461,15 @@ public abstract class Entity implements ICommandListener {
+             this.a(this.getBoundingBox().c(d0, d1, d2));
+             this.recalcPosition();
+         } else {
++            // IonSpigot start - Movement Cache
++            this.lastMotX = this.motX;
++            this.lastMotY = this.motY;
++            this.lastMotZ = this.motZ;
++
++            if (world.movementCache.move(this)) {
++                return;
++            }
++            // IonSpigot end
+             // CraftBukkit start - Don't do anything if we aren't moving
+             // We need to do this regardless of whether or not we are moving thanks to portals
+             try {
+@@ -724,6 +738,7 @@ public abstract class Entity implements ICommandListener {
+             if (d7 != d1) {
+                 block.a(this.world, this);
+             }
++            world.movementCache.cache(this); // IonSpigot - Movement Cache
+ 
+             // CraftBukkit start
+             if (positionChanged && getBukkitEntity() instanceof Vehicle) {
+diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
+index 435c93040..b45ea1faf 100644
+--- a/src/main/java/net/minecraft/server/World.java
++++ b/src/main/java/net/minecraft/server/World.java
+@@ -4,6 +4,7 @@ import com.google.common.base.Predicate;
+ import com.google.common.collect.Lists;
+ import com.google.common.collect.Maps;
+ import com.google.common.collect.Sets;
++import me.suicidalkids.ion.movement.MovementCache;
+ import org.bukkit.Bukkit;
+ import org.bukkit.block.BlockState;
+ import org.bukkit.craftbukkit.CraftServer;
+@@ -143,6 +144,7 @@ public abstract class World implements IBlockAccess {
+         explosionDensityCache.defaultReturnValue(-1.0f);
+     }
+     // IonSpigot end
++    public final MovementCache movementCache = new MovementCache(); // IonSpigot Movement Cache
+ 
+     public static long chunkToKey(int x, int z)
+     {
+@@ -422,6 +424,7 @@ public abstract class World implements IBlockAccess {
+                     this.methodProfiler.b();
+                 }
+ 
++                movementCache.clear(); // IonSpigot - Movement Cache
+                 /*
+                 if ((i & 2) != 0 && (!this.isClientSide || (i & 4) == 0) && chunk.isReady()) {
+                     this.notify(blockposition);
+-- 
+2.20.1.windows.1
+

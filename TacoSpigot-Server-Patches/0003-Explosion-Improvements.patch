@@ -1,4 +1,4 @@
-From 3c49858d66964f26c533bcb6a83dc927a3d36767 Mon Sep 17 00:00:00 2001
+From 24c39d7bb4bdfbab843c58d0fb6835128d08a9b5 Mon Sep 17 00:00:00 2001
 From: SuicidalKids <kfian294ma4@gmail.com>
 Date: Tue, 15 Sep 2020 05:06:25 +0100
 Subject: [PATCH] Explosion Improvements
@@ -19,7 +19,7 @@ index 11d7f7d10..284308078 100644
 +
  }
 diff --git a/src/main/java/net/minecraft/server/Explosion.java b/src/main/java/net/minecraft/server/Explosion.java
-index f4ccd8d4d..ccd1f50e3 100644
+index f4ccd8d4d..cdbdbb0cc 100644
 --- a/src/main/java/net/minecraft/server/Explosion.java
 +++ b/src/main/java/net/minecraft/server/Explosion.java
 @@ -54,9 +54,15 @@ public class Explosion {
@@ -51,7 +51,30 @@ index f4ccd8d4d..ccd1f50e3 100644
          }
  
          this.blocks.addAll(hashset);
-@@ -233,6 +244,8 @@ public class Explosion {
+@@ -121,15 +132,17 @@ public class Explosion {
+             Entity entity = (Entity) list.get(l1);
+ 
+             if (!entity.aW()) {
+-                double d7 = entity.f(this.posX, this.posY, this.posZ) / (double) f3;
+-
+-                if (d7 <= 1.0D) {
++                // IonSpigot start - Faster Entity Iteration
++                if (true) {
+                     double d8 = entity.locX - this.posX;
+                     double d9 = entity.locY + (double) entity.getHeadHeight() - this.posY;
+                     double d10 = entity.locZ - this.posZ;
+-                    double d11 = (double) MathHelper.sqrt(d8 * d8 + d9 * d9 + d10 * d10);
++                    double distanceSquared = d8 * d8 + d9 * d9 + d10 * d10;
+ 
+-                    if (d11 != 0.0D) {
++                    if (distanceSquared <= 64.0D && distanceSquared != 0.0D) {
++                        double d11 = (double) MathHelper.sqrt(distanceSquared);
++                        double d7 = d11 / f3;
++                        // IonSpigot end
+                         d8 /= d11;
+                         d9 /= d11;
+                         d10 /= d11;
+@@ -233,6 +246,8 @@ public class Explosion {
                  Block block = this.world.getType(blockposition).getBlock();
  
                  world.spigotConfig.antiXrayInstance.updateNearbyBlocks(world, blockposition); // Spigot
@@ -60,7 +83,7 @@ index f4ccd8d4d..ccd1f50e3 100644
                  if (flag) {
                      double d0 = (double) ((float) blockposition.getX() + this.world.random.nextFloat());
                      double d1 = (double) ((float) blockposition.getY() + this.world.random.nextFloat());
-@@ -254,6 +267,8 @@ public class Explosion {
+@@ -254,6 +269,8 @@ public class Explosion {
                      this.world.addParticle(EnumParticle.EXPLOSION_NORMAL, (d0 + this.posX * 1.0D) / 2.0D, (d1 + this.posY * 1.0D) / 2.0D, (d2 + this.posZ * 1.0D) / 2.0D, d3, d4, d5, new int[0]);
                      this.world.addParticle(EnumParticle.SMOKE_NORMAL, d0, d1, d2, d3, d4, d5, new int[0]);
                  }
@@ -69,7 +92,7 @@ index f4ccd8d4d..ccd1f50e3 100644
  
                  if (block.getMaterial() != Material.AIR) {
                      if (block.a(this)) {
-@@ -301,6 +316,82 @@ public class Explosion {
+@@ -301,6 +318,82 @@ public class Explosion {
      public List<BlockPosition> getBlocks() {
          return this.blocks;
      }
@@ -152,7 +175,7 @@ index f4ccd8d4d..ccd1f50e3 100644
  
      // PaperSpigot start - Optimize explosions
      private float getBlockDensity(Vec3D vec3d, AxisAlignedBB aabb) {
-@@ -308,9 +399,10 @@ public class Explosion {
+@@ -308,9 +401,10 @@ public class Explosion {
              return this.world.a(vec3d, aabb);
          }
  
@@ -166,7 +189,7 @@ index f4ccd8d4d..ccd1f50e3 100644
              blockDensity = this.world.a(vec3d, aabb);
              this.world.explosionDensityCache.put(key, blockDensity);
          }
-@@ -318,6 +410,31 @@ public class Explosion {
+@@ -318,6 +412,31 @@ public class Explosion {
          return blockDensity;
      }
  
@@ -198,7 +221,7 @@ index f4ccd8d4d..ccd1f50e3 100644
      static class CacheKey {
          private final World world;
          private final double posX, posY, posZ;
-@@ -382,5 +499,7 @@ public class Explosion {
+@@ -382,5 +501,7 @@ public class Explosion {
              return result;
          }
      }
