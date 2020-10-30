@@ -1,0 +1,112 @@
+From f3b9acf17e63e15c25dc54bd5e288e08c34082b5 Mon Sep 17 00:00:00 2001
+From: SuicidalKids <kfian294ma4@gmail.com>
+Date: Thu, 29 Oct 2020 20:47:08 +0000
+Subject: [PATCH] Configurable Spawners
+
+
+diff --git a/src/main/java/me/suicidalkids/ion/IonConfig.java b/src/main/java/me/suicidalkids/ion/IonConfig.java
+index 154a14c1..937b5c5d 100644
+--- a/src/main/java/me/suicidalkids/ion/IonConfig.java
++++ b/src/main/java/me/suicidalkids/ion/IonConfig.java
+@@ -130,4 +130,19 @@ public class IonConfig {
+         usePandaWire = getBoolean("redstone.panda-wire", true);
+     }
+ 
++    public static int minSpawnDelay;
++    public static int maxSpawnDelay;
++    public static int spawnCount;
++    public static int spawnRange;
++    public static int maxNearbyEntities;
++    public static int requiredPlayerRange;
++    private static void Spawners() {
++        minSpawnDelay = getInt("spawners.spawning.min-delay", 200);
++        maxSpawnDelay = getInt("spawners.spawning.max-delay", 800);
++        spawnCount = getInt("spawners.spawning.count", 4);
++        spawnRange = getInt("spawners.spawning.range", 4);
++        maxNearbyEntities = getInt("spawners.nearby.max-entities", 6);
++        requiredPlayerRange = getInt("spawners.nearby.player-range", 16);
++    }
++
+ }
+diff --git a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
+index 14ac6cd9..9edc3c34 100644
+--- a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
++++ b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
+@@ -88,4 +88,13 @@ public class IonWorldConfig {
+         movementCache = getBoolean("movement.cache", false);
+     }
+ 
++    public boolean requirePlayers;
++    public boolean checkMaxEntities;
++    public boolean checkConditions;
++    private void Spawners() {
++        checkConditions = getBoolean("spawners.spawning.check-conditions", true);
++        checkMaxEntities = getBoolean("spawners.nearby.check-max-entities", true);
++        requirePlayers = getBoolean("spawners.nearby.require-players", true);
++    }
++
+ }
+diff --git a/src/main/java/net/minecraft/server/MobSpawnerAbstract.java b/src/main/java/net/minecraft/server/MobSpawnerAbstract.java
+index 897f8f15..2f8750a3 100644
+--- a/src/main/java/net/minecraft/server/MobSpawnerAbstract.java
++++ b/src/main/java/net/minecraft/server/MobSpawnerAbstract.java
+@@ -5,6 +5,7 @@ import java.util.Iterator;
+ import java.util.List;
+ 
+ // CraftBukkit start
++import me.suicidalkids.ion.IonConfig;
+ import net.techcable.tacospigot.event.entity.SpawnerPreSpawnEvent;
+ 
+ import org.bukkit.Location;
+@@ -22,13 +23,15 @@ public abstract class MobSpawnerAbstract {
+     private MobSpawnerAbstract.a spawnData;
+     private double e;
+     private double f;
+-    private int minSpawnDelay = 200;
+-    private int maxSpawnDelay = 800;
+-    private int spawnCount = 4;
++    // IonSpigot start - Configurable Spawners
++    private int minSpawnDelay = IonConfig.minSpawnDelay;
++    private int maxSpawnDelay = IonConfig.maxSpawnDelay;
++    private int spawnCount = IonConfig.spawnCount;
+     private Entity j;
+-    private int maxNearbyEntities = 6;
+-    private int requiredPlayerRange = 16;
+-    private int spawnRange = 4;
++    private int maxNearbyEntities = IonConfig.maxNearbyEntities;
++    private int requiredPlayerRange = IonConfig.requiredPlayerRange;
++    private int spawnRange = IonConfig.spawnRange;
++    // IonSpigot end
+     private int tickDelay = 0; // PaperSpigot
+ 
+     public MobSpawnerAbstract() {}
+@@ -65,7 +68,7 @@ public abstract class MobSpawnerAbstract {
+         if (spawnDelay > 0 && --tickDelay > 0) return;
+         tickDelay = this.a().paperSpigotConfig.mobSpawnerTickRate;
+         // PaperSpigot end
+-        if (this.g()) {
++        if (!this.a().ionConfig.requirePlayers || this.g()) { // IonSpigot
+             BlockPosition blockposition = this.b();
+             double d0;
+ 
+@@ -111,7 +114,7 @@ public abstract class MobSpawnerAbstract {
+                         return;
+                     }
+ 
+-                    int j = this.a().a(entity.getClass(), (new AxisAlignedBB((double) blockposition.getX(), (double) blockposition.getY(), (double) blockposition.getZ(), (double) (blockposition.getX() + 1), (double) (blockposition.getY() + 1), (double) (blockposition.getZ() + 1))).grow((double) this.spawnRange, (double) this.spawnRange, (double) this.spawnRange)).size();
++                    int j = !this.a().ionConfig.checkMaxEntities ? -1 : this.a().a(entity.getClass(), (new AxisAlignedBB((double) blockposition.getX(), (double) blockposition.getY(), (double) blockposition.getZ(), (double) (blockposition.getX() + 1), (double) (blockposition.getY() + 1), (double) (blockposition.getZ() + 1))).grow((double) this.spawnRange, (double) this.spawnRange, (double) this.spawnRange)).size(); // IonSpigot
+ 
+                     if (j >= this.maxNearbyEntities) {
+                         this.h();
+@@ -124,7 +127,7 @@ public abstract class MobSpawnerAbstract {
+                     EntityInsentient entityinsentient = entity instanceof EntityInsentient ? (EntityInsentient) entity : null;
+ 
+                     entity.setPositionRotation(d0, d3, d4, this.a().random.nextFloat() * 360.0F, 0.0F);
+-                    if (entityinsentient == null || entityinsentient.bR() && entityinsentient.canSpawn()) {
++                    if (entityinsentient == null || !this.a().ionConfig.checkConditions && this.a().getCubes(entityinsentient, entityinsentient.getBoundingBox()).isEmpty() || this.a().ionConfig.checkConditions && entityinsentient.bR() && entityinsentient.canSpawn()) { // IonSpigot
+                         this.a(entity, true);
+                         this.a().triggerEffect(2004, blockposition, 0);
+                         if (entityinsentient != null) {
+-- 
+2.20.1.windows.1
+

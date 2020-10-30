@@ -1,0 +1,43 @@
+From 9ba79696b17d2b0dbb13345637cbce06b7347a2f Mon Sep 17 00:00:00 2001
+From: SuicidalKids <kfian294ma4@gmail.com>
+Date: Thu, 29 Oct 2020 22:11:43 +0000
+Subject: [PATCH] Fix Hopper Collisions
+
+
+diff --git a/src/main/java/net/minecraft/server/BlockHopper.java b/src/main/java/net/minecraft/server/BlockHopper.java
+index 9f9b45db..94dbc347 100644
+--- a/src/main/java/net/minecraft/server/BlockHopper.java
++++ b/src/main/java/net/minecraft/server/BlockHopper.java
+@@ -28,19 +28,21 @@ public class BlockHopper extends BlockContainer {
+     }
+ 
+     public void a(World world, BlockPosition blockposition, IBlockData iblockdata, AxisAlignedBB axisalignedbb, List<AxisAlignedBB> list, Entity entity) {
+-        this.a(0.0F, 0.0F, 0.0F, 1.0F, 0.625F, 1.0F);
++        // North side
++        this.a(0.0F, 0.625F, 0.125F, 1.0F, 1.0F, 0.0F);
+         super.a(world, blockposition, iblockdata, axisalignedbb, list, entity);
+-        float f = 0.125F;
+-
+-        this.a(0.0F, 0.0F, 0.0F, f, 1.0F, 1.0F);
++        // South side
++        this.a(0.0F, 0.625F, 0.875F, 1.0F, 1.0F, 1.0F);
+         super.a(world, blockposition, iblockdata, axisalignedbb, list, entity);
+-        this.a(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, f);
++        // West side
++        this.a(0.125F, 0.625F, 0.0F, 0.0F, 1.0F, 1.0F);
+         super.a(world, blockposition, iblockdata, axisalignedbb, list, entity);
+-        this.a(1.0F - f, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
++        // East side
++        this.a(0.875F, 0.625F, 0.0F, 1.0F, 1.0F, 1.0F);
+         super.a(world, blockposition, iblockdata, axisalignedbb, list, entity);
+-        this.a(0.0F, 0.0F, 1.0F - f, 1.0F, 1.0F, 1.0F);
++        // Bottom part
++        this.a(0.0F, 0.0F, 0.0F, 1.0F, 0.625F, 1.0F);
+         super.a(world, blockposition, iblockdata, axisalignedbb, list, entity);
+-        this.a(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
+     }
+ 
+     public IBlockData getPlacedState(World world, BlockPosition blockposition, EnumDirection enumdirection, float f, float f1, float f2, int i, EntityLiving entityliving) {
+-- 
+2.20.1.windows.1
+

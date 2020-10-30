@@ -1,14 +1,14 @@
-From 8a47744d61164f3f39bb3fb6baad4f41b61c40f9 Mon Sep 17 00:00:00 2001
+From 45e831b7a197bbca0b22abc497b203603e2d2465 Mon Sep 17 00:00:00 2001
 From: SuicidalKids <kfian294ma4@gmail.com>
 Date: Sun, 25 Oct 2020 00:05:32 +0100
 Subject: [PATCH] Movement Cache
 
 
 diff --git a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-index 2afc3ad6c..3a96a606e 100644
+index b078da83..14ac6cd9 100644
 --- a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
 +++ b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-@@ -74,4 +74,9 @@ public class IonWorldConfig {
+@@ -83,4 +83,9 @@ public class IonWorldConfig {
          fixSandUnloading = getBoolean("sand.fix-unloading", true);
      }
  
@@ -20,7 +20,7 @@ index 2afc3ad6c..3a96a606e 100644
  }
 diff --git a/src/main/java/me/suicidalkids/ion/movement/MovementCache.java b/src/main/java/me/suicidalkids/ion/movement/MovementCache.java
 new file mode 100644
-index 000000000..3da80501c
+index 00000000..3da80501
 --- /dev/null
 +++ b/src/main/java/me/suicidalkids/ion/movement/MovementCache.java
 @@ -0,0 +1,51 @@
@@ -76,7 +76,7 @@ index 000000000..3da80501c
 +
 +}
 diff --git a/src/main/java/net/minecraft/server/Entity.java b/src/main/java/net/minecraft/server/Entity.java
-index 8e6d516b9..72a6f842a 100644
+index 8e6d516b..72a6f842 100644
 --- a/src/main/java/net/minecraft/server/Entity.java
 +++ b/src/main/java/net/minecraft/server/Entity.java
 @@ -64,11 +64,16 @@ public abstract class Entity implements ICommandListener {
@@ -122,7 +122,7 @@ index 8e6d516b9..72a6f842a 100644
              // CraftBukkit start
              if (positionChanged && getBukkitEntity() instanceof Vehicle) {
 diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
-index 435c93040..b45ea1faf 100644
+index 435c9304..b45ea1fa 100644
 --- a/src/main/java/net/minecraft/server/World.java
 +++ b/src/main/java/net/minecraft/server/World.java
 @@ -4,6 +4,7 @@ import com.google.common.base.Predicate;

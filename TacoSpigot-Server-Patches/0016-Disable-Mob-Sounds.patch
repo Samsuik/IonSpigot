@@ -1,0 +1,75 @@
+From 55bae324d345c3ce744ed2efffdaa0eea37bbec9 Mon Sep 17 00:00:00 2001
+From: SuicidalKids <kfian294ma4@gmail.com>
+Date: Thu, 29 Oct 2020 21:09:34 +0000
+Subject: [PATCH] Disable Mob Sounds
+
+
+diff --git a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
+index 9edc3c34..1d2aed55 100644
+--- a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
++++ b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
+@@ -97,4 +97,11 @@ public class IonWorldConfig {
+         requirePlayers = getBoolean("spawners.nearby.require-players", true);
+     }
+ 
++    public boolean footstepSounds;
++    public boolean silenceSounds;
++    private void Sounds() {
++        footstepSounds = getBoolean("footstep-sounds", true);
++        silenceSounds = getBoolean("silence-sounds", true);
++    }
++
+ }
+diff --git a/src/main/java/net/minecraft/server/Entity.java b/src/main/java/net/minecraft/server/Entity.java
+index 72a6f842..7a38291d 100644
+--- a/src/main/java/net/minecraft/server/Entity.java
++++ b/src/main/java/net/minecraft/server/Entity.java
+@@ -787,7 +787,11 @@ public abstract class Entity implements ICommandListener {
+                         this.makeSound(this.P(), f, 1.0F + (this.random.nextFloat() - this.random.nextFloat()) * 0.4F);
+                     }
+ 
++                    // IonSpigot start - Disable footstep sounds
++                    if (world.ionConfig.footstepSounds) {
+                     this.a(blockposition, block);
++                    }
++                    // Ionspigot end
+                     block.a(this.world, blockposition, this); // CraftBukkit moved from above
+                 }
+             }
+@@ -895,7 +899,7 @@ public abstract class Entity implements ICommandListener {
+     }
+ 
+     public boolean R() {
+-        return this.datawatcher.getByte(4) == 1;
++        return !world.ionConfig.silenceSounds && this.datawatcher.getByte(4) == 1;
+     }
+ 
+     public void b(boolean flag) {
+diff --git a/src/main/java/net/minecraft/server/EntityLiving.java b/src/main/java/net/minecraft/server/EntityLiving.java
+index 12257ad2..02c1b94e 100644
+--- a/src/main/java/net/minecraft/server/EntityLiving.java
++++ b/src/main/java/net/minecraft/server/EntityLiving.java
+@@ -155,7 +155,7 @@ public abstract class EntityLiving extends Entity {
+                 // CraftBukkit start - visiblity api
+                 if (this instanceof EntityPlayer) {
+                     ((WorldServer) this.world).sendParticles((EntityPlayer) this, EnumParticle.BLOCK_DUST, false, this.locX, this.locY, this.locZ, i, 0.0D, 0.0D, 0.0D, 0.15000000596046448D, new int[] { Block.getCombinedId(iblockdata)});
+-                } else {
++                } else if (world.ionConfig.silenceSounds) { // IonSpigot
+                     ((WorldServer) this.world).a(EnumParticle.BLOCK_DUST, this.locX, this.locY, this.locZ, i, 0.0D, 0.0D, 0.0D, 0.15000000596046448D, new int[] { Block.getCombinedId(iblockdata)});
+                 }
+                 // CraftBukkit end
+@@ -960,7 +960,11 @@ public abstract class EntityLiving extends Entity {
+             if (block.getMaterial() != Material.AIR) {
+                 Block.StepSound block_stepsound = block.stepSound;
+ 
++                // IonSpigot start - Disable footstep sounds
++                if (world.ionConfig.footstepSounds) {
+                 this.makeSound(block_stepsound.getStepSound(), block_stepsound.getVolume1() * 0.5F, block_stepsound.getVolume2() * 0.75F);
++                }
++                // IonSpigot end
+             }
+         }
+ 
+-- 
+2.20.1.windows.1
+

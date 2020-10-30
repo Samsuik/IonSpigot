@@ -1,4 +1,4 @@
-From 7116495173dc806d043ba2444376d6e7632387be Mon Sep 17 00:00:00 2001
+From c4ac0bf85bcd6be65ad1911fe7d9bbb501a6abb3 Mon Sep 17 00:00:00 2001
 From: SuicidalKids <kfian294ma4@gmail.com>
 Date: Tue, 15 Sep 2020 05:04:13 +0100
 Subject: [PATCH] Ion Configuration Files
@@ -43,7 +43,7 @@ index 1b62463a..83ba099d 100644
           * Sends the component to the player
           *
 diff --git a/src/main/java/org/bukkit/command/defaults/VersionCommand.java b/src/main/java/org/bukkit/command/defaults/VersionCommand.java
-index 42da60a8..80531e18 100644
+index 42da60a8..33148e53 100644
 --- a/src/main/java/org/bukkit/command/defaults/VersionCommand.java
 +++ b/src/main/java/org/bukkit/command/defaults/VersionCommand.java
 @@ -33,6 +33,12 @@ import java.io.InputStreamReader;
@@ -90,7 +90,7 @@ index 42da60a8..80531e18 100644
              StringBuilder name = new StringBuilder();
  
              for (String arg : args) {
-@@ -84,6 +101,44 @@ public class VersionCommand extends BukkitCommand {
+@@ -84,6 +101,30 @@ public class VersionCommand extends BukkitCommand {
          }
          return true;
      }
@@ -104,38 +104,24 @@ index 42da60a8..80531e18 100644
 +            }
 +
 +            componentBuilder.append(ChatColor.translateAlternateColorCodes('&', strings[i]));
++            link(componentBuilder);
 +        }
 +
-+        link(componentBuilder);
 +        return componentBuilder.create();
 +    }
 +
-+    /*
-+     * Copied from org.bukkit.craftbukkit.util.Versioning
-+     */
 +    private static void link(ComponentBuilder componentBuilder) {
-+        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/me.suicidalkids.ion/api/pom.properties");
-+        Properties properties = new Properties();
++        componentBuilder.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT,  TextComponent.fromLegacyText(ChatColor.translateAlternateColorCodes('&',
++                "&fClick here to be &blinked&f to our &dGitHub"
++        ))));
 +
-+        if (stream != null) {
-+            try {
-+                properties.load(stream);
-+
-+                String result = properties.getProperty("url");
-+
-+                componentBuilder.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT,  TextComponent.fromLegacyText(
-+                        "&fClick here to be &blinked&f to our &dGitHub"
-+                )));
-+
-+                componentBuilder.event(new ClickEvent(ClickEvent.Action.OPEN_URL, result));
-+            } catch (IOException ignored) {}
-+        }
++        componentBuilder.event(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://github.com/SuicidalKids/IonSpigot"));
 +    }
 +    // IonSpigot end
  
      private void describeToSender(Plugin plugin, CommandSender sender) {
          PluginDescriptionFile desc = plugin.getDescription();
-@@ -134,7 +189,7 @@ public class VersionCommand extends BukkitCommand {
+@@ -134,7 +175,7 @@ public class VersionCommand extends BukkitCommand {
          Validate.notNull(args, "Arguments cannot be null");
          Validate.notNull(alias, "Alias cannot be null");
  

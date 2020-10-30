@@ -1,15 +1,15 @@
-From 6d188b1a305e19de1cf2c57c362a3c5e48c12a3f Mon Sep 17 00:00:00 2001
+From 8fb677689b21203fae161919ca71a4d8775f87e0 Mon Sep 17 00:00:00 2001
 From: SuicidalKids <kfian294ma4@gmail.com>
 Date: Mon, 21 Sep 2020 04:56:07 +0100
 Subject: [PATCH] Fix Sand Unloading
 
 
 diff --git a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-index 284308078..2afc3ad6c 100644
+index df208059..b078da83 100644
 --- a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
 +++ b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-@@ -69,4 +69,9 @@ public class IonWorldConfig {
-         constantExplosions = getBoolean("explosions.constant-radius", false);
+@@ -78,4 +78,9 @@ public class IonWorldConfig {
+         explosionProtectedRegions = getBoolean("explosions.protected-regions", true);
      }
  
 +    public boolean fixSandUnloading;
@@ -19,7 +19,7 @@ index 284308078..2afc3ad6c 100644
 +
  }
 diff --git a/src/main/java/net/minecraft/server/BlockFalling.java b/src/main/java/net/minecraft/server/BlockFalling.java
-index 1d952b82a..5c7912492 100644
+index 1d952b82..5c791249 100644
 --- a/src/main/java/net/minecraft/server/BlockFalling.java
 +++ b/src/main/java/net/minecraft/server/BlockFalling.java
 @@ -34,7 +34,7 @@ public class BlockFalling extends Block {

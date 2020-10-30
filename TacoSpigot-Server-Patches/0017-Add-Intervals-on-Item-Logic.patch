@@ -1,0 +1,66 @@
+From 524a3ce510442617ffd8a37afc09b37b45422335 Mon Sep 17 00:00:00 2001
+From: SuicidalKids <kfian294ma4@gmail.com>
+Date: Thu, 29 Oct 2020 22:11:04 +0000
+Subject: [PATCH] Add Intervals on Item Logic
+
+
+diff --git a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
+index 1d2aed55..fe7c9f7f 100644
+--- a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
++++ b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
+@@ -104,4 +104,13 @@ public class IonWorldConfig {
+         silenceSounds = getBoolean("silence-sounds", true);
+     }
+ 
++    public int noclipInterval;
++    public int mergeInterval;
++    public int hopperInterval;
++    private void Items() {
++        noclipInterval = getInterval("items.noclip-delay", 0);
++        mergeInterval = getInterval("items.merge-delay", 0);
++        hopperInterval = getInterval("items.hoppers.delay", 0);
++    }
++
+ }
+diff --git a/src/main/java/net/minecraft/server/EntityItem.java b/src/main/java/net/minecraft/server/EntityItem.java
+index 34a51a5d..40674abf 100644
+--- a/src/main/java/net/minecraft/server/EntityItem.java
++++ b/src/main/java/net/minecraft/server/EntityItem.java
+@@ -13,6 +13,16 @@ public class EntityItem extends Entity implements HopperPusher {
+         return TileEntityHopper.a(hopper, this);
+     }
+     // TacoSpigot end
++    // IonSpigot start
++    @Override
++    public boolean tryPutInHopper() {
++        if (ticksLived % world.ionConfig.hopperInterval == 0) {
++            return tryPutInHopper();
++        } else {
++            return false;
++        }
++    }
++    // IonSpigot end
+ 
+     private static final Logger b = LogManager.getLogger();
+     private int age;
+@@ -78,7 +88,7 @@ public class EntityItem extends Entity implements HopperPusher {
+             this.lastY = this.locY;
+             this.lastZ = this.locZ;
+             this.motY -= 0.03999999910593033D;
+-            this.noclip = this.j(this.locX, (this.getBoundingBox().b + this.getBoundingBox().e) / 2.0D, this.locZ);
++            this.noclip = ticksLived % world.ionConfig.noclipInterval == 0 && this.j(this.locX, (this.getBoundingBox().b + this.getBoundingBox().e) / 2.0D, this.locZ); // IonSpigot
+             this.move(this.motX, this.motY, this.motZ);
+             boolean flag = (int) this.lastX != (int) this.locX || (int) this.lastY != (int) this.locY || (int) this.lastZ != (int) this.locZ;
+ 
+@@ -90,7 +100,7 @@ public class EntityItem extends Entity implements HopperPusher {
+                     this.makeSound("random.fizz", 0.4F, 2.0F + this.random.nextFloat() * 0.4F);
+                 }
+ 
+-                if (!this.world.isClientSide) {
++                if (!this.world.isClientSide && ticksLived % world.ionConfig.mergeInterval == 0) { // IonSpigot
+                     this.w();
+                 }
+             }
+-- 
+2.20.1.windows.1
+
