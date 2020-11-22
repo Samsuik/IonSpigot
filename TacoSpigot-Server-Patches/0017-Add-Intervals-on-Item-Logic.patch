@@ -1,4 +1,4 @@
-From 524a3ce510442617ffd8a37afc09b37b45422335 Mon Sep 17 00:00:00 2001
+From ff1618a7260df1caa5774ad575c16e5e4ee815bf Mon Sep 17 00:00:00 2001
 From: SuicidalKids <kfian294ma4@gmail.com>
 Date: Thu, 29 Oct 2020 22:11:04 +0000
 Subject: [PATCH] Add Intervals on Item Logic
@@ -23,27 +23,19 @@ index 1d2aed55..fe7c9f7f 100644
 +
  }
 diff --git a/src/main/java/net/minecraft/server/EntityItem.java b/src/main/java/net/minecraft/server/EntityItem.java
-index 34a51a5d..40674abf 100644
+index 34a51a5d..918c1bde 100644
 --- a/src/main/java/net/minecraft/server/EntityItem.java
 +++ b/src/main/java/net/minecraft/server/EntityItem.java
-@@ -13,6 +13,16 @@ public class EntityItem extends Entity implements HopperPusher {
-         return TileEntityHopper.a(hopper, this);
-     }
-     // TacoSpigot end
-+    // IonSpigot start
-+    @Override
-+    public boolean tryPutInHopper() {
-+        if (ticksLived % world.ionConfig.hopperInterval == 0) {
-+            return tryPutInHopper();
-+        } else {
-+            return false;
-+        }
-+    }
-+    // IonSpigot end
- 
-     private static final Logger b = LogManager.getLogger();
-     private int age;
-@@ -78,7 +88,7 @@ public class EntityItem extends Entity implements HopperPusher {
+@@ -66,7 +66,7 @@ public class EntityItem extends Entity implements HopperPusher {
+             this.die();
+         } else {
+             super.t_();
+-            if (tryPutInHopper()) return; // TacoSpigot
++            if (ticksLived % world.ionConfig.hopperInterval == 0 && tryPutInHopper()) return; // IonSpigot - Add Interval // TacoSpigot
+             // CraftBukkit start - Use wall time for pickup and despawn timers
+             int elapsedTicks = MinecraftServer.currentTick - this.lastTick;
+             if (this.pickupDelay != 32767) this.pickupDelay -= elapsedTicks;
+@@ -78,7 +78,7 @@ public class EntityItem extends Entity implements HopperPusher {
              this.lastY = this.locY;
              this.lastZ = this.locZ;
              this.motY -= 0.03999999910593033D;
@@ -52,7 +44,7 @@ index 34a51a5d..40674abf 100644
              this.move(this.motX, this.motY, this.motZ);
              boolean flag = (int) this.lastX != (int) this.locX || (int) this.lastY != (int) this.locY || (int) this.lastZ != (int) this.locZ;
  
-@@ -90,7 +100,7 @@ public class EntityItem extends Entity implements HopperPusher {
+@@ -90,7 +90,7 @@ public class EntityItem extends Entity implements HopperPusher {
                      this.makeSound("random.fizz", 0.4F, 2.0F + this.random.nextFloat() * 0.4F);
                  }
  
@@ -61,6 +53,15 @@ index 34a51a5d..40674abf 100644
                      this.w();
                  }
              }
+@@ -132,7 +132,7 @@ public class EntityItem extends Entity implements HopperPusher {
+     // Spigot start - copied from above
+     @Override
+     public void inactiveTick() {
+-        if (tryPutInHopper()) return; // TacoSpigot
++        if (ticksLived % world.ionConfig.hopperInterval == 0 && tryPutInHopper()) return; // IonSpigot - Add Interval // TacoSpigot
+         // CraftBukkit end
+         // CraftBukkit start - Use wall time for pickup and despawn timers
+         int elapsedTicks = MinecraftServer.currentTick - this.lastTick;
 -- 
-2.20.1.windows.1
+2.29.2.windows.2
 
