@@ -1,0 +1,35 @@
+From 19813314d7185fd6123d5271fdda2a315edbf5ea Mon Sep 17 00:00:00 2001
+From: SK <kfian294ma4@gmail.com>
+Date: Wed, 25 Nov 2020 18:42:50 +0000
+Subject: [PATCH] Faster EntityTracker Collections
+
+
+diff --git a/src/main/java/net/minecraft/server/EntityTracker.java b/src/main/java/net/minecraft/server/EntityTracker.java
+index cb72b3672..e24644c42 100644
+--- a/src/main/java/net/minecraft/server/EntityTracker.java
++++ b/src/main/java/net/minecraft/server/EntityTracker.java
+@@ -13,7 +13,7 @@ public class EntityTracker {
+ 
+     private static final Logger a = LogManager.getLogger();
+     private final WorldServer world;
+-    private Set<EntityTrackerEntry> c = Sets.newHashSet();
++    private Set<EntityTrackerEntry> c = new io.papermc.paper.util.maplist.ObjectMapList<>(); // IonSpigot - HashSet -> ObjectMapList
+     public IntHashMap<EntityTrackerEntry> trackedEntities = new IntHashMap();
+     private int e;
+ 
+diff --git a/src/main/java/net/minecraft/server/EntityTrackerEntry.java b/src/main/java/net/minecraft/server/EntityTrackerEntry.java
+index adc80785e..dfecc4de4 100644
+--- a/src/main/java/net/minecraft/server/EntityTrackerEntry.java
++++ b/src/main/java/net/minecraft/server/EntityTrackerEntry.java
+@@ -44,7 +44,7 @@ public class EntityTrackerEntry {
+     // PaperSpigot start
+     // Replace trackedPlayers Set with a Map. The value is true until the player receives
+     // their first update (which is forced to have absolute coordinates), false afterward.
+-    public java.util.Map<EntityPlayer, Boolean> trackedPlayerMap = new java.util.HashMap<EntityPlayer, Boolean>();
++    public java.util.Map<EntityPlayer, Boolean> trackedPlayerMap = new it.unimi.dsi.fastutil.objects.Reference2BooleanOpenHashMap<>(); // IonSpigot - HashMap -> Reference2BooleanMap
+     public Set<EntityPlayer> trackedPlayers = trackedPlayerMap.keySet();
+     // PaperSpigot end
+ 
+-- 
+2.29.2.windows.2
+
