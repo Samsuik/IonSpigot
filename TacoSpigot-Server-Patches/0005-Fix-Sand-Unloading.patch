@@ -1,11 +1,11 @@
-From 8fb677689b21203fae161919ca71a4d8775f87e0 Mon Sep 17 00:00:00 2001
+From 3a0905a678232fc0a8c90bcf65531474095a9dc6 Mon Sep 17 00:00:00 2001
 From: SuicidalKids <kfian294ma4@gmail.com>
 Date: Mon, 21 Sep 2020 04:56:07 +0100
 Subject: [PATCH] Fix Sand Unloading
 
 
 diff --git a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-index df208059..b078da83 100644
+index df2080597..ea0eefca2 100644
 --- a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
 +++ b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
 @@ -78,4 +78,9 @@ public class IonWorldConfig {
@@ -14,12 +14,12 @@ index df208059..b078da83 100644
  
 +    public boolean fixSandUnloading;
 +    private void FixSandUnloading() {
-+        fixSandUnloading = getBoolean("sand.fix-unloading", true);
++        fixSandUnloading = getBoolean("sand.fix-unloading", false);
 +    }
 +
  }
 diff --git a/src/main/java/net/minecraft/server/BlockFalling.java b/src/main/java/net/minecraft/server/BlockFalling.java
-index 1d952b82..5c791249 100644
+index 1d952b82a..5c7912492 100644
 --- a/src/main/java/net/minecraft/server/BlockFalling.java
 +++ b/src/main/java/net/minecraft/server/BlockFalling.java
 @@ -34,7 +34,7 @@ public class BlockFalling extends Block {
@@ -32,5 +32,5 @@ index 1d952b82..5c791249 100644
                      // PaperSpigot start - Add FallingBlock source location API
                      org.bukkit.Location loc = new org.bukkit.Location(world.getWorld(), (double) ((float) blockposition.getX() + 0.5F), (double) blockposition.getY(), (double) ((float) blockposition.getZ() + 0.5F));
 -- 
-2.20.1.windows.1
+2.29.2.windows.2
 

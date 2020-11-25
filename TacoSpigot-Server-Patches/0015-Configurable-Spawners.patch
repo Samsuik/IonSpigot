@@ -1,11 +1,11 @@
-From f3b9acf17e63e15c25dc54bd5e288e08c34082b5 Mon Sep 17 00:00:00 2001
+From 0d9fb35f5832638b13873d49debd5e6e24df8d7d Mon Sep 17 00:00:00 2001
 From: SuicidalKids <kfian294ma4@gmail.com>
 Date: Thu, 29 Oct 2020 20:47:08 +0000
 Subject: [PATCH] Configurable Spawners
 
 
 diff --git a/src/main/java/me/suicidalkids/ion/IonConfig.java b/src/main/java/me/suicidalkids/ion/IonConfig.java
-index 154a14c1..937b5c5d 100644
+index 154a14c1a..937b5c5df 100644
 --- a/src/main/java/me/suicidalkids/ion/IonConfig.java
 +++ b/src/main/java/me/suicidalkids/ion/IonConfig.java
 @@ -130,4 +130,19 @@ public class IonConfig {
@@ -29,11 +29,11 @@ index 154a14c1..937b5c5d 100644
 +
  }
 diff --git a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-index 14ac6cd9..9edc3c34 100644
+index 69d50a674..a4731fcb6 100644
 --- a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
 +++ b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
 @@ -88,4 +88,13 @@ public class IonWorldConfig {
-         movementCache = getBoolean("movement.cache", false);
+         movementCache = getBoolean("movement.cache", true);
      }
  
 +    public boolean requirePlayers;
@@ -47,7 +47,7 @@ index 14ac6cd9..9edc3c34 100644
 +
  }
 diff --git a/src/main/java/net/minecraft/server/MobSpawnerAbstract.java b/src/main/java/net/minecraft/server/MobSpawnerAbstract.java
-index 897f8f15..2f8750a3 100644
+index 897f8f15a..2f8750a30 100644
 --- a/src/main/java/net/minecraft/server/MobSpawnerAbstract.java
 +++ b/src/main/java/net/minecraft/server/MobSpawnerAbstract.java
 @@ -5,6 +5,7 @@ import java.util.Iterator;
@@ -108,5 +108,5 @@ index 897f8f15..2f8750a3 100644
                          this.a().triggerEffect(2004, blockposition, 0);
                          if (entityinsentient != null) {
 -- 
-2.20.1.windows.1
+2.29.2.windows.2
 

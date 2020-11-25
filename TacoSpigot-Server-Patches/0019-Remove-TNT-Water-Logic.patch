@@ -1,5 +1,5 @@
-From 7c2d9cd26fa591aa07e3af6d2775bf47e830ceac Mon Sep 17 00:00:00 2001
-From: SK <kfian294ma4@gmail.com>
+From b7c13acf4520302c71f830ffb5a55c7205fbf605 Mon Sep 17 00:00:00 2001
+From: SuicidalKids <kfian294ma4@gmail.com>
 Date: Sun, 22 Nov 2020 05:29:10 +0000
 Subject: [PATCH] Remove TNT Water Logic
 
@@ -7,7 +7,7 @@ Remove the code for keeping TNT in sync with the server.
 This can cause players to easily timeout while near a cannon or at walls.
 
 diff --git a/src/main/java/net/minecraft/server/EntityTNTPrimed.java b/src/main/java/net/minecraft/server/EntityTNTPrimed.java
-index 872d9659..4e043387 100644
+index 872d9659c..4e0433879 100644
 --- a/src/main/java/net/minecraft/server/EntityTNTPrimed.java
 +++ b/src/main/java/net/minecraft/server/EntityTNTPrimed.java
 @@ -180,6 +180,8 @@ public class EntityTNTPrimed extends Entity {
