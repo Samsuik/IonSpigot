@@ -1,15 +1,15 @@
-From ff1618a7260df1caa5774ad575c16e5e4ee815bf Mon Sep 17 00:00:00 2001
+From 195bb0478f1cc8294f58d8bc563514ae63d2461f Mon Sep 17 00:00:00 2001
 From: SuicidalKids <kfian294ma4@gmail.com>
 Date: Thu, 29 Oct 2020 22:11:04 +0000
 Subject: [PATCH] Add Intervals on Item Logic
 
 
 diff --git a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-index 1d2aed55..fe7c9f7f 100644
+index 6b3bdef9b..60afff963 100644
 --- a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
 +++ b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
 @@ -104,4 +104,13 @@ public class IonWorldConfig {
-         silenceSounds = getBoolean("silence-sounds", true);
+         silenceSounds = getBoolean("silence-sounds", false);
      }
  
 +    public int noclipInterval;
@@ -23,7 +23,7 @@ index 1d2aed55..fe7c9f7f 100644
 +
  }
 diff --git a/src/main/java/net/minecraft/server/EntityItem.java b/src/main/java/net/minecraft/server/EntityItem.java
-index 34a51a5d..918c1bde 100644
+index 34a51a5dd..918c1bdef 100644
 --- a/src/main/java/net/minecraft/server/EntityItem.java
 +++ b/src/main/java/net/minecraft/server/EntityItem.java
 @@ -66,7 +66,7 @@ public class EntityItem extends Entity implements HopperPusher {
