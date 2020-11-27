@@ -1,5 +1,5 @@
-From db37109fdeba0e4c17c2a770130dd3703bddd6d7 Mon Sep 17 00:00:00 2001
-From: SK <kfian294ma4@gmail.com>
+From fcfaf42322d2c6160e2f072b95fd2c07b1df7aad Mon Sep 17 00:00:00 2001
+From: "kfian294ma4@gmail.com" <kfian294ma4@gmail.com>
 Date: Fri, 27 Nov 2020 22:02:11 +0000
 Subject: [PATCH] Merge Spawned Items
 
@@ -44,7 +44,7 @@ index 918c1bdef..90dfced16 100644
              return false;
          } else if (entityitem.isAlive() && this.isAlive()) {
 diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
-index 9ff96cd1c..5151461ce 100644
+index 9ff96cd1c..c09f23ccf 100644
 --- a/src/main/java/net/minecraft/server/World.java
 +++ b/src/main/java/net/minecraft/server/World.java
 @@ -998,7 +998,29 @@ public abstract class World implements IBlockAccess {
@@ -60,8 +60,8 @@ index 9ff96cd1c..5151461ce 100644
 +
 +            EntityItem cachedItem = chunk.cachedEntityItem;
 +            if (cachedItem != null && cachedItem.isAlive() &&
-+                    cachedItem.h(entityItem) < spigotConfig.itemMerge * spigotConfig.itemMerge &&
-+                    cachedItem.a(entityItem) && !entityItem.isAlive()) {
++                cachedItem.h(entityItem) < spigotConfig.itemMerge * spigotConfig.itemMerge &&
++                cachedItem.a(entityItem) && !entityItem.isAlive()) {
 +                return false;
 +            }
 +
