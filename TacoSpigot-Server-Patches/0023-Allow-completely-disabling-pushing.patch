@@ -1,0 +1,25 @@
+From ce227009d0f23ee1d2aa2644ac8e50c37289c11d Mon Sep 17 00:00:00 2001
+From: SK <kfian294ma4@gmail.com>
+Date: Sun, 29 Nov 2020 20:26:27 +0000
+Subject: [PATCH] Allow completely disabling pushing
+
+
+diff --git a/src/main/java/net/minecraft/server/EntityLiving.java b/src/main/java/net/minecraft/server/EntityLiving.java
+index 7da452e03..7cb9cdc48 100644
+--- a/src/main/java/net/minecraft/server/EntityLiving.java
++++ b/src/main/java/net/minecraft/server/EntityLiving.java
+@@ -1712,6 +1712,11 @@ public abstract class EntityLiving extends Entity {
+     protected void doTick() {}
+ 
+     protected void bL() {
++        // IonSpigot start - Allow completely disabling pushing
++        if (world.spigotConfig.maxCollisionsPerEntity == -1) {
++            return;
++        }
++        // IonSpigot end
+         List list = this.world.a((Entity) this, this.getBoundingBox().grow(0.20000000298023224D, 0.0D, 0.20000000298023224D), Predicates.and(IEntitySelector.d, new Predicate() {
+             public boolean a(Entity entity) {
+                 return entity.ae();
+-- 
+2.29.2.windows.2
+

@@ -1,0 +1,126 @@
+From 02c1fda9a5a4db77e52a2b366772e1aea5e3db4b Mon Sep 17 00:00:00 2001
+From: SK <kfian294ma4@gmail.com>
+Date: Sun, 29 Nov 2020 20:24:25 +0000
+Subject: [PATCH] Nerf Spawned Mob Logic
+
+
+diff --git a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
+index 811392ed5..d599bf474 100644
+--- a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
++++ b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
+@@ -118,4 +118,9 @@ public class IonWorldConfig {
+         mergeSpawnedItems = getBoolean("items.merged-spawned-items", false);
+     }
+ 
++    public boolean nerfSpawnedLogic;
++    private void NerfSpawnedLogic() {
++        nerfSpawnedLogic = getBoolean("spawners.nerf-spawned-logic", false);
++    }
++
+ }
+diff --git a/src/main/java/net/minecraft/server/Entity.java b/src/main/java/net/minecraft/server/Entity.java
+index 7a38291d7..caa1f3925 100644
+--- a/src/main/java/net/minecraft/server/Entity.java
++++ b/src/main/java/net/minecraft/server/Entity.java
+@@ -1321,6 +1321,7 @@ public abstract class Entity implements ICommandListener {
+                 }
+             }
+ 
++            nbttagcompound.setBoolean("FromMobSpawner", this.fromMobSpawner); // IonSpigot
+         } catch (Throwable throwable) {
+             CrashReport crashreport = CrashReport.a(throwable, "Saving entity NBT");
+             CrashReportSystemDetails crashreportsystemdetails = crashreport.a("Entity being saved");
+@@ -1387,6 +1388,11 @@ public abstract class Entity implements ICommandListener {
+             if (this.af()) {
+                 this.setPosition(this.locX, this.locY, this.locZ);
+             }
++            // IonSpigot start
++            if (nbttagcompound.hasKey("FromMobSpawner")) {
++                this.fromMobSpawner = nbttagcompound.getBoolean("FromMobSpawner");
++            }
++            // IonSpigot end
+ 
+             // CraftBukkit start
+             if (this instanceof EntityLiving) {
+diff --git a/src/main/java/net/minecraft/server/EntityLiving.java b/src/main/java/net/minecraft/server/EntityLiving.java
+index a6c167cae..7da452e03 100644
+--- a/src/main/java/net/minecraft/server/EntityLiving.java
++++ b/src/main/java/net/minecraft/server/EntityLiving.java
+@@ -173,6 +173,19 @@ public abstract class EntityLiving extends Entity {
+         this.ay = this.az;
+         super.K();
+         this.world.methodProfiler.a("livingEntityBaseTick");
++        // IonSpigot start - Nerf Spawned Mob Logic
++        if (this.fromMobSpawner && world.ionConfig.nerfSpawnedLogic && (!onGround || deathTicks != 0)) {
++            if (this.deathTicks != 0) {
++                this.aZ();
++            }
++
++            if (this.noDamageTicks > 0) {
++                --this.noDamageTicks;
++            }
++
++            return;
++        }
++        // IonSpigot end
+         boolean flag = this instanceof EntityHuman;
+ 
+         if (this.isAlive()) {
+@@ -1470,6 +1483,12 @@ public abstract class EntityLiving extends Entity {
+ 
+     public void t_() {
+         super.t_();
++        // IonSpigot start - Nerf Spawned Mob Logic
++        if (this.fromMobSpawner && world.ionConfig.nerfSpawnedLogic) {
++            this.m();
++            return;
++        }
++        // IonSpigot end
+         if (!this.world.isClientSide) {
+             int i = this.bv();
+ 
+@@ -1602,6 +1621,19 @@ public abstract class EntityLiving extends Entity {
+     }
+ 
+     public void m() {
++        // IonSpigot start - Nerf Spawned Mob Logic
++        if (this.fromMobSpawner && world.ionConfig.nerfSpawnedLogic) {
++            if (deathTicks == 0) {
++                this.move(this.motX, this.motY, this.motZ);
++                this.motY -= 0.08D;
++                this.motY *= 0.9800000190734863D;
++                this.motX *= 0.91F;
++                this.motZ *= 0.91F;
++            }
++            
++            return;
++        }
++        // IonSpigot end
+         if (this.bn > 0) {
+             --this.bn;
+         }
+diff --git a/src/main/java/net/minecraft/server/MobSpawnerAbstract.java b/src/main/java/net/minecraft/server/MobSpawnerAbstract.java
+index 2f8750a30..d9a32c1d1 100644
+--- a/src/main/java/net/minecraft/server/MobSpawnerAbstract.java
++++ b/src/main/java/net/minecraft/server/MobSpawnerAbstract.java
+@@ -167,7 +167,7 @@ public abstract class MobSpawnerAbstract {
+                 if (!event.isCancelled()) {
+                     entity.world.addEntity(entity, CreatureSpawnEvent.SpawnReason.SPAWNER); // CraftBukkit
+                     // Spigot Start
+-                    if ( entity.world.spigotConfig.nerfSpawnerMobs )
++                    if ( entity.world.spigotConfig.nerfSpawnerMobs || entity.world.ionConfig.nerfSpawnedLogic) // IonSpigot
+                     {
+                         entity.fromMobSpawner = true;
+                     }
+@@ -220,7 +220,7 @@ public abstract class MobSpawnerAbstract {
+             if (!event.isCancelled()) {
+                 entity.world.addEntity(entity, CreatureSpawnEvent.SpawnReason.SPAWNER); // CraftBukkit
+                 // Spigot Start
+-                if ( entity.world.spigotConfig.nerfSpawnerMobs )
++                if ( entity.world.spigotConfig.nerfSpawnerMobs || entity.world.ionConfig.nerfSpawnedLogic) // IonSpigot
+                 {
+                     entity.fromMobSpawner = true;
+                 }
+-- 
+2.29.2.windows.2
+
