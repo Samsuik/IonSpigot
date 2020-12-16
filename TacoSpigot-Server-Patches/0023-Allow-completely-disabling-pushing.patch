@@ -1,5 +1,5 @@
-From ce227009d0f23ee1d2aa2644ac8e50c37289c11d Mon Sep 17 00:00:00 2001
-From: SK <kfian294ma4@gmail.com>
+From 205590a36e5d1a237ead42fb2613eef9f368432d Mon Sep 17 00:00:00 2001
+From: "kfian294ma4@gmail.com" <kfian294ma4@gmail.com>
 Date: Sun, 29 Nov 2020 20:26:27 +0000
 Subject: [PATCH] Allow completely disabling pushing
 

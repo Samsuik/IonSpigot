@@ -1,0 +1,40 @@
+From 345aba28bbcc68e9d634e78adb66de888cc2451c Mon Sep 17 00:00:00 2001
+From: SK <kfian294ma4@gmail.com>
+Date: Wed, 16 Dec 2020 18:38:26 +0000
+Subject: [PATCH] Smooth Potting
+
+
+diff --git a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
+index 41652333e..89fca2da8 100644
+--- a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
++++ b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
+@@ -133,4 +133,9 @@ public class IonWorldConfig {
+         lagCompensatedPotions = getBoolean("potions.lag-compensated", true);
+     }
+ 
++    public boolean smoothPotting;
++    private void SmoothPotting() {
++        smoothPotting = getBoolean("potions.smooth", true);
++    }
++
+ }
+diff --git a/src/main/java/net/minecraft/server/EntityProjectile.java b/src/main/java/net/minecraft/server/EntityProjectile.java
+index e7cca3c6c..f0e24b36f 100644
+--- a/src/main/java/net/minecraft/server/EntityProjectile.java
++++ b/src/main/java/net/minecraft/server/EntityProjectile.java
+@@ -131,6 +131,12 @@ public abstract class EntityProjectile extends Entity implements IProjectile {
+                     AxisAlignedBB axisalignedbb = entity1.getBoundingBox().grow((double) f, (double) f, (double) f);
+                     MovingObjectPosition movingobjectposition1 = axisalignedbb.a(vec3d, vec3d1);
+ 
++                    // IonSpigot start - Smooth Potting
++                    if (this instanceof EntityPotion && world.ionConfig.smoothPotting &&
++                        movingobjectposition1 == null && getBoundingBox().b(entity1.getBoundingBox())) {
++                        movingobjectposition1 = new MovingObjectPosition(entity1);
++                    }
++                    // IonSpigot end
+                     if (movingobjectposition1 != null) {
+                         double d1 = vec3d.distanceSquared(movingobjectposition1.pos);
+ 
+-- 
+2.29.2.windows.2
+
