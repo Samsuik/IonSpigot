@@ -1,20 +1,22 @@
-From adba22283545760276f25369925c64dea82ce2d8 Mon Sep 17 00:00:00 2001
+From 649fe4289c7c7dde8eb745247592248b4796cef1 Mon Sep 17 00:00:00 2001
 From: "kfian294ma4@gmail.com" <kfian294ma4@gmail.com>
 Date: Sun, 29 Nov 2020 20:24:25 +0000
 Subject: [PATCH] Nerf Spawned Mob Logic
 
 
 diff --git a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-index 811392ed5..d599bf474 100644
+index 811392ed5..6d25878cd 100644
 --- a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
 +++ b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-@@ -118,4 +118,9 @@ public class IonWorldConfig {
+@@ -118,4 +118,11 @@ public class IonWorldConfig {
          mergeSpawnedItems = getBoolean("items.merged-spawned-items", false);
      }
  
 +    public boolean nerfSpawnedLogic;
++    public boolean nerfNaturalSpawns;
 +    private void NerfSpawnedLogic() {
 +        nerfSpawnedLogic = getBoolean("spawners.nerf-spawned-logic", false);
++        nerfNaturalSpawns = getBoolean("nerf-natural-spawns", false);
 +    }
 +
  }
@@ -42,16 +44,32 @@ index 7a38291d7..caa1f3925 100644
  
              // CraftBukkit start
              if (this instanceof EntityLiving) {
+diff --git a/src/main/java/net/minecraft/server/EntityInsentient.java b/src/main/java/net/minecraft/server/EntityInsentient.java
+index b82b98473..efa2bcf60 100644
+--- a/src/main/java/net/minecraft/server/EntityInsentient.java
++++ b/src/main/java/net/minecraft/server/EntityInsentient.java
+@@ -459,7 +459,8 @@ public abstract class EntityInsentient extends EntityLiving {
+         this.D();
+         this.world.methodProfiler.b();
+         // Spigot Start
+-        if ( this.fromMobSpawner )
++        if ( this.fromMobSpawner && (world.spigotConfig.nerfSpawnerMobs || world.ionConfig.nerfSpawnedLogic) ||
++            !this.fromMobSpawner && world.ionConfig.nerfNaturalSpawns) // IonSpigot - Nerf Spawned Mob Logic
+         {
+             // PaperSpigot start - Allow nerfed mobs to jump
+             if (goalFloat != null) {
 diff --git a/src/main/java/net/minecraft/server/EntityLiving.java b/src/main/java/net/minecraft/server/EntityLiving.java
-index a6c167cae..7da452e03 100644
+index a6c167cae..3f4c6d473 100644
 --- a/src/main/java/net/minecraft/server/EntityLiving.java
 +++ b/src/main/java/net/minecraft/server/EntityLiving.java
-@@ -173,6 +173,19 @@ public abstract class EntityLiving extends Entity {
+@@ -173,6 +173,21 @@ public abstract class EntityLiving extends Entity {
          this.ay = this.az;
          super.K();
          this.world.methodProfiler.a("livingEntityBaseTick");
 +        // IonSpigot start - Nerf Spawned Mob Logic
-+        if (this.fromMobSpawner && world.ionConfig.nerfSpawnedLogic && (!onGround || deathTicks != 0)) {
++        if ((this.fromMobSpawner && world.ionConfig.nerfSpawnedLogic ||
++            !this.fromMobSpawner && world.ionConfig.nerfNaturalSpawns) &&
++            (!onGround || deathTicks != 0)) {
 +            if (this.deathTicks != 0) {
 +                this.aZ();
 +            }
@@ -66,12 +84,13 @@ index a6c167cae..7da452e03 100644
          boolean flag = this instanceof EntityHuman;
  
          if (this.isAlive()) {
-@@ -1470,6 +1483,12 @@ public abstract class EntityLiving extends Entity {
+@@ -1470,6 +1485,13 @@ public abstract class EntityLiving extends Entity {
  
      public void t_() {
          super.t_();
 +        // IonSpigot start - Nerf Spawned Mob Logic
-+        if (this.fromMobSpawner && world.ionConfig.nerfSpawnedLogic) {
++        if (this.fromMobSpawner && world.ionConfig.nerfSpawnedLogic ||
++           !this.fromMobSpawner && world.ionConfig.nerfNaturalSpawns) {
 +            this.m();
 +            return;
 +        }
@@ -79,13 +98,29 @@ index a6c167cae..7da452e03 100644
          if (!this.world.isClientSide) {
              int i = this.bv();
  
-@@ -1602,6 +1621,19 @@ public abstract class EntityLiving extends Entity {
+@@ -1602,6 +1624,35 @@ public abstract class EntityLiving extends Entity {
      }
  
      public void m() {
 +        // IonSpigot start - Nerf Spawned Mob Logic
-+        if (this.fromMobSpawner && world.ionConfig.nerfSpawnedLogic) {
++        if (this.fromMobSpawner && world.ionConfig.nerfSpawnedLogic ||
++           !this.fromMobSpawner && world.ionConfig.nerfNaturalSpawns) {
 +            if (deathTicks == 0) {
++                this.doTick();
++
++                if (this.aY) {
++                    if (this.V()) {
++                        this.bG();
++                    } else if (this.ab()) {
++                        this.bH();
++                    } else if (this.onGround && this.bn == 0) {
++                        this.bF();
++                        this.bn = 10;
++                    }
++                } else {
++                    this.bn = 0;
++                }
++
 +                this.move(this.motX, this.motY, this.motZ);
 +                this.motY -= 0.08D;
 +                this.motY *= 0.9800000190734863D;
@@ -100,7 +135,7 @@ index a6c167cae..7da452e03 100644
              --this.bn;
          }
 diff --git a/src/main/java/net/minecraft/server/MobSpawnerAbstract.java b/src/main/java/net/minecraft/server/MobSpawnerAbstract.java
-index 2f8750a30..d9a32c1d1 100644
+index 2f8750a30..3bae8f6d1 100644
 --- a/src/main/java/net/minecraft/server/MobSpawnerAbstract.java
 +++ b/src/main/java/net/minecraft/server/MobSpawnerAbstract.java
 @@ -167,7 +167,7 @@ public abstract class MobSpawnerAbstract {
@@ -108,7 +143,7 @@ index 2f8750a30..d9a32c1d1 100644
                      entity.world.addEntity(entity, CreatureSpawnEvent.SpawnReason.SPAWNER); // CraftBukkit
                      // Spigot Start
 -                    if ( entity.world.spigotConfig.nerfSpawnerMobs )
-+                    if ( entity.world.spigotConfig.nerfSpawnerMobs || entity.world.ionConfig.nerfSpawnedLogic) // IonSpigot
++                    if ( true ) // IonSpigot
                      {
                          entity.fromMobSpawner = true;
                      }
@@ -117,7 +152,7 @@ index 2f8750a30..d9a32c1d1 100644
                  entity.world.addEntity(entity, CreatureSpawnEvent.SpawnReason.SPAWNER); // CraftBukkit
                  // Spigot Start
 -                if ( entity.world.spigotConfig.nerfSpawnerMobs )
-+                if ( entity.world.spigotConfig.nerfSpawnerMobs || entity.world.ionConfig.nerfSpawnedLogic) // IonSpigot
++                if ( true ) // IonSpigot
                  {
                      entity.fromMobSpawner = true;
                  }

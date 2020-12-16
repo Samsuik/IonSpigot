@@ -1,15 +1,15 @@
-From 488436a94eace3234f2c8608106dbe08610af0c5 Mon Sep 17 00:00:00 2001
+From 44b896cf391bc62a3ca5793809097d6235ea036b Mon Sep 17 00:00:00 2001
 From: "kfian294ma4@gmail.com" <kfian294ma4@gmail.com>
 Date: Sun, 29 Nov 2020 20:42:34 +0000
 Subject: [PATCH] Optional Movement Entity Collisions
 
 
 diff --git a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-index d599bf474..37a262bd7 100644
+index 6d25878cd..ac8491390 100644
 --- a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
 +++ b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-@@ -123,4 +123,9 @@ public class IonWorldConfig {
-         nerfSpawnedLogic = getBoolean("spawners.nerf-spawned-logic", false);
+@@ -125,4 +125,9 @@ public class IonWorldConfig {
+         nerfNaturalSpawns = getBoolean("nerf-natural-spawns", false);
      }
  
 +    public boolean movementEntityCollisions;

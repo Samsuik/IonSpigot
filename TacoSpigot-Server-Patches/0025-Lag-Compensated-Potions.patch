@@ -1,14 +1,14 @@
-From 7dec92b05ce446e711747e4c8398400315dd91ff Mon Sep 17 00:00:00 2001
-From: SK <kfian294ma4@gmail.com>
+From fb03e1d87da684d3b4fbdd2b3f88e712cba2c37a Mon Sep 17 00:00:00 2001
+From: "kfian294ma4@gmail.com" <kfian294ma4@gmail.com>
 Date: Wed, 16 Dec 2020 18:26:12 +0000
 Subject: [PATCH] Lag Compensated Potions
 
 
 diff --git a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-index 37a262bd7..41652333e 100644
+index ac8491390..59980f163 100644
 --- a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
 +++ b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-@@ -128,4 +128,9 @@ public class IonWorldConfig {
+@@ -130,4 +130,9 @@ public class IonWorldConfig {
          movementEntityCollisions = getBoolean("movement.entity-collisions", true);
      }
  
