@@ -1,4 +1,4 @@
-From 10c19a222d8321f7f46855634b2c5b8aeb8318be Mon Sep 17 00:00:00 2001
+From 0f67c96296ea4d21fdd7b5d1362a544edfed8787 Mon Sep 17 00:00:00 2001
 From: SK <kfian294ma4@gmail.com>
 Date: Thu, 17 Dec 2020 02:55:48 +0000
 Subject: [PATCH] Merge Cannoning Entities
@@ -111,7 +111,7 @@ index e3bfd8683..5143caca2 100644
      protected void b(NBTTagCompound nbttagcompound) {
          Block block = this.block != null ? this.block.getBlock() : Blocks.AIR;
 diff --git a/src/main/java/net/minecraft/server/EntityTNTPrimed.java b/src/main/java/net/minecraft/server/EntityTNTPrimed.java
-index 4e0433879..28eb3f56f 100644
+index 4e0433879..fc783baa0 100644
 --- a/src/main/java/net/minecraft/server/EntityTNTPrimed.java
 +++ b/src/main/java/net/minecraft/server/EntityTNTPrimed.java
 @@ -81,6 +81,7 @@ public class EntityTNTPrimed extends Entity {
@@ -133,7 +133,7 @@ index 4e0433879..28eb3f56f 100644
 +            && entity.lastX == locX && entity.lastY == locY && entity.lastZ == locZ
 +            && entity.lastMotX == motX && entity.lastMotY == motY - 0.03999999910593033D
 +            && entity.lastMotZ == motZ && entity.getClass() == getClass()
-+            && ((EntityTNTPrimed) entity).fuseTicks == fuseTicks - 1;
++            && ((EntityTNTPrimed) entity).fuseTicks == fuseTicks - 1 && fuseTicks > 0;
 +    }
 +
 +    @Override
