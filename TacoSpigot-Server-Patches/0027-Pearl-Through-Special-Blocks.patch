@@ -1,0 +1,54 @@
+From 084eb7b2b0120418e1645aae9e14cffc58f00740 Mon Sep 17 00:00:00 2001
+From: SK <kfian294ma4@gmail.com>
+Date: Wed, 16 Dec 2020 22:10:37 +0000
+Subject: [PATCH] Pearl Through Special Blocks
+
+
+diff --git a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
+index b18499145..176e39329 100644
+--- a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
++++ b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
+@@ -140,4 +140,13 @@ public class IonWorldConfig {
+         smoothPotting = getBoolean("potions.smooth", true);
+     }
+ 
++    public boolean pearlThroughGates;
++    public boolean pearlThroughString;
++    public boolean pearlThroughCobwebs;
++    private void PearlThrough() {
++        pearlThroughGates = getBoolean("pearls.through.fence-gates", true);
++        pearlThroughString = getBoolean("pearls.through.string", false);
++        pearlThroughCobwebs = getBoolean("pearls.through.cobwebs", false);
++    }
++
+ }
+diff --git a/src/main/java/net/minecraft/server/EntityProjectile.java b/src/main/java/net/minecraft/server/EntityProjectile.java
+index f0e24b36f..fe6434eba 100644
+--- a/src/main/java/net/minecraft/server/EntityProjectile.java
++++ b/src/main/java/net/minecraft/server/EntityProjectile.java
+@@ -165,7 +165,22 @@ public abstract class EntityProjectile extends Entity implements IProjectile {
+             if (movingobjectposition.type == MovingObjectPosition.EnumMovingObjectType.BLOCK && this.world.getType(movingobjectposition.a()).getBlock() == Blocks.PORTAL) {
+                 this.d(movingobjectposition.a());
+             } else {
++                // IonSpigot start
++                boolean hit = true;
++                if (movingobjectposition.type == MovingObjectPosition.EnumMovingObjectType.BLOCK) {
++                    IBlockData iblockdata = this.world.getType(movingobjectposition.a());
++                    Block block = iblockdata.getBlock();
++
++                    if (block instanceof BlockFenceGate && world.ionConfig.pearlThroughGates && iblockdata.get(BlockFenceGate.OPEN)
++                        || block instanceof BlockTripwire && world.ionConfig.pearlThroughString
++                        || block == Blocks.WEB && world.ionConfig.pearlThroughCobwebs) {
++                        hit = false;
++                    }
++                }
++                if (hit) {
+                 this.a(movingobjectposition);
++                }
++                // IonSpigot end
+                 // CraftBukkit start
+                 if (this.dead) {
+                     org.bukkit.craftbukkit.event.CraftEventFactory.callProjectileHitEvent(this);
+-- 
+2.29.2.windows.2
+

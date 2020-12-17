@@ -1,0 +1,227 @@
+From 10c19a222d8321f7f46855634b2c5b8aeb8318be Mon Sep 17 00:00:00 2001
+From: SK <kfian294ma4@gmail.com>
+Date: Thu, 17 Dec 2020 02:55:48 +0000
+Subject: [PATCH] Merge Cannoning Entities
+
+
+diff --git a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
+index 176e39329..b4ed39831 100644
+--- a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
++++ b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
+@@ -149,4 +149,11 @@ public class IonWorldConfig {
+         pearlThroughCobwebs = getBoolean("pearls.through.cobwebs", false);
+     }
+ 
++    public boolean tntMerging;
++    public boolean sandMerging;
++    private void Merging() {
++        tntMerging = getBoolean("tnt.merging", true);
++        sandMerging = getBoolean("sand.merging", true);
++    }
++
+ }
+diff --git a/src/main/java/net/minecraft/server/Entity.java b/src/main/java/net/minecraft/server/Entity.java
+index caa1f3925..cf4779ee6 100644
+--- a/src/main/java/net/minecraft/server/Entity.java
++++ b/src/main/java/net/minecraft/server/Entity.java
+@@ -96,7 +96,7 @@ public abstract class Entity implements ICommandListener {
+     public boolean noclip;
+     public float U;
+     protected Random random;
+-    public int ticksLived;
++    public int ticksLived; public int getTicksLived() { return ticksLived; }; // IonSpigot
+     public int maxFireTicks;
+     public int fireTicks;
+     public boolean inWater; // Spigot - protected -> public // PAIL
+@@ -145,6 +145,15 @@ public abstract class Entity implements ICommandListener {
+     public boolean fromMobSpawner;
+     public void inactiveTick() { }
+     // Spigot end
++    // IonSpigot start - Merge Cannoning Entities
++    protected int potential = 1;
++
++    public boolean merge(Entity entity) {
++        return false;
++    }
++
++    protected void respawn() {}
++    // IonSpigot end
+ 
+     public int getId() {
+         return this.id;
+@@ -842,7 +851,7 @@ public abstract class Entity implements ICommandListener {
+         }
+     }
+ 
+-    private void recalcPosition() {
++    protected void recalcPosition() { // IonSpigot - private -> protected
+         this.locX = (this.getBoundingBox().a + this.getBoundingBox().d) / 2.0D;
+         this.locY = this.getBoundingBox().b;
+         this.locZ = (this.getBoundingBox().c + this.getBoundingBox().f) / 2.0D;
+diff --git a/src/main/java/net/minecraft/server/EntityFallingBlock.java b/src/main/java/net/minecraft/server/EntityFallingBlock.java
+index e3bfd8683..5143caca2 100644
+--- a/src/main/java/net/minecraft/server/EntityFallingBlock.java
++++ b/src/main/java/net/minecraft/server/EntityFallingBlock.java
+@@ -118,6 +118,7 @@ public class EntityFallingBlock extends Entity {
+                                     return;
+                                 }
+                                 this.world.setTypeAndData(blockposition, this.block, 3);
++                                this.respawn(); // IonSpigot
+                                 world.spigotConfig.antiXrayInstance.updateNearbyBlocks(world, blockposition); // Spigot
+                                 // CraftBukkit end
+                                 if (block instanceof BlockFalling) {
+@@ -197,6 +198,39 @@ public class EntityFallingBlock extends Entity {
+         }
+ 
+     }
++    // IonSpigot start - Merge Cannoning Entities
++    @Override
++    public boolean merge(Entity entity) {
++        return world.ionConfig.sandMerging && entity.ticksLived == getTicksLived() + 1
++            && entity.lastX == locX && entity.lastY == locY && entity.lastZ == locZ
++            && entity.lastMotX == motX && entity.lastMotY == motY - 0.03999999910593033D
++            && entity.lastMotZ == motZ && entity.getClass() == getClass()
++            && ((EntityFallingBlock) entity).getBlock() == getBlock();
++    }
++
++    @Override
++    protected void respawn() {
++        // If this hasn't been merged just skip this process, no reason for it.
++        if (this.potential <= 1) {
++            return;
++        }
++
++        // Store it as we need to set it to 1 below
++        int amount = this.potential;
++        for (int i = 1; i < amount; ++i) {
++            // Set the position of this entity to the last location
++            this.setPosition(this.lastX, this.lastY, this.lastZ);
++            this.motX = this.lastMotX;
++            this.motY = this.lastMotY + 0.03999999910593033D; // Add gravity back
++            this.motZ = this.lastMotZ;
++            // This will prevent a loop
++            this.potential = 1;
++
++            // and tick!
++            this.t_();
++        }
++    }
++    // IonSpigot end
+ 
+     protected void b(NBTTagCompound nbttagcompound) {
+         Block block = this.block != null ? this.block.getBlock() : Blocks.AIR;
+diff --git a/src/main/java/net/minecraft/server/EntityTNTPrimed.java b/src/main/java/net/minecraft/server/EntityTNTPrimed.java
+index 4e0433879..28eb3f56f 100644
+--- a/src/main/java/net/minecraft/server/EntityTNTPrimed.java
++++ b/src/main/java/net/minecraft/server/EntityTNTPrimed.java
+@@ -81,6 +81,7 @@ public class EntityTNTPrimed extends Entity {
+         }
+ 
+         if (this.fuseTicks-- <= 0) {
++            this.respawn(); // IonSpigot
+             // CraftBukkit start - Need to reverse the order of the explosion and the entity death so we have a location for the event
+             // this.die();
+             if (!this.world.isClientSide) {
+@@ -123,6 +124,69 @@ public class EntityTNTPrimed extends Entity {
+         }
+         // PaperSpigot end
+     }
++    // IonSpigot start - Merge Cannoning Entities
++    @Override
++    public boolean merge(Entity entity) {
++        return world.ionConfig.tntMerging && entity.ticksLived == ticksLived + 1
++            && entity.lastX == locX && entity.lastY == locY && entity.lastZ == locZ
++            && entity.lastMotX == motX && entity.lastMotY == motY - 0.03999999910593033D
++            && entity.lastMotZ == motZ && entity.getClass() == getClass()
++            && ((EntityTNTPrimed) entity).fuseTicks == fuseTicks - 1;
++    }
++
++    @Override
++    protected void respawn() {
++        // If this hasn't been merged just skip this process, no reason for it.
++        if (this.potential <= 1) {
++            return;
++        }
++
++        /*
++         * We're going to use this for keeping track of the motion from the
++         * explosion then applying that to this entity and exploding it again...
++         * and again. This is not the most efficient method but it'll preserve
++         * all of this entities metadata, and much better for plugins.
++         */
++        EntityTNTPrimed temp = new EntityTNTPrimed(new org.bukkit.Location(
++                this.world.getWorld(), this.lastX, this.lastY, this.lastZ),
++                this.world, this.lastX, this.lastY, this.lastZ, this.source);
++
++        // Update properties
++        temp.motX = this.lastMotX;
++        temp.motY = this.lastMotY + 0.03999999910593033D; // Add gravity back
++        temp.motZ = this.lastMotZ;
++        temp.recalcPosition();
++
++        // Add "temp" to the chunk
++        Chunk chunk = world.getChunkAtWorldCoords(new BlockPosition(temp));
++        chunk.a(temp);
++
++        // We should only explode this TNT, otherwise metadata would have to be transferred.
++        for (int i = 1; i < this.potential; ++i) {
++            // Explode!
++            this.explode();
++
++            // This should be fine, it'll reassign during ticking.
++            this.locX = this.lastX;
++            this.locY = this.lastY;
++            this.locZ = this.lastZ;
++            // Ok, now apply the motion
++            this.motX = temp.motX;
++            this.motY = temp.motY;
++            this.motZ = temp.motZ;
++            // Update bounding box
++            this.a(temp.getBoundingBox());
++            // So it doesn't explode during ticking
++            this.fuseTicks = 1;
++
++            // Now, tick this entity
++            this.t_();
++        }
++
++        // Remove "temp" from the chunk
++        chunk.b(temp);
++    }
++    // IonSpigot end
+ 
+     protected void b(NBTTagCompound nbttagcompound) {
+         nbttagcompound.setByte("Fuse", (byte) this.fuseTicks);
+diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
+index e3b04df58..9a785595d 100644
+--- a/src/main/java/net/minecraft/server/World.java
++++ b/src/main/java/net/minecraft/server/World.java
+@@ -1467,6 +1467,7 @@ public abstract class World implements IBlockAccess {
+         int entitiesThisCycle = 0;
+         // PaperSpigot start - Disable tick limiters
+         //if (tickPosition < 0) tickPosition = 0;
++        Entity lastEntity = null; // IonSpigot - Merge Cannoning Entities
+         for (tickPosition = 0; tickPosition < entityList.size(); tickPosition++) {
+             // PaperSpigot end
+             tickPosition = (tickPosition < entityList.size()) ? tickPosition : 0;
+@@ -1484,9 +1485,17 @@ public abstract class World implements IBlockAccess {
+             this.methodProfiler.a("tick");
+             if (!entity.dead) {
+                 try {
++                    // IonSpigot start - Merge Cannoning Entities
++                    if (lastEntity != null && entity.merge(lastEntity)) {
++                        entity.die();
++                        lastEntity.potential += entity.potential;
++                    } else {
++                    lastEntity = entity;
+                     entity.tickTimer.startTiming(); // Spigot
+                     this.g(entity);
+                     entity.tickTimer.stopTiming(); // Spigot
++                    }
++                    // IonSpigot end
+                 } catch (Throwable throwable1) {
+                     // PaperSpigot start - Prevent tile entity and entity crashes
+                     entity.tickTimer.stopTiming();
+-- 
+2.29.2.windows.2
+
