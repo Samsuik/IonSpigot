@@ -1,4 +1,4 @@
-From 2386f7661057ef33b88d5c91e4f11110ef8793ef Mon Sep 17 00:00:00 2001
+From c24ab06ebbce360c41f891a944184497fcef03e9 Mon Sep 17 00:00:00 2001
 From: "kfian294ma4@gmail.com" <kfian294ma4@gmail.com>
 Date: Sun, 29 Nov 2020 20:24:25 +0000
 Subject: [PATCH] Nerf Spawned Mob Logic
@@ -169,22 +169,21 @@ index 2f8750a30..3bae8f6d1 100644
                      entity.fromMobSpawner = true;
                  }
 diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
-index c09f23ccf..c680a1a6a 100644
+index c09f23ccf..31a09de35 100644
 --- a/src/main/java/net/minecraft/server/World.java
 +++ b/src/main/java/net/minecraft/server/World.java
-@@ -1049,6 +1049,12 @@ public abstract class World implements IBlockAccess {
+@@ -1048,6 +1048,11 @@ public abstract class World implements IBlockAccess {
+                     entity.dead = true;
                      return false;
                  }
++                // IonSpigot start
++                if (spawnReason != SpawnReason.SPAWNER && spawnReason != SpawnReason.SPAWNER_EGG) {
++                    entity.naturalSpawn = true;
++                }
++                // IonSpigot end
              }
-+            // IonSpigot start
-+            if (spawnReason == SpawnReason.CHUNK_GEN
-+                || spawnReason == SpawnReason.NATURAL) {
-+                entity.naturalSpawn = true;
-+            }
-+            // IonSpigot end
  
              event = CraftEventFactory.callCreatureSpawnEvent((EntityLiving) entity, spawnReason);
-         } else if (entity instanceof EntityItem) {
 -- 
 2.29.2.windows.2
 
