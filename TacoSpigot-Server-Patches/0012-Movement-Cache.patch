@@ -1,4 +1,4 @@
-From a4d6120ee7064b40b28944f913c0f9f6030e3816 Mon Sep 17 00:00:00 2001
+From 968fff464d6c0874c0059143d46b954f5aeabcdc Mon Sep 17 00:00:00 2001
 From: SuicidalKids <kfian294ma4@gmail.com>
 Date: Sun, 25 Oct 2020 00:05:32 +0100
 Subject: [PATCH] Movement Cache
@@ -121,6 +121,30 @@ index 8e6d516b9..72a6f842a 100644
  
              // CraftBukkit start
              if (positionChanged && getBukkitEntity() instanceof Vehicle) {
+diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
+index cdc1ad372..7def4da59 100644
+--- a/src/main/java/net/minecraft/server/MinecraftServer.java
++++ b/src/main/java/net/minecraft/server/MinecraftServer.java
+@@ -867,6 +867,7 @@ public abstract class MinecraftServer implements Runnable, ICommandListener, IAs
+                 this.methodProfiler.b();
+                 this.methodProfiler.b();
+                 worldserver.explosionDensityCache.clear(); // PaperSpigot - Optimize explosions
++                worldserver.movementCache.clear(); // IonSpigot - Movement Cache
+             // } // CraftBukkit
+ 
+             // this.i[i][this.ticks % 100] = System.nanoTime() - j; // CraftBukkit
+diff --git a/src/main/java/net/minecraft/server/PlayerConnection.java b/src/main/java/net/minecraft/server/PlayerConnection.java
+index 2aa3efcda..e4868b35c 100644
+--- a/src/main/java/net/minecraft/server/PlayerConnection.java
++++ b/src/main/java/net/minecraft/server/PlayerConnection.java
+@@ -408,6 +408,7 @@ public class PlayerConnection implements PacketListenerPlayIn, IUpdatePlayerList
+                         this.player.bF();
+                     }
+ 
++                    this.player.world.movementCache.clear(); // IonSpigot - Movement Cache
+                     this.player.move(d11, d12, d13);
+                     this.player.onGround = packetplayinflying.f();
+                     double d16 = d12;
 diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
 index 435c93040..9ff96cd1c 100644
 --- a/src/main/java/net/minecraft/server/World.java
