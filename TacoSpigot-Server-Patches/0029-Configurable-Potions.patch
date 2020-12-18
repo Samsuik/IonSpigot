@@ -1,0 +1,67 @@
+From 586bad742c66be059e1f4555c2a3944b97cec4fc Mon Sep 17 00:00:00 2001
+From: "kfian294ma4@gmail.com" <kfian294ma4@gmail.com>
+Date: Fri, 18 Dec 2020 20:58:59 +0000
+Subject: [PATCH] Configurable Potions
+
+
+diff --git a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
+index b4ed39831..f75008d83 100644
+--- a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
++++ b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
+@@ -156,4 +156,15 @@ public class IonWorldConfig {
+         sandMerging = getBoolean("sand.merging", true);
+     }
+ 
++    public int potionTime;
++    public float potionSpeed;
++    public float potionGravity;
++    public float potionVerticalOffset;
++    private void Potions() {
++        potionTime = getInt("potions.time", 5);
++        potionGravity = getFloat("potions.gravity", 0.05F);
++        potionSpeed = getFloat("potions.speed", 0.5F);
++        potionVerticalOffset = getFloat("potions.vertical-offset", -20.0F);
++    }
++
+ }
+diff --git a/src/main/java/net/minecraft/server/EntityPotion.java b/src/main/java/net/minecraft/server/EntityPotion.java
+index 2a1701c5a..17968ffcb 100644
+--- a/src/main/java/net/minecraft/server/EntityPotion.java
++++ b/src/main/java/net/minecraft/server/EntityPotion.java
+@@ -40,15 +40,17 @@ public class EntityPotion extends EntityProjectile {
+     }
+ 
+     protected float m() {
+-        return 0.05F;
++        // IonSpigot start - Configurable Potions
++        return world.ionConfig.potionGravity;
+     }
+ 
+     protected float j() {
+-        return 0.5F;
++        return world.ionConfig.potionSpeed;
+     }
+ 
+     protected float l() {
+-        return -20.0F;
++        return world.ionConfig.potionVerticalOffset;
++        // IonSpigot end
+     }
+ 
+     public void setPotionValue(int i) {
+diff --git a/src/main/java/net/minecraft/server/EntityProjectile.java b/src/main/java/net/minecraft/server/EntityProjectile.java
+index fe6434eba..4721abfa2 100644
+--- a/src/main/java/net/minecraft/server/EntityProjectile.java
++++ b/src/main/java/net/minecraft/server/EntityProjectile.java
+@@ -126,7 +126,7 @@ public abstract class EntityProjectile extends Entity implements IProjectile {
+             for (int i = 0; i < list.size(); ++i) {
+                 Entity entity1 = (Entity) list.get(i);
+ 
+-                if (entity1.ad() && (entity1 != entityliving || this.ar >= 5)) {
++                if (entity1.ad() && (entity1 != entityliving || this.ar >= (this instanceof EntityPotion ? world.ionConfig.potionTime : 5))) { // IonSpigot - Configurable Potions
+                     float f = 0.3F;
+                     AxisAlignedBB axisalignedbb = entity1.getBoundingBox().grow((double) f, (double) f, (double) f);
+                     MovingObjectPosition movingobjectposition1 = axisalignedbb.a(vec3d, vec3d1);
+-- 
+2.29.2.windows.2
+

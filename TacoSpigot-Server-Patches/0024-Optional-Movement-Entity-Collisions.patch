@@ -1,4 +1,4 @@
-From 44b896cf391bc62a3ca5793809097d6235ea036b Mon Sep 17 00:00:00 2001
+From 06b548437c332537ddae51ace61c536303f1a0c0 Mon Sep 17 00:00:00 2001
 From: "kfian294ma4@gmail.com" <kfian294ma4@gmail.com>
 Date: Sun, 29 Nov 2020 20:42:34 +0000
 Subject: [PATCH] Optional Movement Entity Collisions
@@ -19,10 +19,10 @@ index 6d25878cd..ac8491390 100644
 +
  }
 diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
-index c09f23ccf..e3b04df58 100644
+index c680a1a6a..b9c00aa2c 100644
 --- a/src/main/java/net/minecraft/server/World.java
 +++ b/src/main/java/net/minecraft/server/World.java
-@@ -1263,6 +1263,7 @@ public abstract class World implements IBlockAccess {
+@@ -1269,6 +1269,7 @@ public abstract class World implements IBlockAccess {
          }
          // Spigot end
  

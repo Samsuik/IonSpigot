@@ -1,4 +1,4 @@
-From 649fe4289c7c7dde8eb745247592248b4796cef1 Mon Sep 17 00:00:00 2001
+From 2386f7661057ef33b88d5c91e4f11110ef8793ef Mon Sep 17 00:00:00 2001
 From: "kfian294ma4@gmail.com" <kfian294ma4@gmail.com>
 Date: Sun, 29 Nov 2020 20:24:25 +0000
 Subject: [PATCH] Nerf Spawned Mob Logic
@@ -21,18 +21,27 @@ index 811392ed5..6d25878cd 100644
 +
  }
 diff --git a/src/main/java/net/minecraft/server/Entity.java b/src/main/java/net/minecraft/server/Entity.java
-index 7a38291d7..caa1f3925 100644
+index 7a38291d7..87fe16c80 100644
 --- a/src/main/java/net/minecraft/server/Entity.java
 +++ b/src/main/java/net/minecraft/server/Entity.java
-@@ -1321,6 +1321,7 @@ public abstract class Entity implements ICommandListener {
+@@ -145,6 +145,7 @@ public abstract class Entity implements ICommandListener {
+     public boolean fromMobSpawner;
+     public void inactiveTick() { }
+     // Spigot end
++    public boolean naturalSpawn; // IonSpigot
+ 
+     public int getId() {
+         return this.id;
+@@ -1321,6 +1322,8 @@ public abstract class Entity implements ICommandListener {
                  }
              }
  
 +            nbttagcompound.setBoolean("FromMobSpawner", this.fromMobSpawner); // IonSpigot
++            nbttagcompound.setBoolean("NaturalSpawn", this.naturalSpawn); // IonSpigot
          } catch (Throwable throwable) {
              CrashReport crashreport = CrashReport.a(throwable, "Saving entity NBT");
              CrashReportSystemDetails crashreportsystemdetails = crashreport.a("Entity being saved");
-@@ -1387,6 +1388,11 @@ public abstract class Entity implements ICommandListener {
+@@ -1387,6 +1390,14 @@ public abstract class Entity implements ICommandListener {
              if (this.af()) {
                  this.setPosition(this.locX, this.locY, this.locZ);
              }
@@ -40,12 +49,15 @@ index 7a38291d7..caa1f3925 100644
 +            if (nbttagcompound.hasKey("FromMobSpawner")) {
 +                this.fromMobSpawner = nbttagcompound.getBoolean("FromMobSpawner");
 +            }
++            if (nbttagcompound.hasKey("NaturalSpawn")) {
++                this.naturalSpawn = nbttagcompound.getBoolean("NaturalSpawn");
++            }
 +            // IonSpigot end
  
              // CraftBukkit start
              if (this instanceof EntityLiving) {
 diff --git a/src/main/java/net/minecraft/server/EntityInsentient.java b/src/main/java/net/minecraft/server/EntityInsentient.java
-index b82b98473..efa2bcf60 100644
+index b82b98473..cd2307d21 100644
 --- a/src/main/java/net/minecraft/server/EntityInsentient.java
 +++ b/src/main/java/net/minecraft/server/EntityInsentient.java
 @@ -459,7 +459,8 @@ public abstract class EntityInsentient extends EntityLiving {
@@ -54,12 +66,12 @@ index b82b98473..efa2bcf60 100644
          // Spigot Start
 -        if ( this.fromMobSpawner )
 +        if ( this.fromMobSpawner && (world.spigotConfig.nerfSpawnerMobs || world.ionConfig.nerfSpawnedLogic) ||
-+            !this.fromMobSpawner && world.ionConfig.nerfNaturalSpawns) // IonSpigot - Nerf Spawned Mob Logic
++             this.naturalSpawn && world.ionConfig.nerfNaturalSpawns) // IonSpigot - Nerf Spawned Mob Logic
          {
              // PaperSpigot start - Allow nerfed mobs to jump
              if (goalFloat != null) {
 diff --git a/src/main/java/net/minecraft/server/EntityLiving.java b/src/main/java/net/minecraft/server/EntityLiving.java
-index a6c167cae..3f4c6d473 100644
+index a6c167cae..2bf8928e3 100644
 --- a/src/main/java/net/minecraft/server/EntityLiving.java
 +++ b/src/main/java/net/minecraft/server/EntityLiving.java
 @@ -173,6 +173,21 @@ public abstract class EntityLiving extends Entity {
@@ -68,7 +80,7 @@ index a6c167cae..3f4c6d473 100644
          this.world.methodProfiler.a("livingEntityBaseTick");
 +        // IonSpigot start - Nerf Spawned Mob Logic
 +        if ((this.fromMobSpawner && world.ionConfig.nerfSpawnedLogic ||
-+            !this.fromMobSpawner && world.ionConfig.nerfNaturalSpawns) &&
++             this.naturalSpawn && world.ionConfig.nerfNaturalSpawns) &&
 +            (!onGround || deathTicks != 0)) {
 +            if (this.deathTicks != 0) {
 +                this.aZ();
@@ -90,7 +102,7 @@ index a6c167cae..3f4c6d473 100644
          super.t_();
 +        // IonSpigot start - Nerf Spawned Mob Logic
 +        if (this.fromMobSpawner && world.ionConfig.nerfSpawnedLogic ||
-+           !this.fromMobSpawner && world.ionConfig.nerfNaturalSpawns) {
++            this.naturalSpawn && world.ionConfig.nerfNaturalSpawns) {
 +            this.m();
 +            return;
 +        }
@@ -104,7 +116,7 @@ index a6c167cae..3f4c6d473 100644
      public void m() {
 +        // IonSpigot start - Nerf Spawned Mob Logic
 +        if (this.fromMobSpawner && world.ionConfig.nerfSpawnedLogic ||
-+           !this.fromMobSpawner && world.ionConfig.nerfNaturalSpawns) {
++            this.naturalSpawn && world.ionConfig.nerfNaturalSpawns) {
 +            if (deathTicks == 0) {
 +                this.doTick();
 +
@@ -156,6 +168,23 @@ index 2f8750a30..3bae8f6d1 100644
                  {
                      entity.fromMobSpawner = true;
                  }
+diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
+index c09f23ccf..c680a1a6a 100644
+--- a/src/main/java/net/minecraft/server/World.java
++++ b/src/main/java/net/minecraft/server/World.java
+@@ -1049,6 +1049,12 @@ public abstract class World implements IBlockAccess {
+                     return false;
+                 }
+             }
++            // IonSpigot start
++            if (spawnReason == SpawnReason.CHUNK_GEN
++                || spawnReason == SpawnReason.NATURAL) {
++                entity.naturalSpawn = true;
++            }
++            // IonSpigot end
+ 
+             event = CraftEventFactory.callCreatureSpawnEvent((EntityLiving) entity, spawnReason);
+         } else if (entity instanceof EntityItem) {
 -- 
 2.29.2.windows.2
 

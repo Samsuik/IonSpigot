@@ -1,4 +1,4 @@
-From c4ac0bf85bcd6be65ad1911fe7d9bbb501a6abb3 Mon Sep 17 00:00:00 2001
+From da8d8ad60d1432a0f3e392824c0bc5f65e5da5a2 Mon Sep 17 00:00:00 2001
 From: SuicidalKids <kfian294ma4@gmail.com>
 Date: Tue, 15 Sep 2020 05:04:13 +0100
 Subject: [PATCH] Ion Configuration Files
@@ -130,6 +130,33 @@ index 42da60a8..33148e53 100644
              List<String> completions = new ArrayList<String>();
              String toComplete = args[0].toLowerCase();
              for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
+diff --git a/src/main/java/org/bukkit/configuration/MemorySection.java b/src/main/java/org/bukkit/configuration/MemorySection.java
+index 0e2b26a9..81746388 100644
+--- a/src/main/java/org/bukkit/configuration/MemorySection.java
++++ b/src/main/java/org/bukkit/configuration/MemorySection.java
+@@ -339,17 +339,19 @@ public class MemorySection implements ConfigurationSection {
+     // PaperSpigot start - Add getFloat
+     public float getFloat(String path) {
+         Object def = getDefault(path);
+-        return getFloat(path, (def instanceof Float) ? toFloat(def) : 0);
++        // IonSpigot start - Fix float always returning default value
++        return getFloat(path, (def instanceof Number) ? toFloat(def) : 0);
+     }
+ 
+     public float getFloat(String path, float def) {
+         Object val = get(path, def);
+-        return (val instanceof Float) ? toFloat(val) : def;
++        return (val instanceof Number) ? toFloat(val) : def;
+     }
+ 
+     public boolean isFloat(String path) {
+         Object val = get(path);
+-        return val instanceof Float;
++        return val instanceof Number;
++        // IonSpigot end
+     }
+     // PaperSpigot end
+ 
 -- 
-2.20.1.windows.1
+2.29.2.windows.2
 

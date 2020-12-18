@@ -1,0 +1,51 @@
+From 9e61465961c8dc8ef2ed83969bc73a2907a85936 Mon Sep 17 00:00:00 2001
+From: "kfian294ma4@gmail.com" <kfian294ma4@gmail.com>
+Date: Fri, 18 Dec 2020 21:31:45 +0000
+Subject: [PATCH] Configurable-Hoppers
+
+
+diff --git a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
+index f75008d83..fbe6bc292 100644
+--- a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
++++ b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
+@@ -167,4 +167,11 @@ public class IonWorldConfig {
+         potionVerticalOffset = getFloat("potions.vertical-offset", -20.0F);
+     }
+ 
++    public boolean hoppersCheckPower;
++    public boolean hoppersAlwaysAcceptItems;
++    private void Hoppers() {
++        hoppersCheckPower = getBoolean("hoppers.check-power", true);
++        hoppersAlwaysAcceptItems = getBoolean("hoppers.always-accept-items", false);
++    }
++
+ }
+diff --git a/src/main/java/net/minecraft/server/BlockHopper.java b/src/main/java/net/minecraft/server/BlockHopper.java
+index e417aca9a..8422a5ae4 100644
+--- a/src/main/java/net/minecraft/server/BlockHopper.java
++++ b/src/main/java/net/minecraft/server/BlockHopper.java
+@@ -97,7 +97,7 @@ public class BlockHopper extends BlockContainer {
+     }
+ 
+     private void e(World world, BlockPosition blockposition, IBlockData iblockdata) {
+-        boolean flag = !world.isBlockIndirectlyPowered(blockposition);
++        boolean flag = !world.ionConfig.hoppersCheckPower || !world.isBlockIndirectlyPowered(blockposition); // IonSpigot
+ 
+         if (flag != ((Boolean) iblockdata.get(BlockHopper.ENABLED)).booleanValue()) {
+             world.setTypeAndData(blockposition, iblockdata.set(BlockHopper.ENABLED, Boolean.valueOf(flag)), 4);
+diff --git a/src/main/java/net/minecraft/server/TileEntityHopper.java b/src/main/java/net/minecraft/server/TileEntityHopper.java
+index 4d7f16087..35852409c 100644
+--- a/src/main/java/net/minecraft/server/TileEntityHopper.java
++++ b/src/main/java/net/minecraft/server/TileEntityHopper.java
+@@ -229,7 +229,7 @@ public class TileEntityHopper extends TileEntityContainer implements IHopper, IU
+ 
+     // TacoSpigot start
+     public boolean canAcceptItems() {
+-        return !this.n() && !this.q() && BlockHopper.f(this.u());
++        return world.ionConfig.hoppersAlwaysAcceptItems || !this.n() && !this.q() && BlockHopper.f(this.u()); // IonSpigot
+     }
+     // TacoSpigot end
+ 
+-- 
+2.29.2.windows.2
+

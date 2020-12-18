@@ -1,5 +1,5 @@
-From 0f67c96296ea4d21fdd7b5d1362a544edfed8787 Mon Sep 17 00:00:00 2001
-From: SK <kfian294ma4@gmail.com>
+From 83f4c692247018cbfa6c1589afa6006bbd737410 Mon Sep 17 00:00:00 2001
+From: "kfian294ma4@gmail.com" <kfian294ma4@gmail.com>
 Date: Thu, 17 Dec 2020 02:55:48 +0000
 Subject: [PATCH] Merge Cannoning Entities
 
@@ -21,7 +21,7 @@ index 176e39329..b4ed39831 100644
 +
  }
 diff --git a/src/main/java/net/minecraft/server/Entity.java b/src/main/java/net/minecraft/server/Entity.java
-index caa1f3925..cf4779ee6 100644
+index 87fe16c80..da074b106 100644
 --- a/src/main/java/net/minecraft/server/Entity.java
 +++ b/src/main/java/net/minecraft/server/Entity.java
 @@ -96,7 +96,7 @@ public abstract class Entity implements ICommandListener {
@@ -33,10 +33,10 @@ index caa1f3925..cf4779ee6 100644
      public int maxFireTicks;
      public int fireTicks;
      public boolean inWater; // Spigot - protected -> public // PAIL
-@@ -145,6 +145,15 @@ public abstract class Entity implements ICommandListener {
-     public boolean fromMobSpawner;
+@@ -146,6 +146,15 @@ public abstract class Entity implements ICommandListener {
      public void inactiveTick() { }
      // Spigot end
+     public boolean naturalSpawn; // IonSpigot
 +    // IonSpigot start - Merge Cannoning Entities
 +    protected int potential = 1;
 +
@@ -49,7 +49,7 @@ index caa1f3925..cf4779ee6 100644
  
      public int getId() {
          return this.id;
-@@ -842,7 +851,7 @@ public abstract class Entity implements ICommandListener {
+@@ -843,7 +852,7 @@ public abstract class Entity implements ICommandListener {
          }
      }
  
@@ -193,10 +193,10 @@ index 4e0433879..fc783baa0 100644
      protected void b(NBTTagCompound nbttagcompound) {
          nbttagcompound.setByte("Fuse", (byte) this.fuseTicks);
 diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
-index e3b04df58..9a785595d 100644
+index b9c00aa2c..ad077a249 100644
 --- a/src/main/java/net/minecraft/server/World.java
 +++ b/src/main/java/net/minecraft/server/World.java
-@@ -1467,6 +1467,7 @@ public abstract class World implements IBlockAccess {
+@@ -1473,6 +1473,7 @@ public abstract class World implements IBlockAccess {
          int entitiesThisCycle = 0;
          // PaperSpigot start - Disable tick limiters
          //if (tickPosition < 0) tickPosition = 0;
@@ -204,7 +204,7 @@ index e3b04df58..9a785595d 100644
          for (tickPosition = 0; tickPosition < entityList.size(); tickPosition++) {
              // PaperSpigot end
              tickPosition = (tickPosition < entityList.size()) ? tickPosition : 0;
-@@ -1484,9 +1485,17 @@ public abstract class World implements IBlockAccess {
+@@ -1490,9 +1491,17 @@ public abstract class World implements IBlockAccess {
              this.methodProfiler.a("tick");
              if (!entity.dead) {
                  try {
