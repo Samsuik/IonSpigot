@@ -1,4 +1,4 @@
-From ed31322c41351ee66ee0445b474c3c637192ce0b Mon Sep 17 00:00:00 2001
+From 3fa5a016fb2868bdeeb89886b07435b6fa0be75c Mon Sep 17 00:00:00 2001
 From: "kfian294ma4@gmail.com" <kfian294ma4@gmail.com>
 Date: Thu, 17 Dec 2020 02:55:48 +0000
 Subject: [PATCH] Merge Cannoning Entities
@@ -21,7 +21,7 @@ index 176e39329..b4ed39831 100644
 +
  }
 diff --git a/src/main/java/net/minecraft/server/Entity.java b/src/main/java/net/minecraft/server/Entity.java
-index 87fe16c80..da074b106 100644
+index 1c08a712a..cae15912b 100644
 --- a/src/main/java/net/minecraft/server/Entity.java
 +++ b/src/main/java/net/minecraft/server/Entity.java
 @@ -96,7 +96,7 @@ public abstract class Entity implements ICommandListener {
@@ -33,7 +33,7 @@ index 87fe16c80..da074b106 100644
      public int maxFireTicks;
      public int fireTicks;
      public boolean inWater; // Spigot - protected -> public // PAIL
-@@ -146,6 +146,15 @@ public abstract class Entity implements ICommandListener {
+@@ -150,6 +150,15 @@ public abstract class Entity implements ICommandListener {
      public void inactiveTick() { }
      // Spigot end
      public boolean naturalSpawn; // IonSpigot
@@ -49,7 +49,7 @@ index 87fe16c80..da074b106 100644
  
      public int getId() {
          return this.id;
-@@ -843,7 +852,7 @@ public abstract class Entity implements ICommandListener {
+@@ -847,7 +856,7 @@ public abstract class Entity implements ICommandListener {
          }
      }
  

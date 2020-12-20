@@ -1,0 +1,83 @@
+From 55874d44b62b0456046e636ff80474bddc212972 Mon Sep 17 00:00:00 2001
+From: SK <kfian294ma4@gmail.com>
+Date: Sat, 19 Dec 2020 19:35:00 +0000
+Subject: [PATCH] Configurable Golems
+
+
+diff --git a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
+index a7ae18fa5..029323faf 100644
+--- a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
++++ b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
+@@ -179,4 +179,11 @@ public class IonWorldConfig {
+         lagCompensatedPearls = getBoolean("pearls.lag-compensated", true);
+     }
+ 
++    public boolean ironGolemsDropPoppies;
++    public boolean ironGolemsFallDamage;
++    private void IronGolems() {
++        ironGolemsFallDamage = getBoolean("iron-golems-drop-poppies", true);
++        ironGolemsDropPoppies = getBoolean("iron-golems-take-fall-damage", false);
++    }
++
+ }
+diff --git a/src/main/java/net/minecraft/server/EntityGolem.java b/src/main/java/net/minecraft/server/EntityGolem.java
+new file mode 100644
+index 000000000..c8535c3ff
+--- /dev/null
++++ b/src/main/java/net/minecraft/server/EntityGolem.java
+@@ -0,0 +1,36 @@
++package net.minecraft.server;
++
++public abstract class EntityGolem extends EntityCreature implements IAnimal {
++
++    public EntityGolem(World world) {
++        super(world);
++    }
++
++    public void e(float f, float f1) {
++        // IonSpigot start
++        if (world.ionConfig.ironGolemsFallDamage) {
++            super.e(f, f1);
++        }
++        // IonSpigot end
++    }
++
++    protected String z() {
++        return "none";
++    }
++
++    protected String bo() {
++        return "none";
++    }
++
++    protected String bp() {
++        return "none";
++    }
++
++    public int w() {
++        return 120;
++    }
++
++    protected boolean isTypeNotPersistent() {
++        return false;
++    }
++}
+diff --git a/src/main/java/net/minecraft/server/EntityIronGolem.java b/src/main/java/net/minecraft/server/EntityIronGolem.java
+index ba09cb2cc..ca8c5f615 100644
+--- a/src/main/java/net/minecraft/server/EntityIronGolem.java
++++ b/src/main/java/net/minecraft/server/EntityIronGolem.java
+@@ -141,6 +141,11 @@ public class EntityIronGolem extends EntityGolem {
+     protected void dropDeathLoot(boolean flag, int i) {
+         int j = this.random.nextInt(3);
+ 
++        // IonSpigot start
++        if (!world.ionConfig.ironGolemsDropPoppies) {
++            j = 0;
++        }
++        // IonSpigot end
+         int k;
+ 
+         for (k = 0; k < j; ++k) {
+-- 
+2.29.2.windows.2
+

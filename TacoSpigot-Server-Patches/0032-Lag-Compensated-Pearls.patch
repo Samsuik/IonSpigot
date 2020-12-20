@@ -1,0 +1,56 @@
+From c0f5019087ee785daa239ca182c8240c6dbcaf73 Mon Sep 17 00:00:00 2001
+From: "kfian294ma4@gmail.com" <kfian294ma4@gmail.com>
+Date: Sat, 19 Dec 2020 18:50:09 +0000
+Subject: [PATCH] Lag Compensated Pearls
+
+
+diff --git a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
+index fbe6bc292..a7ae18fa5 100644
+--- a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
++++ b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
+@@ -174,4 +174,9 @@ public class IonWorldConfig {
+         hoppersAlwaysAcceptItems = getBoolean("hoppers.always-accept-items", false);
+     }
+ 
++    public boolean lagCompensatedPearls;
++    private void LagCompensatedPearls() {
++        lagCompensatedPearls = getBoolean("pearls.lag-compensated", true);
++    }
++
+ }
+diff --git a/src/main/java/net/minecraft/server/EntityEnderPearl.java b/src/main/java/net/minecraft/server/EntityEnderPearl.java
+index 319c0bc6f..6c4becb74 100644
+--- a/src/main/java/net/minecraft/server/EntityEnderPearl.java
++++ b/src/main/java/net/minecraft/server/EntityEnderPearl.java
+@@ -19,6 +19,12 @@ public class EntityEnderPearl extends EntityProjectile {
+         super(world, entityliving);
+         this.c = entityliving;
+         this.loadChunks = world.paperSpigotConfig.loadUnloadedEnderPearls; // PaperSpigot
++        // IonSpigot start - Lag Compensated Pearls
++        if (entityliving instanceof EntityPlayer && world.ionConfig.lagCompensatedPearls) {
++            ((EntityPlayer) entityliving).lagCompensatedTicking.add(this);
++            compensated = true;
++        }
++        // IonSpigot end
+     }
+ 
+     protected void a(MovingObjectPosition movingobjectposition) {
+@@ -87,7 +93,15 @@ public class EntityEnderPearl extends EntityProjectile {
+ 
+     }
+ 
++    // IonSpigot start - Lag Compensated Pearls
++    @Override
+     public void t_() {
++        if (!compensated) {
++            tick();
++        }
++    }
++    public void tick() {
++    // IonSpigot end
+         EntityLiving entityliving = this.getShooter();
+ 
+         if (entityliving != null && entityliving instanceof EntityHuman && !entityliving.isAlive()) {
+-- 
+2.29.2.windows.2
+

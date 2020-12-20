@@ -1,4 +1,4 @@
-From 586bad742c66be059e1f4555c2a3944b97cec4fc Mon Sep 17 00:00:00 2001
+From a58ae5d69ec31aef934102f42a42d33a8778a0a7 Mon Sep 17 00:00:00 2001
 From: "kfian294ma4@gmail.com" <kfian294ma4@gmail.com>
 Date: Fri, 18 Dec 2020 20:58:59 +0000
 Subject: [PATCH] Configurable Potions
@@ -25,10 +25,10 @@ index b4ed39831..f75008d83 100644
 +
  }
 diff --git a/src/main/java/net/minecraft/server/EntityPotion.java b/src/main/java/net/minecraft/server/EntityPotion.java
-index 2a1701c5a..17968ffcb 100644
+index 567f4797c..5e98e66d8 100644
 --- a/src/main/java/net/minecraft/server/EntityPotion.java
 +++ b/src/main/java/net/minecraft/server/EntityPotion.java
-@@ -40,15 +40,17 @@ public class EntityPotion extends EntityProjectile {
+@@ -39,15 +39,17 @@ public class EntityPotion extends EntityProjectile {
      }
  
      protected float m() {
