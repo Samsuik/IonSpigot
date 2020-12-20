@@ -1,4 +1,4 @@
-From 0d9fb35f5832638b13873d49debd5e6e24df8d7d Mon Sep 17 00:00:00 2001
+From 07863df5428c28f97c2a0ee116557f8f43016780 Mon Sep 17 00:00:00 2001
 From: SuicidalKids <kfian294ma4@gmail.com>
 Date: Thu, 29 Oct 2020 20:47:08 +0000
 Subject: [PATCH] Configurable Spawners
@@ -29,10 +29,10 @@ index 154a14c1a..937b5c5df 100644
 +
  }
 diff --git a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-index 69d50a674..a4731fcb6 100644
+index b5e77c176..c95abf6d5 100644
 --- a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
 +++ b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-@@ -88,4 +88,13 @@ public class IonWorldConfig {
+@@ -91,4 +91,13 @@ public class IonWorldConfig {
          movementCache = getBoolean("movement.cache", true);
      }
  

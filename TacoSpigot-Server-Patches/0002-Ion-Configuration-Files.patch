@@ -1,4 +1,4 @@
-From b7b1d3d7597d16f6e9c3462b6b3627344262a011 Mon Sep 17 00:00:00 2001
+From 119a3af5685954319eec7d16597d7746ad4899d1 Mon Sep 17 00:00:00 2001
 From: SuicidalKids <kfian294ma4@gmail.com>
 Date: Tue, 15 Sep 2020 05:03:57 +0100
 Subject: [PATCH] Ion Configuration Files
@@ -7,7 +7,7 @@ Subject: [PATCH] Ion Configuration Files
 
 diff --git a/src/main/java/me/suicidalkids/ion/IonConfig.java b/src/main/java/me/suicidalkids/ion/IonConfig.java
 new file mode 100644
-index 00000000..1c34112a
+index 000000000..1c34112a6
 --- /dev/null
 +++ b/src/main/java/me/suicidalkids/ion/IonConfig.java
 @@ -0,0 +1,122 @@
@@ -135,12 +135,13 @@ index 00000000..1c34112a
 +}
 diff --git a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
 new file mode 100644
-index 00000000..f565aee4
+index 000000000..d076e34cb
 --- /dev/null
 +++ b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-@@ -0,0 +1,71 @@
+@@ -0,0 +1,74 @@
 +package me.suicidalkids.ion;
 +
++import net.minecraft.server.World;
 +import org.bukkit.Bukkit;
 +import org.bukkit.configuration.file.YamlConfiguration;
 +
@@ -150,11 +151,13 @@ index 00000000..f565aee4
 +
 +    private final String worldName;
 +    private final YamlConfiguration config;
++    private final World world;
 +    private boolean verbose;
 +
-+    public IonWorldConfig(String worldName) {
++    public IonWorldConfig(World world, String worldName) {
 +        this.worldName = worldName;
 +        this.config = IonConfig.config;
++        this.world = world;
 +        init();
 +    }
 +
@@ -211,7 +214,7 @@ index 00000000..f565aee4
 +
 +}
 diff --git a/src/main/java/net/minecraft/server/DedicatedServer.java b/src/main/java/net/minecraft/server/DedicatedServer.java
-index 088beb22..6db887d9 100644
+index 088beb22b..6db887d9c 100644
 --- a/src/main/java/net/minecraft/server/DedicatedServer.java
 +++ b/src/main/java/net/minecraft/server/DedicatedServer.java
 @@ -181,6 +181,7 @@ public class DedicatedServer extends MinecraftServer implements IMinecraftServer
@@ -223,7 +226,7 @@ index 088beb22..6db887d9 100644
              DedicatedServer.LOGGER.info("Generating keypair");
              this.a(MinecraftEncryption.b());
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index f342c245..3edc5a88 100644
+index f342c2450..3edc5a882 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
 @@ -1086,7 +1086,7 @@ public abstract class MinecraftServer implements Runnable, ICommandListener, IAs
@@ -236,7 +239,7 @@ index f342c245..3edc5a88 100644
  
      public CrashReport b(CrashReport crashreport) {
 diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
-index d4f337e2..72a8105f 100644
+index d4f337e22..cacd48ccf 100644
 --- a/src/main/java/net/minecraft/server/World.java
 +++ b/src/main/java/net/minecraft/server/World.java
 @@ -163,6 +163,7 @@ public abstract class World implements IBlockAccess {
@@ -251,12 +254,12 @@ index d4f337e2..72a8105f 100644
          this.spigotConfig = new org.spigotmc.SpigotWorldConfig( worlddata.getName() ); // Spigot
          this.paperSpigotConfig = new org.github.paperspigot.PaperSpigotWorldConfig( worlddata.getName() ); // PaperSpigot
          this.tacoSpigotConfig = new net.techcable.tacospigot.TacoSpigotWorldConfig(worlddata.getName()); // TacoSpigot
-+        this.ionConfig = new me.suicidalkids.ion.IonWorldConfig(worlddata.getName()); // IonSpigot
++        this.ionConfig = new me.suicidalkids.ion.IonWorldConfig(this, worlddata.getName()); // IonSpigot
          this.generator = gen;
          this.world = new CraftWorld((WorldServer) this, gen, env);
          this.ticksPerAnimalSpawns = this.getServer().getTicksPerAnimalSpawns(); // CraftBukkit
 diff --git a/src/main/java/net/techcable/tacospigot/TacoSpigotConfig.java b/src/main/java/net/techcable/tacospigot/TacoSpigotConfig.java
-index c0a71602..ba5730a0 100644
+index c0a716023..ba5730a0c 100644
 --- a/src/main/java/net/techcable/tacospigot/TacoSpigotConfig.java
 +++ b/src/main/java/net/techcable/tacospigot/TacoSpigotConfig.java
 @@ -24,7 +24,7 @@ public class TacoSpigotConfig {
@@ -269,7 +272,7 @@ index c0a71602..ba5730a0 100644
      /*========================================================================*/
  
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index a2fb0398..4d61fc82 100644
+index a2fb03987..4d61fc828 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 @@ -127,7 +127,7 @@ import net.md_5.bungee.api.chat.BaseComponent;
@@ -327,7 +330,7 @@ index a2fb0398..4d61fc82 100644
          public void restart() {
              org.spigotmc.RestartCommand.restart();
 diff --git a/src/main/java/org/bukkit/craftbukkit/Main.java b/src/main/java/org/bukkit/craftbukkit/Main.java
-index a5bbd8b7..ae2eea27 100644
+index a5bbd8b71..ae2eea27f 100644
 --- a/src/main/java/org/bukkit/craftbukkit/Main.java
 +++ b/src/main/java/org/bukkit/craftbukkit/Main.java
 @@ -148,6 +148,14 @@ public class Main {
@@ -354,5 +357,5 @@ index a5bbd8b7..ae2eea27 100644
                  MinecraftServer.main(options);
              } catch (Throwable t) {
 -- 
-2.20.1.windows.1
+2.29.2.windows.2
 

@@ -1,14 +1,14 @@
-From 09b69ab049ad51f2e4e4f050405d5f095e7b9f39 Mon Sep 17 00:00:00 2001
+From a0fd811d068b004f999d7c12546ef7714dc928d4 Mon Sep 17 00:00:00 2001
 From: SuicidalKids <kfian294ma4@gmail.com>
 Date: Tue, 15 Sep 2020 05:06:25 +0100
 Subject: [PATCH] Explosion Improvements
 
 
 diff --git a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-index f565aee4..df208059 100644
+index d076e34cb..a2d1bf816 100644
 --- a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
 +++ b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-@@ -68,4 +68,14 @@ public class IonWorldConfig {
+@@ -71,4 +71,14 @@ public class IonWorldConfig {
          return config.getString("world-settings." + worldName + "." + path, config.getString(path));
      }
  
@@ -24,7 +24,7 @@ index f565aee4..df208059 100644
 +
  }
 diff --git a/src/main/java/net/minecraft/server/Explosion.java b/src/main/java/net/minecraft/server/Explosion.java
-index f4ccd8d4..30e164b5 100644
+index f4ccd8d4d..30e164b50 100644
 --- a/src/main/java/net/minecraft/server/Explosion.java
 +++ b/src/main/java/net/minecraft/server/Explosion.java
 @@ -54,9 +54,33 @@ public class Explosion {
@@ -254,7 +254,7 @@ index f4ccd8d4..30e164b5 100644
      // PaperSpigot end
  }
 diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
-index 72a8105f..435c9304 100644
+index cacd48ccf..2689ad1f4 100644
 --- a/src/main/java/net/minecraft/server/World.java
 +++ b/src/main/java/net/minecraft/server/World.java
 @@ -137,7 +137,12 @@ public abstract class World implements IBlockAccess {
@@ -272,5 +272,5 @@ index 72a8105f..435c9304 100644
      public static long chunkToKey(int x, int z)
      {
 -- 
-2.20.1.windows.1
+2.29.2.windows.2
 

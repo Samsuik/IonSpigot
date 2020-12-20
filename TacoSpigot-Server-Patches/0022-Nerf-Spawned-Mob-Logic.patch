@@ -1,14 +1,14 @@
-From c24ab06ebbce360c41f891a944184497fcef03e9 Mon Sep 17 00:00:00 2001
+From a16eb3d7072db882636c798c60cb65a8d2be31cb Mon Sep 17 00:00:00 2001
 From: "kfian294ma4@gmail.com" <kfian294ma4@gmail.com>
 Date: Sun, 29 Nov 2020 20:24:25 +0000
 Subject: [PATCH] Nerf Spawned Mob Logic
 
 
 diff --git a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-index 811392ed5..6d25878cd 100644
+index 73095aeab..56ef01962 100644
 --- a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
 +++ b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-@@ -118,4 +118,11 @@ public class IonWorldConfig {
+@@ -121,4 +121,11 @@ public class IonWorldConfig {
          mergeSpawnedItems = getBoolean("items.merged-spawned-items", false);
      }
  
@@ -169,7 +169,7 @@ index 2f8750a30..3bae8f6d1 100644
                      entity.fromMobSpawner = true;
                  }
 diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
-index c09f23ccf..31a09de35 100644
+index 8a024afbf..1525ea766 100644
 --- a/src/main/java/net/minecraft/server/World.java
 +++ b/src/main/java/net/minecraft/server/World.java
 @@ -1048,6 +1048,11 @@ public abstract class World implements IBlockAccess {

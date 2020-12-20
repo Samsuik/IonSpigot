@@ -1,14 +1,14 @@
-From fcfaf42322d2c6160e2f072b95fd2c07b1df7aad Mon Sep 17 00:00:00 2001
+From e12e1758fbcccc262d264975165f7924ba46f651 Mon Sep 17 00:00:00 2001
 From: "kfian294ma4@gmail.com" <kfian294ma4@gmail.com>
 Date: Fri, 27 Nov 2020 22:02:11 +0000
 Subject: [PATCH] Merge Spawned Items
 
 
 diff --git a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-index 60afff963..811392ed5 100644
+index 8bcfde3b2..73095aeab 100644
 --- a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
 +++ b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-@@ -113,4 +113,9 @@ public class IonWorldConfig {
+@@ -116,4 +116,9 @@ public class IonWorldConfig {
          hopperInterval = getInterval("items.hoppers.delay", 0);
      }
  
@@ -44,7 +44,7 @@ index 918c1bdef..90dfced16 100644
              return false;
          } else if (entityitem.isAlive() && this.isAlive()) {
 diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
-index 9ff96cd1c..c09f23ccf 100644
+index f32c106d6..8a024afbf 100644
 --- a/src/main/java/net/minecraft/server/World.java
 +++ b/src/main/java/net/minecraft/server/World.java
 @@ -998,7 +998,29 @@ public abstract class World implements IBlockAccess {

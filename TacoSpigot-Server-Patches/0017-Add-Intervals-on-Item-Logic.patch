@@ -1,14 +1,14 @@
-From 195bb0478f1cc8294f58d8bc563514ae63d2461f Mon Sep 17 00:00:00 2001
+From cca88711a7d55028e80127420a576b83c991ef5e Mon Sep 17 00:00:00 2001
 From: SuicidalKids <kfian294ma4@gmail.com>
 Date: Thu, 29 Oct 2020 22:11:04 +0000
 Subject: [PATCH] Add Intervals on Item Logic
 
 
 diff --git a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-index 6b3bdef9b..60afff963 100644
+index 80a4a54ee..8bcfde3b2 100644
 --- a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
 +++ b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-@@ -104,4 +104,13 @@ public class IonWorldConfig {
+@@ -107,4 +107,13 @@ public class IonWorldConfig {
          silenceSounds = getBoolean("silence-sounds", false);
      }
  

@@ -1,14 +1,14 @@
-From 1e8ec20166a61a29a817a6a7e91af8dd5608937b Mon Sep 17 00:00:00 2001
+From 1f3a552c182e4a720df61e36dbefe7ae51d79b50 Mon Sep 17 00:00:00 2001
 From: "kfian294ma4@gmail.com" <kfian294ma4@gmail.com>
 Date: Sun, 29 Nov 2020 20:42:34 +0000
 Subject: [PATCH] Optional Movement Entity Collisions
 
 
 diff --git a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-index 6d25878cd..ac8491390 100644
+index 56ef01962..1cd8ef5f3 100644
 --- a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
 +++ b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-@@ -125,4 +125,9 @@ public class IonWorldConfig {
+@@ -128,4 +128,9 @@ public class IonWorldConfig {
          nerfNaturalSpawns = getBoolean("nerf-natural-spawns", false);
      }
  
@@ -19,7 +19,7 @@ index 6d25878cd..ac8491390 100644
 +
  }
 diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
-index 31a09de35..7ab3f048a 100644
+index 1525ea766..719945a23 100644
 --- a/src/main/java/net/minecraft/server/World.java
 +++ b/src/main/java/net/minecraft/server/World.java
 @@ -1268,6 +1268,7 @@ public abstract class World implements IBlockAccess {

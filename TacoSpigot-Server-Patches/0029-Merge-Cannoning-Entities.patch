@@ -1,14 +1,14 @@
-From 3fa5a016fb2868bdeeb89886b07435b6fa0be75c Mon Sep 17 00:00:00 2001
+From 0883a24d154c45ab4c23eccb02c957d6381fc53a Mon Sep 17 00:00:00 2001
 From: "kfian294ma4@gmail.com" <kfian294ma4@gmail.com>
 Date: Thu, 17 Dec 2020 02:55:48 +0000
 Subject: [PATCH] Merge Cannoning Entities
 
 
 diff --git a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-index 176e39329..b4ed39831 100644
+index 8bd1a1369..3463eaf2c 100644
 --- a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
 +++ b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-@@ -149,4 +149,11 @@ public class IonWorldConfig {
+@@ -152,4 +152,11 @@ public class IonWorldConfig {
          pearlThroughCobwebs = getBoolean("pearls.through.cobwebs", false);
      }
  
@@ -193,7 +193,7 @@ index 4e0433879..fc783baa0 100644
      protected void b(NBTTagCompound nbttagcompound) {
          nbttagcompound.setByte("Fuse", (byte) this.fuseTicks);
 diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
-index 7ab3f048a..768ddd3ae 100644
+index 719945a23..c8e3541fe 100644
 --- a/src/main/java/net/minecraft/server/World.java
 +++ b/src/main/java/net/minecraft/server/World.java
 @@ -1472,6 +1472,7 @@ public abstract class World implements IBlockAccess {

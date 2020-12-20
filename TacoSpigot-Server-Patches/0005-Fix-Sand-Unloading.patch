@@ -1,14 +1,14 @@
-From 3a0905a678232fc0a8c90bcf65531474095a9dc6 Mon Sep 17 00:00:00 2001
+From fc6f1beedafa3f3ede19ed561d7c887d1ae7ea15 Mon Sep 17 00:00:00 2001
 From: SuicidalKids <kfian294ma4@gmail.com>
 Date: Mon, 21 Sep 2020 04:56:07 +0100
 Subject: [PATCH] Fix Sand Unloading
 
 
 diff --git a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-index df2080597..ea0eefca2 100644
+index a2d1bf816..b45538559 100644
 --- a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
 +++ b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-@@ -78,4 +78,9 @@ public class IonWorldConfig {
+@@ -81,4 +81,9 @@ public class IonWorldConfig {
          explosionProtectedRegions = getBoolean("explosions.protected-regions", true);
      }
  

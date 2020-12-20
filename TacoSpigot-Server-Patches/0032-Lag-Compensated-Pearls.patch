@@ -1,14 +1,14 @@
-From c0f5019087ee785daa239ca182c8240c6dbcaf73 Mon Sep 17 00:00:00 2001
+From 2e6086b38e6257c9ba76abb21402998a3d795d33 Mon Sep 17 00:00:00 2001
 From: "kfian294ma4@gmail.com" <kfian294ma4@gmail.com>
 Date: Sat, 19 Dec 2020 18:50:09 +0000
 Subject: [PATCH] Lag Compensated Pearls
 
 
 diff --git a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-index fbe6bc292..a7ae18fa5 100644
+index 0b439b91d..ab4c00af0 100644
 --- a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
 +++ b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-@@ -174,4 +174,9 @@ public class IonWorldConfig {
+@@ -177,4 +177,9 @@ public class IonWorldConfig {
          hoppersAlwaysAcceptItems = getBoolean("hoppers.always-accept-items", false);
      }
  
