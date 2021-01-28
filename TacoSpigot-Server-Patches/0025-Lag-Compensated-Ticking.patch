@@ -1,15 +1,15 @@
-From 9e8587194ec73f4a09a03bab164d9da2a7f157d4 Mon Sep 17 00:00:00 2001
+From b03e00b4a002ea5d214d9096dde7094a06afed06 Mon Sep 17 00:00:00 2001
 From: "kfian294ma4@gmail.com" <kfian294ma4@gmail.com>
 Date: Sat, 19 Dec 2020 18:44:26 +0000
 Subject: [PATCH] Lag Compensated Ticking
 
 
 diff --git a/src/main/java/net/minecraft/server/Entity.java b/src/main/java/net/minecraft/server/Entity.java
-index 87fe16c80..1c08a712a 100644
+index 6d4ec0500..103f48262 100644
 --- a/src/main/java/net/minecraft/server/Entity.java
 +++ b/src/main/java/net/minecraft/server/Entity.java
-@@ -136,6 +136,10 @@ public abstract class Entity implements ICommandListener {
-     public boolean forceExplosionKnockback; // CraftBukkit - SPIGOT-949
+@@ -137,6 +137,10 @@ public abstract class Entity implements ICommandListener {
+     public boolean isCannoningEntity; // IonSpigot
      public boolean inUnloadedChunk = false; // PaperSpigot - Remove entities in unloaded chunks
      public boolean loadChunks = false; // PaperSpigot - Entities can load chunks they move through and keep them loaded
 +    // IonSpigot start - Lag Compensated Ticking

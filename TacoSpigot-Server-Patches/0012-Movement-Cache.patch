@@ -1,4 +1,4 @@
-From 88105ae39a1ba2095b87e6081da015760a1ce7aa Mon Sep 17 00:00:00 2001
+From 7a99f8c2a534ddf4293ab8137f9cfb21209c6777 Mon Sep 17 00:00:00 2001
 From: SuicidalKids <kfian294ma4@gmail.com>
 Date: Sun, 25 Oct 2020 00:05:32 +0100
 Subject: [PATCH] Movement Cache
@@ -76,7 +76,7 @@ index 000000000..3da80501c
 +
 +}
 diff --git a/src/main/java/net/minecraft/server/Entity.java b/src/main/java/net/minecraft/server/Entity.java
-index 8e6d516b9..72a6f842a 100644
+index a1a9421a8..9d95e8570 100644
 --- a/src/main/java/net/minecraft/server/Entity.java
 +++ b/src/main/java/net/minecraft/server/Entity.java
 @@ -64,11 +64,16 @@ public abstract class Entity implements ICommandListener {
@@ -97,7 +97,7 @@ index 8e6d516b9..72a6f842a 100644
      public boolean onGround;
      public boolean positionChanged;
      public boolean E;
-@@ -456,6 +461,15 @@ public abstract class Entity implements ICommandListener {
+@@ -458,6 +463,15 @@ public abstract class Entity implements ICommandListener {
              this.a(this.getBoundingBox().c(d0, d1, d2));
              this.recalcPosition();
          } else {
@@ -113,7 +113,7 @@ index 8e6d516b9..72a6f842a 100644
              // CraftBukkit start - Don't do anything if we aren't moving
              // We need to do this regardless of whether or not we are moving thanks to portals
              try {
-@@ -724,6 +738,7 @@ public abstract class Entity implements ICommandListener {
+@@ -726,6 +740,7 @@ public abstract class Entity implements ICommandListener {
              if (d7 != d1) {
                  block.a(this.world, this);
              }

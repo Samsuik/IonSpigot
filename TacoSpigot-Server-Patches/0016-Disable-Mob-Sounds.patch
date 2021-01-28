@@ -1,4 +1,4 @@
-From 52c2a842936adba00de3ec240274349e675e5ebe Mon Sep 17 00:00:00 2001
+From 05a0762d480abb6be8bc78c0e6892a8f408973ac Mon Sep 17 00:00:00 2001
 From: SuicidalKids <kfian294ma4@gmail.com>
 Date: Thu, 29 Oct 2020 21:09:34 +0000
 Subject: [PATCH] Disable Mob Sounds
@@ -21,10 +21,10 @@ index c95abf6d5..80a4a54ee 100644
 +
  }
 diff --git a/src/main/java/net/minecraft/server/Entity.java b/src/main/java/net/minecraft/server/Entity.java
-index 72a6f842a..7a38291d7 100644
+index 9d95e8570..14fdd54b1 100644
 --- a/src/main/java/net/minecraft/server/Entity.java
 +++ b/src/main/java/net/minecraft/server/Entity.java
-@@ -787,7 +787,11 @@ public abstract class Entity implements ICommandListener {
+@@ -789,7 +789,11 @@ public abstract class Entity implements ICommandListener {
                          this.makeSound(this.P(), f, 1.0F + (this.random.nextFloat() - this.random.nextFloat()) * 0.4F);
                      }
  
@@ -36,7 +36,7 @@ index 72a6f842a..7a38291d7 100644
                      block.a(this.world, blockposition, this); // CraftBukkit moved from above
                  }
              }
-@@ -895,7 +899,7 @@ public abstract class Entity implements ICommandListener {
+@@ -897,7 +901,7 @@ public abstract class Entity implements ICommandListener {
      }
  
      public boolean R() {

@@ -1,4 +1,4 @@
-From a0fd811d068b004f999d7c12546ef7714dc928d4 Mon Sep 17 00:00:00 2001
+From 0e967601f5562b986b7e639859b2cd8e84d6c4f4 Mon Sep 17 00:00:00 2001
 From: SuicidalKids <kfian294ma4@gmail.com>
 Date: Tue, 15 Sep 2020 05:06:25 +0100
 Subject: [PATCH] Explosion Improvements
@@ -23,8 +23,28 @@ index d076e34cb..a2d1bf816 100644
 +    }
 +
  }
+diff --git a/src/main/java/net/minecraft/server/Entity.java b/src/main/java/net/minecraft/server/Entity.java
+index c4bfd5fe6..03bc6c5ab 100644
+--- a/src/main/java/net/minecraft/server/Entity.java
++++ b/src/main/java/net/minecraft/server/Entity.java
+@@ -129,6 +129,7 @@ public abstract class Entity implements ICommandListener {
+     public boolean valid; // CraftBukkit
+     public org.bukkit.projectiles.ProjectileSource projectileSource; // CraftBukkit - For projectiles only
+     public boolean forceExplosionKnockback; // CraftBukkit - SPIGOT-949
++    public boolean isCannoningEntity; // IonSpigot
+     public boolean inUnloadedChunk = false; // PaperSpigot - Remove entities in unloaded chunks
+     public boolean loadChunks = false; // PaperSpigot - Entities can load chunks they move through and keep them loaded
+ 
+@@ -175,6 +176,7 @@ public abstract class Entity implements ICommandListener {
+             this.defaultActivationState = false;
+         }
+         // Spigot end
++        this.isCannoningEntity = this instanceof EntityTNTPrimed || this instanceof EntityFallingBlock; // IonSpigot
+ 
+         this.datawatcher = new DataWatcher(this);
+         this.datawatcher.a(0, Byte.valueOf((byte) 0));
 diff --git a/src/main/java/net/minecraft/server/Explosion.java b/src/main/java/net/minecraft/server/Explosion.java
-index f4ccd8d4d..30e164b50 100644
+index f4ccd8d4d..ae92db42e 100644
 --- a/src/main/java/net/minecraft/server/Explosion.java
 +++ b/src/main/java/net/minecraft/server/Explosion.java
 @@ -54,9 +54,33 @@ public class Explosion {
@@ -56,34 +76,75 @@ index f4ccd8d4d..30e164b50 100644
 +                }
 +            }
 +            if (!protection) {
-+            it.unimi.dsi.fastutil.longs.LongSet set = new it.unimi.dsi.fastutil.longs.LongOpenHashSet();
-+            searchForBlocks(set, chunk);
++                it.unimi.dsi.fastutil.longs.LongSet set = new it.unimi.dsi.fastutil.longs.LongOpenHashSet();
++                searchForBlocks(set, chunk);
 +            /*
          for (int k = 0; k < 16; ++k) {
              for (i = 0; i < 16; ++i) {
                  for (j = 0; j < 16; ++j) {
-@@ -96,6 +120,12 @@ public class Explosion {
+@@ -96,45 +120,74 @@ public class Explosion {
                  }
              }
          }
 +            */
-+            for (it.unimi.dsi.fastutil.longs.LongIterator iterator = set.iterator(); iterator.hasNext();) {
-+                this.blocks.add(BlockPosition.fromLong(iterator.nextLong()));
-+            }
++                for (it.unimi.dsi.fastutil.longs.LongIterator iterator = set.iterator(); iterator.hasNext(); ) {
++                    this.blocks.add(BlockPosition.fromLong(iterator.nextLong()));
++                }
 +            }
 +            // IonSpigot end
          }
  
          this.blocks.addAll(hashset);
-@@ -121,15 +151,17 @@ public class Explosion {
+         float f3 = this.size * 2.0F;
+ 
+-        i = MathHelper.floor(this.posX - (double) f3 - 1.0D);
+-        j = MathHelper.floor(this.posX + (double) f3 + 1.0D);
+-        int l = MathHelper.floor(this.posY - (double) f3 - 1.0D);
+-        int i1 = MathHelper.floor(this.posY + (double) f3 + 1.0D);
+-        int j1 = MathHelper.floor(this.posZ - (double) f3 - 1.0D);
+-        int k1 = MathHelper.floor(this.posZ + (double) f3 + 1.0D);
++        // IonSpigot start - Faster Entity Iteration
++        i = MathHelper.floor(this.posX - (double) f3 - 1.0D) >> 4;
++        j = MathHelper.floor(this.posX + (double) f3 + 1.0D) >> 4;
++        int l = MathHelper.clamp(MathHelper.floor(this.posY - (double) f3 - 1.0D) >> 4, 0, 15);
++        int i1 = MathHelper.clamp(MathHelper.floor(this.posY + (double) f3 + 1.0D) >> 4, 0, 15);
++        int j1 = MathHelper.floor(this.posZ - (double) f3 - 1.0D) >> 4;
++        int k1 = MathHelper.floor(this.posZ + (double) f3 + 1.0D) >> 4;
+         // PaperSpigot start - Fix lag from explosions processing dead entities
++        /*
+         List list = this.world.a(this.source, new AxisAlignedBB((double) i, (double) l, (double) j1, (double) j, (double) i1, (double) k1), new com.google.common.base.Predicate<Entity>() {
+             @Override
+             public boolean apply(Entity entity) {
+                 return IEntitySelector.d.apply(entity) && !entity.dead;
+             }
+         });
++        */
+         // PaperSpigot end
+         Vec3D vec3d = new Vec3D(this.posX, this.posY, this.posZ);
+ 
++        for (int chunkX = i; chunkX <= j; ++chunkX) {
++            for (int chunkZ = j1; chunkZ <= k1; ++chunkZ) {
++                chunk = world.getChunkIfLoaded(chunkX, chunkZ);
++
++                if (chunk == null) {
++                    continue;
++                }
++
++                for (int chunkY = l; chunkY <= i1; ++chunkY) {
++                    affectEntities(chunk.entitySlices[chunkY], vec3d, f3);
++                }
++            }
++        }
++    }
++    public void affectEntities(List list, Vec3D vec3d, float f3) {
+         for (int l1 = 0; l1 < list.size(); ++l1) {
              Entity entity = (Entity) list.get(l1);
  
              if (!entity.aW()) {
 -                double d7 = entity.f(this.posX, this.posY, this.posZ) / (double) f3;
 -
 -                if (d7 <= 1.0D) {
-+                // IonSpigot start - Faster Entity Iteration
-+                if (true) {
++                if (!entity.dead) {
                      double d8 = entity.locX - this.posX;
                      double d9 = entity.locY + (double) entity.getHeadHeight() - this.posY;
                      double d10 = entity.locZ - this.posZ;
@@ -94,11 +155,20 @@ index f4ccd8d4d..30e164b50 100644
 +                    if (distanceSquared <= 64.0D && distanceSquared != 0.0D) {
 +                        double d11 = (double) MathHelper.sqrt(distanceSquared);
 +                        double d7 = d11 / f3;
-+                        // IonSpigot end
                          d8 /= d11;
                          d9 /= d11;
                          d10 /= d11;
-@@ -233,6 +265,8 @@ public class Explosion {
+                         double d12 = this.getBlockDensity(vec3d, entity.getBoundingBox()); // PaperSpigot - Optimize explosions
+                         double d13 = (1.0D - d7) * d12;
++                        if (entity.isCannoningEntity) {
++                            entity.g(d8 * d13, d9 * d13, d10 * d13);
++                            continue;
++                        }
++                        // IonSpigot end
+ 
+                         // entity.damageEntity(DamageSource.explosion(this), (float) ((int) ((d13 * d13 + d13) / 2.0D * 8.0D * (double) f3 + 1.0D)));+                        // CraftBukkit start
+                         CraftEventFactory.entityDamage = source;
+@@ -233,6 +286,8 @@ public class Explosion {
                  Block block = this.world.getType(blockposition).getBlock();
  
                  world.spigotConfig.antiXrayInstance.updateNearbyBlocks(world, blockposition); // Spigot
@@ -107,7 +177,7 @@ index f4ccd8d4d..30e164b50 100644
                  if (flag) {
                      double d0 = (double) ((float) blockposition.getX() + this.world.random.nextFloat());
                      double d1 = (double) ((float) blockposition.getY() + this.world.random.nextFloat());
-@@ -254,6 +288,8 @@ public class Explosion {
+@@ -254,6 +309,8 @@ public class Explosion {
                      this.world.addParticle(EnumParticle.EXPLOSION_NORMAL, (d0 + this.posX * 1.0D) / 2.0D, (d1 + this.posY * 1.0D) / 2.0D, (d2 + this.posZ * 1.0D) / 2.0D, d3, d4, d5, new int[0]);
                      this.world.addParticle(EnumParticle.SMOKE_NORMAL, d0, d1, d2, d3, d4, d5, new int[0]);
                  }
@@ -116,7 +186,7 @@ index f4ccd8d4d..30e164b50 100644
  
                  if (block.getMaterial() != Material.AIR) {
                      if (block.a(this)) {
-@@ -301,6 +337,82 @@ public class Explosion {
+@@ -301,6 +358,82 @@ public class Explosion {
      public List<BlockPosition> getBlocks() {
          return this.blocks;
      }
@@ -199,7 +269,7 @@ index f4ccd8d4d..30e164b50 100644
  
      // PaperSpigot start - Optimize explosions
      private float getBlockDensity(Vec3D vec3d, AxisAlignedBB aabb) {
-@@ -308,9 +420,10 @@ public class Explosion {
+@@ -308,9 +441,10 @@ public class Explosion {
              return this.world.a(vec3d, aabb);
          }
  
@@ -213,7 +283,7 @@ index f4ccd8d4d..30e164b50 100644
              blockDensity = this.world.a(vec3d, aabb);
              this.world.explosionDensityCache.put(key, blockDensity);
          }
-@@ -318,6 +431,31 @@ public class Explosion {
+@@ -318,6 +452,31 @@ public class Explosion {
          return blockDensity;
      }
  
@@ -245,7 +315,7 @@ index f4ccd8d4d..30e164b50 100644
      static class CacheKey {
          private final World world;
          private final double posX, posY, posZ;
-@@ -382,5 +520,7 @@ public class Explosion {
+@@ -382,5 +541,7 @@ public class Explosion {
              return result;
          }
      }

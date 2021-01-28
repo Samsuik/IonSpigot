@@ -1,5 +1,5 @@
-From 1f6733b12a7d60303fde42e61bde32c81b566b29 Mon Sep 17 00:00:00 2001
-From: SK <kfian294ma4@gmail.com>
+From a1b932f57996e3772ba43b72e0b75751dc4359f0 Mon Sep 17 00:00:00 2001
+From: "kfian294ma4@gmail.com" <kfian294ma4@gmail.com>
 Date: Sun, 20 Dec 2020 04:27:12 +0000
 Subject: [PATCH] Column TNT Spawning
 
@@ -15,11 +15,11 @@ As this does cause some issues, even if they are minor it is disabled by
 default.
 
 diff --git a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-index c1b0d95e0..a11793887 100644
+index 3bb64c48b..fbe223b31 100644
 --- a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
 +++ b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
 @@ -189,4 +189,15 @@ public class IonWorldConfig {
-         ironGolemsDropPoppies = getBoolean("iron-golems-take-fall-damage", false);
+         ironGolemsFallDamage = getBoolean("iron-golems-take-fall-damage", false);
      }
  
 +    private void ColumnSpawning() {

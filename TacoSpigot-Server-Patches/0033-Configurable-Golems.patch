@@ -1,11 +1,11 @@
-From 6d8257c51b003d489d7cbef7b71ef77d6a0fbe14 Mon Sep 17 00:00:00 2001
+From e2faf7d42c501aab911414ee18422aa38cc66cd1 Mon Sep 17 00:00:00 2001
 From: "kfian294ma4@gmail.com" <kfian294ma4@gmail.com>
 Date: Sat, 19 Dec 2020 19:35:00 +0000
 Subject: [PATCH] Configurable Golems
 
 
 diff --git a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-index ab4c00af0..c1b0d95e0 100644
+index ab4c00af0..3bb64c48b 100644
 --- a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
 +++ b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
 @@ -182,4 +182,11 @@ public class IonWorldConfig {
@@ -15,8 +15,8 @@ index ab4c00af0..c1b0d95e0 100644
 +    public boolean ironGolemsDropPoppies;
 +    public boolean ironGolemsFallDamage;
 +    private void IronGolems() {
-+        ironGolemsFallDamage = getBoolean("iron-golems-drop-poppies", true);
-+        ironGolemsDropPoppies = getBoolean("iron-golems-take-fall-damage", false);
++        ironGolemsDropPoppies = getBoolean("iron-golems-drop-poppies", true);
++        ironGolemsFallDamage = getBoolean("iron-golems-take-fall-damage", false);
 +    }
 +
  }

@@ -1,4 +1,4 @@
-From 28d33a25dc13f4d074113cc487fd75cd43a1c75c Mon Sep 17 00:00:00 2001
+From 579d697ed57320417e696e1864678109d87bf310 Mon Sep 17 00:00:00 2001
 From: SuicidalKids <kfian294ma4@gmail.com>
 Date: Mon, 21 Sep 2020 21:46:25 +0100
 Subject: [PATCH] Fix Chunk Loading
@@ -6,10 +6,10 @@ Subject: [PATCH] Fix Chunk Loading
 Fixed an oversight with loading surrounding chunks that caused entities to not load any chunks if the entity was travelling to the south or east.
 
 diff --git a/src/main/java/net/minecraft/server/Entity.java b/src/main/java/net/minecraft/server/Entity.java
-index c4bfd5fe6..8e6d516b9 100644
+index 03bc6c5ab..a1a9421a8 100644
 --- a/src/main/java/net/minecraft/server/Entity.java
 +++ b/src/main/java/net/minecraft/server/Entity.java
-@@ -422,11 +422,31 @@ public abstract class Entity implements ICommandListener {
+@@ -424,11 +424,31 @@ public abstract class Entity implements ICommandListener {
       * PaperSpigot - Load surrounding chunks the entity is moving through
       */
      public void loadChunks() {
@@ -42,5 +42,5 @@ index c4bfd5fe6..8e6d516b9 100644
  
  
 -- 
-2.20.1.windows.1
+2.29.2.windows.2
 
