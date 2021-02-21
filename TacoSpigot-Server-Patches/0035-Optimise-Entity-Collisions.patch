@@ -1,0 +1,137 @@
+From 7a1aab5ae7bc6a7bb99653935d4b3a9edbf06a77 Mon Sep 17 00:00:00 2001
+From: SK <kfian294ma4@gmail.com>
+Date: Sun, 21 Feb 2021 22:36:38 +0000
+Subject: [PATCH] Optimise Entity Collisions
+
+
+diff --git a/src/main/java/net/minecraft/server/Chunk.java b/src/main/java/net/minecraft/server/Chunk.java
+index a3693edc8..82f4e2240 100644
+--- a/src/main/java/net/minecraft/server/Chunk.java
++++ b/src/main/java/net/minecraft/server/Chunk.java
+@@ -964,6 +964,57 @@ public class Chunk {
+     public void e() {
+         this.q = true;
+     }
++    // IonSpigot start - Optimise Entity Collisions
++    public boolean collectEntitiesByAmount(Entity source, AxisAlignedBB axisalignedbb, List<Entity> entities,
++                                           Predicate<? super Entity> by, int amount) {
++        int i = MathHelper.floor((axisalignedbb.b - 2.0D) / 16.0D);
++        int j = MathHelper.floor((axisalignedbb.e + 2.0D) / 16.0D);
++
++        i = MathHelper.clamp(i, 0, this.entitySlices.length - 1);
++        j = MathHelper.clamp(j, 0, this.entitySlices.length - 1);
++
++        for (int k = i; k <= j; ++k) {
++            if (!this.entitySlices[k].isEmpty()) {
++                if (collectEntities(source, axisalignedbb, this.entitySlices[k], entities, by, amount)) {
++                    return true;
++                }
++            }
++        }
++
++        return false;
++    }
++
++    private boolean collectEntities(Entity source, AxisAlignedBB axisalignedbb, List<Entity> slice,
++                                    List<Entity> entities, Predicate<? super Entity> by, int amount) {
++        for (int i = 0; i < slice.size(); ++i) {
++            int next = world.random.nextInt(slice.size());
++            Entity entity = slice.get(next);
++
++            if (entity.getBoundingBox().b(axisalignedbb) && entity != source && !entities.contains(entity)) {
++                if (by == null || by.apply(entity)) {
++                    entities.add(entity);
++                }
++
++                Entity[] passengers = entity.aB();
++
++                if (passengers != null) {
++                    for (Entity value : passengers) {
++                        if (value != source && value.getBoundingBox().b(axisalignedbb) && (by == null
++                            || by.apply(value)) && !entities.contains(entity)) {
++                            entities.add(value);
++                        }
++                    }
++                }
++
++                if (entities.size() >= amount) {
++                    return true;
++                }
++            }
++        }
++
++        return false;
++    }
++    // IonSpigot end
+ 
+     public void a(Entity entity, AxisAlignedBB axisalignedbb, List<Entity> list, Predicate<? super Entity> predicate) {
+         int i = MathHelper.floor((axisalignedbb.b - 2.0D) / 16.0D);
+diff --git a/src/main/java/net/minecraft/server/EntityLiving.java b/src/main/java/net/minecraft/server/EntityLiving.java
+index 1b87740dd..808e38690 100644
+--- a/src/main/java/net/minecraft/server/EntityLiving.java
++++ b/src/main/java/net/minecraft/server/EntityLiving.java
+@@ -28,6 +28,8 @@ import co.aikar.timings.SpigotTimings; // Spigot
+ // PaperSpigot start
+ import org.bukkit.Bukkit;
+ import org.spigotmc.event.entity.EntityDismountEvent;
++
++import javax.annotation.Nullable;
+ // PaperSpigot end
+ 
+ public abstract class EntityLiving extends Entity {
+@@ -1736,15 +1738,10 @@ public abstract class EntityLiving extends Entity {
+             return;
+         }
+         // IonSpigot end
+-        List list = this.world.a((Entity) this, this.getBoundingBox().grow(0.20000000298023224D, 0.0D, 0.20000000298023224D), Predicates.and(IEntitySelector.d, new Predicate() {
+-            public boolean a(Entity entity) {
+-                return entity.ae();
+-            }
+-
+-            public boolean apply(Object object) {
+-                return this.a((Entity) object);
+-            }
+-        }));
++        // IonSpigot start - Optimise Entity Collisions
++        List list = this.world.getEntitiesByAmount(this, this.getBoundingBox().grow(0.20000000298023224D, 0.0D, 0.20000000298023224D),
++                input -> IEntitySelector.d.apply(input) && input != null && input.ae(), world.spigotConfig.maxCollisionsPerEntity);
++        // IonSpigot end
+ 
+         if (this.ad() && !list.isEmpty()) { // Spigot: Add this.ad() condition
+             numCollisions -= world.spigotConfig.maxCollisionsPerEntity; // Spigot
+diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
+index 06923705f..fa1ff0797 100644
+--- a/src/main/java/net/minecraft/server/World.java
++++ b/src/main/java/net/minecraft/server/World.java
+@@ -2657,6 +2657,28 @@ public abstract class World implements IBlockAccess {
+         return null;
+     }
+ 
++    // IonSpigot start - Optimise Entity Collisions
++    public List<Entity> getEntitiesByAmount(Entity entity, AxisAlignedBB axisalignedbb, Predicate<? super Entity> by, int amount) {
++        List<Entity> entities = new io.papermc.paper.util.maplist.ObjectMapList<>();
++
++        int i = MathHelper.floor((axisalignedbb.a - 2.0D) / 16.0D);
++        int j = MathHelper.floor((axisalignedbb.d + 2.0D) / 16.0D);
++        int k = MathHelper.floor((axisalignedbb.c - 2.0D) / 16.0D);
++        int l = MathHelper.floor((axisalignedbb.f + 2.0D) / 16.0D);
++
++        for (int i1 = i; i1 <= j; ++i1) {
++            for (int j1 = k; j1 <= l; ++j1) {
++                if (this.isChunkLoaded(i1, j1, true)) {
++                    if (this.getChunkAt(i1, j1).collectEntitiesByAmount(entity, axisalignedbb, entities, by, amount)) {
++                        return entities;
++                    }
++                }
++            }
++        }
++
++        return entities;
++    }
++    // IonSpigot end
+     public List<Entity> getEntities(Entity entity, AxisAlignedBB axisalignedbb) {
+         return this.a(entity, axisalignedbb, IEntitySelector.d);
+     }
+-- 
+2.29.2.windows.2
+
