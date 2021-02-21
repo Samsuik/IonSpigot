@@ -1,11 +1,11 @@
-From 6e533785d7fe76dcb717ef832358f7868b0a3d60 Mon Sep 17 00:00:00 2001
+From 0769b388611d6b6dba617cd1b3c874061e9ec3ad Mon Sep 17 00:00:00 2001
 From: SuicidalKids <kfian294ma4@gmail.com>
 Date: Tue, 15 Sep 2020 19:36:22 +0100
 Subject: [PATCH] Visual Settings
 
 
 diff --git a/src/main/java/me/suicidalkids/ion/IonConfig.java b/src/main/java/me/suicidalkids/ion/IonConfig.java
-index 445dd36e5..98b19dda7 100644
+index 1c34112a6..87848edae 100644
 --- a/src/main/java/me/suicidalkids/ion/IonConfig.java
 +++ b/src/main/java/me/suicidalkids/ion/IonConfig.java
 @@ -1,6 +1,9 @@
@@ -127,7 +127,7 @@ index 0c49a256c..b029dbd55 100644
          this.getBukkitEntity().setExtraData(nbttagcompound); // CraftBukkit
      }
 diff --git a/src/main/java/net/minecraft/server/EntityTrackerEntry.java b/src/main/java/net/minecraft/server/EntityTrackerEntry.java
-index 1fc2388ea..adc80785e 100644
+index 1fc2388ea..4582a9fff 100644
 --- a/src/main/java/net/minecraft/server/EntityTrackerEntry.java
 +++ b/src/main/java/net/minecraft/server/EntityTrackerEntry.java
 @@ -5,6 +5,8 @@ import java.util.Collection;
@@ -139,16 +139,17 @@ index 1fc2388ea..adc80785e 100644
  import org.apache.logging.log4j.LogManager;
  import org.apache.logging.log4j.Logger;
  
-@@ -349,7 +351,7 @@ public class EntityTrackerEntry {
+@@ -349,7 +351,8 @@ public class EntityTrackerEntry {
                      entityplayer.removeQueue.remove(Integer.valueOf(this.tracker.getId()));
                      // CraftBukkit end
                      this.trackedPlayerMap.put(entityplayer, true); // PaperBukkit
 -                    Packet packet = this.c();
 +                    Packet packet = this.createPacket(entityplayer); // IonSpigot
++                    if (packet == null) return; // IonSpigot - If it's null don't update the client!
  
                      entityplayer.playerConnection.sendPacket(packet);
                      if (!this.tracker.getDataWatcher().d()) {
-@@ -455,6 +457,11 @@ public class EntityTrackerEntry {
+@@ -455,6 +458,11 @@ public class EntityTrackerEntry {
      }
  
      private Packet c() {
@@ -160,7 +161,7 @@ index 1fc2388ea..adc80785e 100644
          if (this.tracker.dead) {
              // CraftBukkit start - Remove useless error spam, just return
              // EntityTrackerEntry.p.warn("Fetching addPacket for removed entity");
-@@ -523,12 +530,23 @@ public class EntityTrackerEntry {
+@@ -523,12 +531,23 @@ public class EntityTrackerEntry {
              } else if (this.tracker instanceof EntityEgg) {
                  return new PacketPlayOutSpawnEntity(this.tracker, 62);
              } else if (this.tracker instanceof EntityTNTPrimed) {
@@ -204,5 +205,5 @@ index ad07563d2..6a38de225 100644
      private final Player.Spigot spigot = new Player.Spigot()
      {
 -- 
-2.20.1.windows.1
+2.29.2.windows.2
 
