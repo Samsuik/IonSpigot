@@ -1,0 +1,181 @@
+From cbe0a36e637aff9ac135cb05ef961bc0721343bf Mon Sep 17 00:00:00 2001
+From: "kfian294ma4@gmail.com" <kfian294ma4@gmail.com>
+Date: Thu, 22 Apr 2021 20:36:16 +0100
+Subject: [PATCH] Fast Cannnon Entity Tracker
+
+
+diff --git a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
+index fbe223b31..5c157272f 100644
+--- a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
++++ b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
+@@ -200,4 +200,9 @@ public class IonWorldConfig {
+         }
+     }
+ 
++    public boolean useCannonTracker;
++    private void CannonTracker() {
++        useCannonTracker = getBoolean("tnt.use-faster-tracker", false);
++    }
++
+ }
+diff --git a/src/main/java/me/suicidalkids/ion/visuals/CannonTrackerEntry.java b/src/main/java/me/suicidalkids/ion/visuals/CannonTrackerEntry.java
+new file mode 100644
+index 000000000..3a5cab5d7
+--- /dev/null
++++ b/src/main/java/me/suicidalkids/ion/visuals/CannonTrackerEntry.java
+@@ -0,0 +1,110 @@
++package me.suicidalkids.ion.visuals;
++
++import net.minecraft.server.*;
++
++import java.util.List;
++
++/*
++ * This is a custom entity tracker made for the cannoning entities tnt and sand.
++ * The goal behind this is to reduce packets and logic without hiding entities.
++ * It may not completely replicate the original behavior, but it should make up
++ * for that with it's advantages.
++ */
++public class CannonTrackerEntry extends EntityTrackerEntry {
++
++    private boolean movingX;
++    private boolean movingY;
++    private boolean movingZ;
++
++    private double updateX;
++    private double updateY;
++    private double updateZ;
++
++    public CannonTrackerEntry(Entity entity, int i, int j, boolean flag) {
++        super(entity, i, j, flag);
++        this.movingX = entity.motX != 0.0;
++        this.movingY = entity.motY != 0.0;
++        this.movingZ = entity.motZ != 0.0;
++        this.updateX = entity.locX;
++        this.updateY = entity.locY;
++        this.updateZ = entity.locZ;
++    }
++
++    @Override
++    public void track(List<EntityHuman> list) {
++        boolean motionX = this.tracker.motX != 0.0;
++        boolean motionY = this.tracker.motY != 0.0;
++        boolean motionZ = this.tracker.motZ != 0.0;
++
++        // This tracked entities motion has changed or an explosion has occurred, update it!
++        if (!this.tracker.ai && motionX == movingX && motionY == movingY && motionZ == movingZ) {
++            return;
++        }
++
++        // This entity has moved 4 blocks since the last update, search for players
++        if (this.tracker.e(updateX, updateY, updateZ) > 16.0D) {
++            this.scanPlayers(list);
++            this.updateX = this.tracker.locX;
++            this.updateY = this.tracker.locY;
++            this.updateZ = this.tracker.locZ;
++        }
++
++        // Update nearby players, only resynchronise when motion is updated
++        if (motionX || motionY || motionZ) {
++            this.broadcastUpdate();
++        }
++
++        // Keep what of which axis the entity is moving on
++        this.tracker.ai = false;
++        this.movingX = motionX;
++        this.movingY = motionY;
++        this.movingZ = motionZ;
++    }
++
++    private void broadcastUpdate() {
++        DataWatcher datawatcher = this.tracker.getDataWatcher();
++
++        if (datawatcher.a()) {
++            this.broadcastIncludingSelf(new PacketPlayOutEntityMetadata(this.tracker.getId(), datawatcher, false));
++        }
++
++        // Only update location on movement
++        if (this.tracker.lastX != this.tracker.locX || this.tracker.lastY != this.tracker.locY || this.tracker.lastZ != this.tracker.locZ) {
++            this.broadcast(new PacketPlayOutEntityTeleport(this.tracker));
++        }
++
++        this.broadcast(new PacketPlayOutEntityVelocity(this.tracker));
++    }
++
++    @Override
++    public void updatePlayer(EntityPlayer entityplayer) {
++        // Check configurable distance as a cube then visible distance.
++        if (this.c(entityplayer) && this.tracker.h(entityplayer) < 4096.0D) {
++            if (this.trackedPlayers.contains(entityplayer) || (!this.e(entityplayer) && !this.tracker.attachedToPlayer)) {
++                return;
++            }
++
++            entityplayer.removeQueue.remove(Integer.valueOf(this.tracker.getId()));
++
++            this.trackedPlayerMap.put(entityplayer, true); // Paper
++            Packet packet = this.createPacket(entityplayer); // IonSpigot
++            if (packet == null) return; // IonSpigot - If it's null don't update the client!
++
++            entityplayer.playerConnection.sendPacket(packet);
++
++            if (this.tracker.getCustomNameVisible()) {
++                entityplayer.playerConnection.sendPacket(new PacketPlayOutEntityMetadata(this.tracker.getId(), this.tracker.getDataWatcher(), true));
++            }
++
++            entityplayer.playerConnection.sendPacket(new PacketPlayOutEntityVelocity(this.tracker.getId(), this.tracker.motX, this.tracker.motY, this.tracker.motZ));
++
++            if (this.tracker.vehicle != null) {
++                entityplayer.playerConnection.sendPacket(new PacketPlayOutAttachEntity(0, this.tracker, this.tracker.vehicle));
++            }
++        } else if (this.trackedPlayers.contains(entityplayer)) {
++            this.trackedPlayers.remove(entityplayer);
++            entityplayer.d(this.tracker);
++        }
++    }
++
++}
+diff --git a/src/main/java/net/minecraft/server/EntityTracker.java b/src/main/java/net/minecraft/server/EntityTracker.java
+index e24644c42..71eb6162b 100644
+--- a/src/main/java/net/minecraft/server/EntityTracker.java
++++ b/src/main/java/net/minecraft/server/EntityTracker.java
+@@ -105,7 +105,7 @@ public class EntityTracker {
+                 throw new IllegalStateException("Entity is already tracked!");
+             }
+ 
+-            EntityTrackerEntry entitytrackerentry = new EntityTrackerEntry(entity, i, j, flag);
++            EntityTrackerEntry entitytrackerentry = createTracker(entity, i, j, flag); // IonSpigot
+ 
+             this.c.add(entitytrackerentry);
+             this.trackedEntities.a(entity.getId(), entitytrackerentry);
+@@ -144,6 +144,15 @@ public class EntityTracker {
+         }
+ 
+     }
++    // IonSpigot start
++    private EntityTrackerEntry createTracker(Entity entity, int i, int j, boolean flag) {
++        if (entity.isCannoningEntity && world.ionConfig.useCannonTracker) {
++            return new me.suicidalkids.ion.visuals.CannonTrackerEntry(entity, i, j, flag);
++        } else {
++            return new EntityTrackerEntry(entity, i, j, flag);
++        }
++    }
++    // IonSpigot end
+ 
+     public void untrackEntity(Entity entity) {
+         org.spigotmc.AsyncCatcher.catchOp( "entity untrack"); // Spigot
+diff --git a/src/main/java/net/minecraft/server/EntityTrackerEntry.java b/src/main/java/net/minecraft/server/EntityTrackerEntry.java
+index 7d18a0d1a..0e2f0d5d8 100644
+--- a/src/main/java/net/minecraft/server/EntityTrackerEntry.java
++++ b/src/main/java/net/minecraft/server/EntityTrackerEntry.java
+@@ -446,7 +446,7 @@ public class EntityTrackerEntry {
+         return d0 >= (double) (-this.b) && d0 <= (double) this.b && d1 >= (double) (-this.b) && d1 <= (double) this.b && this.tracker.a(entityplayer);
+     }
+ 
+-    private boolean e(EntityPlayer entityplayer) {
++    protected boolean e(EntityPlayer entityplayer) { // IonSpigot - private -> protected
+         return entityplayer.u().getPlayerChunkMap().a(entityplayer, this.tracker.ae, this.tracker.ag);
+     }
+ 
+-- 
+2.29.2.windows.2
+

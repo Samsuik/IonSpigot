@@ -1,4 +1,4 @@
-From 0769b388611d6b6dba617cd1b3c874061e9ec3ad Mon Sep 17 00:00:00 2001
+From 88b7e4b7c2d05baecde6eb699fff276f70c325ae Mon Sep 17 00:00:00 2001
 From: SuicidalKids <kfian294ma4@gmail.com>
 Date: Tue, 15 Sep 2020 19:36:22 +0100
 Subject: [PATCH] Visual Settings
@@ -127,7 +127,7 @@ index 0c49a256c..b029dbd55 100644
          this.getBukkitEntity().setExtraData(nbttagcompound); // CraftBukkit
      }
 diff --git a/src/main/java/net/minecraft/server/EntityTrackerEntry.java b/src/main/java/net/minecraft/server/EntityTrackerEntry.java
-index 1fc2388ea..4582a9fff 100644
+index 1fc2388ea..01f976f06 100644
 --- a/src/main/java/net/minecraft/server/EntityTrackerEntry.java
 +++ b/src/main/java/net/minecraft/server/EntityTrackerEntry.java
 @@ -5,6 +5,8 @@ import java.util.Collection;
@@ -156,7 +156,7 @@ index 1fc2388ea..4582a9fff 100644
 +        // IonSpigot start - Visibility Toggles
 +        return this.createPacket(null);
 +    }
-+    private Packet createPacket(EntityPlayer entityPlayer) {
++    protected Packet createPacket(EntityPlayer entityPlayer) {
 +        // IonSpigot end
          if (this.tracker.dead) {
              // CraftBukkit start - Remove useless error spam, just return
