@@ -1,0 +1,60 @@
+From ae9dc4b5d0b62d65a36e7096171a25e16c04e21d Mon Sep 17 00:00:00 2001
+From: SK <kfian294ma4@gmail.com>
+Date: Wed, 9 Jun 2021 21:43:26 +0100
+Subject: [PATCH] Reduce chunk map calls
+
+
+diff --git a/src/main/java/net/minecraft/server/ChunkProviderServer.java b/src/main/java/net/minecraft/server/ChunkProviderServer.java
+index 85bd945be..9c70450ac 100644
+--- a/src/main/java/net/minecraft/server/ChunkProviderServer.java
++++ b/src/main/java/net/minecraft/server/ChunkProviderServer.java
+@@ -127,21 +127,27 @@ public class ChunkProviderServer implements IChunkProvider {
+         long key = LongHash.toLong(i, j); // IonSpigot - Only create key once
+         unloadQueue.remove(key); // IonSpigot // TacoSpigot - directly invoke LongHash
+         Chunk chunk = chunks.get(key); // IonSpigot
++        // IonSpigot start - Reduce chunk map calls
++        return chunk == null ? loadChunk(i, j, runnable) : chunk;
++    }
++    public Chunk loadChunk(int i, int j, Runnable runnable) {
++        Chunk chunk;
+         ChunkRegionLoader loader = null;
+ 
+         if (this.chunkLoader instanceof ChunkRegionLoader) {
+             loader = (ChunkRegionLoader) this.chunkLoader;
+ 
+         }
++
+         // We can only use the queue for already generated chunks
+-        if (chunk == null && loader != null && loader.chunkExists(world, i, j)) {
++        if (loader != null && loader.chunkExists(world, i, j)) {
+             if (runnable != null) {
+                 ChunkIOExecutor.queueChunkLoad(world, loader, this, i, j, runnable);
+                 return null;
+             } else {
+                 chunk = ChunkIOExecutor.syncChunkLoad(world, loader, this, i, j);
+             }
+-        } else if (chunk == null) {
++        } else {
+             chunk = originalGetChunkAt(i, j);
+         }
+ 
+@@ -152,6 +158,7 @@ public class ChunkProviderServer implements IChunkProvider {
+ 
+         return chunk;
+     }
++    // IonSpigot end
+     public Chunk originalGetChunkAt(int i, int j) {
+         long key = LongHash.toLong(i, j); // IonSpigot - Only create key once
+         this.unloadQueue.remove(key); // IonSpigot // TacoSpigot - directly invoke LongHash
+@@ -233,7 +240,7 @@ public class ChunkProviderServer implements IChunkProvider {
+                 return this.emptyChunk;
+             }
+ 
+-            chunk = this.getChunkAt(i, j);
++            chunk = this.loadChunk(i, j, null); // IonSpigot - Load chunk directly
+         }
+ 
+         cachedChunk = chunk;
+-- 
+2.29.2.windows.2
+
