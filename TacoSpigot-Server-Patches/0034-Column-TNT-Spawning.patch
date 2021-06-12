@@ -1,4 +1,4 @@
-From a1b932f57996e3772ba43b72e0b75751dc4359f0 Mon Sep 17 00:00:00 2001
+From 4bbd83e52720f0457d5b44804f5a9a1cb51a99da Mon Sep 17 00:00:00 2001
 From: "kfian294ma4@gmail.com" <kfian294ma4@gmail.com>
 Date: Sun, 20 Dec 2020 04:27:12 +0000
 Subject: [PATCH] Column TNT Spawning
@@ -15,18 +15,19 @@ As this does cause some issues, even if they are minor it is disabled by
 default.
 
 diff --git a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-index 3bb64c48b..fbe223b31 100644
+index 73cf41014..07bf42764 100644
 --- a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
 +++ b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-@@ -189,4 +189,15 @@ public class IonWorldConfig {
+@@ -196,4 +196,16 @@ public class IonWorldConfig {
          ironGolemsFallDamage = getBoolean("iron-golems-take-fall-damage", false);
      }
  
 +    private void ColumnSpawning() {
-+        // This may affect *some* cannons, though it would be a really small amount.
-+        boolean tntColumnSpawning = getBoolean("tnt.more-efficient-merging", false);
++        boolean def = getAndRemove("tnt.more-efficient-merging", false);
++        boolean tntColumnSpawning = getBoolean("tnt.column-spawning", def);
 +
 +        if (tntColumnSpawning) {
++            // This may affect some cannons
 +            world.dispenserOrder = new me.suicidalkids.ion.blocks.dispenser.ColumnSpawning();
 +        } else {
 +            world.dispenserOrder = new me.suicidalkids.ion.blocks.dispenser.NormalSpawning();

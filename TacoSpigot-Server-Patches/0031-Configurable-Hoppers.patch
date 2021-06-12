@@ -1,14 +1,14 @@
-From 9ef0390c7a79d9530cb3fbf08c6f420c39a84ed2 Mon Sep 17 00:00:00 2001
+From 277c835b80737b954a8fb84f1cfaba81c8d71a82 Mon Sep 17 00:00:00 2001
 From: "kfian294ma4@gmail.com" <kfian294ma4@gmail.com>
 Date: Fri, 18 Dec 2020 21:31:45 +0000
 Subject: [PATCH] Configurable-Hoppers
 
 
 diff --git a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-index 2758c93a6..0b439b91d 100644
+index 907b2d12f..52b58acc2 100644
 --- a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
 +++ b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-@@ -170,4 +170,11 @@ public class IonWorldConfig {
+@@ -177,4 +177,11 @@ public class IonWorldConfig {
          potionVerticalOffset = getFloat("potions.vertical-offset", -20.0F);
      }
  

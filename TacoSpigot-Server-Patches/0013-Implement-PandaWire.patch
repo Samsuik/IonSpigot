@@ -1,14 +1,14 @@
-From a41df22a3039d01c2798657323504911d03af329 Mon Sep 17 00:00:00 2001
+From a7a4e3c35c0045e336c17d89953c10487dfda22a Mon Sep 17 00:00:00 2001
 From: SuicidalKids <kfian294ma4@gmail.com>
 Date: Sun, 25 Oct 2020 01:54:44 +0100
 Subject: [PATCH] Implement PandaWire
 
 
 diff --git a/src/main/java/me/suicidalkids/ion/IonConfig.java b/src/main/java/me/suicidalkids/ion/IonConfig.java
-index 87848eda..154a14c1 100644
+index 607f21c88..ea6bc86f2 100644
 --- a/src/main/java/me/suicidalkids/ion/IonConfig.java
 +++ b/src/main/java/me/suicidalkids/ion/IonConfig.java
-@@ -125,4 +125,9 @@ public class IonConfig {
+@@ -132,4 +132,9 @@ public class IonConfig {
          return config.getString(path, config.getString(path));
      }
  
@@ -20,7 +20,7 @@ index 87848eda..154a14c1 100644
  }
 diff --git a/src/main/java/me/suicidalkids/ion/blocks/redstone/PandaRedstoneWire.java b/src/main/java/me/suicidalkids/ion/blocks/redstone/PandaRedstoneWire.java
 new file mode 100644
-index 00000000..bf98867e
+index 000000000..bf98867e1
 --- /dev/null
 +++ b/src/main/java/me/suicidalkids/ion/blocks/redstone/PandaRedstoneWire.java
 @@ -0,0 +1,462 @@
@@ -488,7 +488,7 @@ index 00000000..bf98867e
 +}
 diff --git a/src/main/java/me/suicidalkids/ion/blocks/redstone/ReflectUtil.java b/src/main/java/me/suicidalkids/ion/blocks/redstone/ReflectUtil.java
 new file mode 100644
-index 00000000..bb0361f0
+index 000000000..bb0361f0c
 --- /dev/null
 +++ b/src/main/java/me/suicidalkids/ion/blocks/redstone/ReflectUtil.java
 @@ -0,0 +1,30 @@
@@ -523,7 +523,7 @@ index 00000000..bb0361f0
 +
 +}
 diff --git a/src/main/java/net/minecraft/server/Block.java b/src/main/java/net/minecraft/server/Block.java
-index 28173898..8b60ae54 100644
+index 281738980..8b60ae546 100644
 --- a/src/main/java/net/minecraft/server/Block.java
 +++ b/src/main/java/net/minecraft/server/Block.java
 @@ -3,6 +3,10 @@ package net.minecraft.server;
@@ -547,5 +547,5 @@ index 28173898..8b60ae54 100644
          a(57, "diamond_block", (new Block(Material.ORE, MaterialMapColor.G)).c(5.0F).b(10.0F).a(Block.j).c("blockDiamond").a(CreativeModeTab.b));
          a(58, "crafting_table", (new BlockWorkbench()).c(2.5F).a(Block.f).c("workbench"));
 -- 
-2.20.1.windows.1
+2.29.2.windows.2
 

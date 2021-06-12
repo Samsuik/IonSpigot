@@ -1,14 +1,14 @@
-From 65a7b1594b8dee2964e691b2ade42edd6b263737 Mon Sep 17 00:00:00 2001
+From b5f191e0e4974f9efda533e03dbdf53704619b43 Mon Sep 17 00:00:00 2001
 From: "kfian294ma4@gmail.com" <kfian294ma4@gmail.com>
 Date: Fri, 18 Dec 2020 20:58:59 +0000
 Subject: [PATCH] Configurable Potions
 
 
 diff --git a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-index 3463eaf2c..2758c93a6 100644
+index 8d24d2026..907b2d12f 100644
 --- a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
 +++ b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-@@ -159,4 +159,15 @@ public class IonWorldConfig {
+@@ -166,4 +166,15 @@ public class IonWorldConfig {
          sandMerging = getBoolean("sand.merging", true);
      }
  

@@ -1,14 +1,14 @@
-From f309d2954b9eca53cd4e4cbebee3c959962ca12c Mon Sep 17 00:00:00 2001
+From f32318e3dbe1444354589121901c6375149af47a Mon Sep 17 00:00:00 2001
 From: "kfian294ma4@gmail.com" <kfian294ma4@gmail.com>
 Date: Sun, 29 Nov 2020 20:24:25 +0000
 Subject: [PATCH] Nerf Spawned Mob Logic
 
 
 diff --git a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-index 73095aeab..56ef01962 100644
+index 15b29e662..f2c2d18ff 100644
 --- a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
 +++ b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-@@ -121,4 +121,11 @@ public class IonWorldConfig {
+@@ -128,4 +128,11 @@ public class IonWorldConfig {
          mergeSpawnedItems = getBoolean("items.merged-spawned-items", false);
      }
  

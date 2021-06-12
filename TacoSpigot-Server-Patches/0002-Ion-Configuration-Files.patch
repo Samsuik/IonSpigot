@@ -1,4 +1,4 @@
-From 119a3af5685954319eec7d16597d7746ad4899d1 Mon Sep 17 00:00:00 2001
+From 19198f69de80b06a590298d46b84596de4e479e5 Mon Sep 17 00:00:00 2001
 From: SuicidalKids <kfian294ma4@gmail.com>
 Date: Tue, 15 Sep 2020 05:03:57 +0100
 Subject: [PATCH] Ion Configuration Files
@@ -7,10 +7,10 @@ Subject: [PATCH] Ion Configuration Files
 
 diff --git a/src/main/java/me/suicidalkids/ion/IonConfig.java b/src/main/java/me/suicidalkids/ion/IonConfig.java
 new file mode 100644
-index 000000000..1c34112a6
+index 000000000..6a6bd9922
 --- /dev/null
 +++ b/src/main/java/me/suicidalkids/ion/IonConfig.java
-@@ -0,0 +1,122 @@
+@@ -0,0 +1,129 @@
 +package me.suicidalkids.ion;
 +
 +import com.google.common.base.Throwables;
@@ -98,6 +98,13 @@ index 000000000..1c34112a6
 +        config.set(path, val);
 +    }
 +
++    private static <T> T getAndRemove(String path, T t) {
++        Object obj = config.get(path, t);
++        config.addDefault(path, null);
++        config.set(path, null);
++        return (T) obj;
++    }
++
 +    private static boolean getBoolean(String path, boolean def) {
 +        config.addDefault(path, def);
 +        return config.getBoolean(path, config.getBoolean(path));
@@ -135,10 +142,10 @@ index 000000000..1c34112a6
 +}
 diff --git a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
 new file mode 100644
-index 000000000..d076e34cb
+index 000000000..194d35d2d
 --- /dev/null
 +++ b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-@@ -0,0 +1,74 @@
+@@ -0,0 +1,81 @@
 +package me.suicidalkids.ion;
 +
 +import net.minecraft.server.World;
@@ -176,6 +183,13 @@ index 000000000..d076e34cb
 +
 +    private void set(String path, Object val) {
 +        config.set(path, val);
++    }
++
++    private <T> T getAndRemove(String path, T t) {
++        Object obj = config.get(path, t);
++        config.addDefault(path, null);
++        config.set(path, null);
++        return (T) obj;
 +    }
 +
 +    private boolean getBoolean(String path, boolean def) {

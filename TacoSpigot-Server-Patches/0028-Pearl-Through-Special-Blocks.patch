@@ -1,14 +1,14 @@
-From b6185d913e62017a3fb2bcedc3d5063451307ef8 Mon Sep 17 00:00:00 2001
+From a647dfc5af5dcc8984e165dffd993c7e143f8280 Mon Sep 17 00:00:00 2001
 From: "kfian294ma4@gmail.com" <kfian294ma4@gmail.com>
 Date: Wed, 16 Dec 2020 22:10:37 +0000
 Subject: [PATCH] Pearl Through Special Blocks
 
 
 diff --git a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-index 5c967779c..8bd1a1369 100644
+index 20dff9afe..727036cd8 100644
 --- a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
 +++ b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-@@ -143,4 +143,13 @@ public class IonWorldConfig {
+@@ -150,4 +150,13 @@ public class IonWorldConfig {
          smoothPotting = getBoolean("potions.smooth", true);
      }
  
