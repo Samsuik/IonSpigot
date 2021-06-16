@@ -1,4 +1,4 @@
-From a7a4e3c35c0045e336c17d89953c10487dfda22a Mon Sep 17 00:00:00 2001
+From 7876860537d966c767daa7429929877b7a68a203 Mon Sep 17 00:00:00 2001
 From: SuicidalKids <kfian294ma4@gmail.com>
 Date: Sun, 25 Oct 2020 01:54:44 +0100
 Subject: [PATCH] Implement PandaWire
@@ -20,7 +20,7 @@ index 607f21c88..ea6bc86f2 100644
  }
 diff --git a/src/main/java/me/suicidalkids/ion/blocks/redstone/PandaRedstoneWire.java b/src/main/java/me/suicidalkids/ion/blocks/redstone/PandaRedstoneWire.java
 new file mode 100644
-index 000000000..bf98867e1
+index 000000000..16b9fb2e7
 --- /dev/null
 +++ b/src/main/java/me/suicidalkids/ion/blocks/redstone/PandaRedstoneWire.java
 @@ -0,0 +1,462 @@
@@ -309,7 +309,7 @@ index 000000000..bf98867e1
 +            }
 +
 +            // Later add blocks around the surrounding blocks that get powered
-+            if (flag && worldIn.getType(offsetPos).getBlock().isOccluding()) {
++            if (flag && state.getBlock().isOccluding()) {
 +                for (EnumDirection facing1 : facings) {
 +                    if (canBlockBePoweredFromSide(worldIn.getType(offsetPos.shift(facing1)), facing1, false)) set.add(offsetPos.shift(facing1));
 +                }
@@ -384,7 +384,7 @@ index 000000000..bf98867e1
 +            }
 +        }
 +        if (retval.isEmpty()) {
-+            return true;
++            return side != EnumDirection.DOWN && side != EnumDirection.UP;
 +        }
 +        boolean northsouth = retval.contains(EnumDirection.NORTH) || retval.contains(EnumDirection.SOUTH);
 +        boolean eastwest = retval.contains(EnumDirection.EAST) || retval.contains(EnumDirection.WEST);
