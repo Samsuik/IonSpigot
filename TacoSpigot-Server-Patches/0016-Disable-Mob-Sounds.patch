@@ -1,14 +1,14 @@
-From 0d835cda433b42d2e8201e77e5cefd79bff34d32 Mon Sep 17 00:00:00 2001
+From 1c02692fc54a70233a6ad65cd5c8b51bf0a53240 Mon Sep 17 00:00:00 2001
 From: SuicidalKids <kfian294ma4@gmail.com>
 Date: Thu, 29 Oct 2020 21:09:34 +0000
 Subject: [PATCH] Disable Mob Sounds
 
 
 diff --git a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-index be66ad4c3..04022cfd0 100644
+index 08323f166..31899836d 100644
 --- a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
 +++ b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-@@ -107,4 +107,11 @@ public class IonWorldConfig {
+@@ -112,4 +112,11 @@ public class IonWorldConfig {
          requirePlayers = getBoolean("spawners.nearby.require-players", true);
      }
  

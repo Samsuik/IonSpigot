@@ -1,14 +1,14 @@
-From 9acbc6869854f0969e8f792f173c2a87daa6e57a Mon Sep 17 00:00:00 2001
+From fd01a63c722cb7959d8bc3d66123fb00843033cc Mon Sep 17 00:00:00 2001
 From: "kfian294ma4@gmail.com" <kfian294ma4@gmail.com>
 Date: Fri, 27 Nov 2020 22:02:11 +0000
 Subject: [PATCH] Merge Spawned Items
 
 
 diff --git a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-index 302888c44..15b29e662 100644
+index 67630ecc6..26b165719 100644
 --- a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
 +++ b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-@@ -123,4 +123,9 @@ public class IonWorldConfig {
+@@ -128,4 +128,9 @@ public class IonWorldConfig {
          hopperInterval = getInterval("items.hoppers.delay", 0);
      }
  

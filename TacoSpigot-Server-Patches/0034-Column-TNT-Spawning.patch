@@ -1,4 +1,4 @@
-From 4bbd83e52720f0457d5b44804f5a9a1cb51a99da Mon Sep 17 00:00:00 2001
+From c885e2baaef5d81fa1bc051d01e5f568ee7f9c5b Mon Sep 17 00:00:00 2001
 From: "kfian294ma4@gmail.com" <kfian294ma4@gmail.com>
 Date: Sun, 20 Dec 2020 04:27:12 +0000
 Subject: [PATCH] Column TNT Spawning
@@ -15,10 +15,10 @@ As this does cause some issues, even if they are minor it is disabled by
 default.
 
 diff --git a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-index 73cf41014..07bf42764 100644
+index 62f26616e..1fa89153c 100644
 --- a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
 +++ b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-@@ -196,4 +196,16 @@ public class IonWorldConfig {
+@@ -201,4 +201,16 @@ public class IonWorldConfig {
          ironGolemsFallDamage = getBoolean("iron-golems-take-fall-damage", false);
      }
  

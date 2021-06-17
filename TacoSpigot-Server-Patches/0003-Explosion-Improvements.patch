@@ -1,14 +1,14 @@
-From d52e7392e506a4cc2bd5d19867908487face69c2 Mon Sep 17 00:00:00 2001
+From 2e8d28bccf28be9a7a965d42b71f4ca6dcf7b9db Mon Sep 17 00:00:00 2001
 From: SuicidalKids <kfian294ma4@gmail.com>
 Date: Tue, 15 Sep 2020 05:06:25 +0100
 Subject: [PATCH] Explosion Improvements
 
 
 diff --git a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-index 194d35d2d..83e2cc0f0 100644
+index 194d35d2d..1b1d8e2da 100644
 --- a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
 +++ b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-@@ -78,4 +78,14 @@ public class IonWorldConfig {
+@@ -78,4 +78,19 @@ public class IonWorldConfig {
          return config.getString("world-settings." + worldName + "." + path, config.getString(path));
      }
  
@@ -20,6 +20,11 @@ index 194d35d2d..83e2cc0f0 100644
 +    public boolean explosionProtectedRegions;
 +    private void ExplosionProtectedRegions() {
 +        explosionProtectedRegions = getBoolean("explosions.protected-regions", true);
++    }
++
++    public boolean reducedDensityRays;
++    private void ReducedDensityRays() {
++        reducedDensityRays = getBoolean("explosions.reduced-density-rays", false);
 +    }
 +
  }
@@ -44,10 +49,24 @@ index c4bfd5fe6..03bc6c5ab 100644
          this.datawatcher = new DataWatcher(this);
          this.datawatcher.a(0, Byte.valueOf((byte) 0));
 diff --git a/src/main/java/net/minecraft/server/Explosion.java b/src/main/java/net/minecraft/server/Explosion.java
-index f4ccd8d4d..ae92db42e 100644
+index f4ccd8d4d..ae20e8646 100644
 --- a/src/main/java/net/minecraft/server/Explosion.java
 +++ b/src/main/java/net/minecraft/server/Explosion.java
-@@ -54,9 +54,33 @@ public class Explosion {
+@@ -3,11 +3,8 @@ package net.minecraft.server;
+ import com.google.common.collect.Lists;
+ import com.google.common.collect.Maps;
+ import com.google.common.collect.Sets;
+-import java.util.HashSet;
+-import java.util.Iterator;
+-import java.util.List;
+-import java.util.Map;
+-import java.util.Random;
++
++import java.util.*;
+ 
+ // CraftBukkit start
+ import org.bukkit.craftbukkit.event.CraftEventFactory;
+@@ -54,9 +51,33 @@ public class Explosion {
          int i;
          int j;
  
@@ -82,7 +101,7 @@ index f4ccd8d4d..ae92db42e 100644
          for (int k = 0; k < 16; ++k) {
              for (i = 0; i < 16; ++i) {
                  for (j = 0; j < 16; ++j) {
-@@ -96,45 +120,74 @@ public class Explosion {
+@@ -96,45 +117,74 @@ public class Explosion {
                  }
              }
          }
@@ -168,7 +187,7 @@ index f4ccd8d4d..ae92db42e 100644
  
                          // entity.damageEntity(DamageSource.explosion(this), (float) ((int) ((d13 * d13 + d13) / 2.0D * 8.0D * (double) f3 + 1.0D)));+                        // CraftBukkit start
                          CraftEventFactory.entityDamage = source;
-@@ -233,6 +286,8 @@ public class Explosion {
+@@ -233,6 +283,8 @@ public class Explosion {
                  Block block = this.world.getType(blockposition).getBlock();
  
                  world.spigotConfig.antiXrayInstance.updateNearbyBlocks(world, blockposition); // Spigot
@@ -177,7 +196,7 @@ index f4ccd8d4d..ae92db42e 100644
                  if (flag) {
                      double d0 = (double) ((float) blockposition.getX() + this.world.random.nextFloat());
                      double d1 = (double) ((float) blockposition.getY() + this.world.random.nextFloat());
-@@ -254,6 +309,8 @@ public class Explosion {
+@@ -254,6 +306,8 @@ public class Explosion {
                      this.world.addParticle(EnumParticle.EXPLOSION_NORMAL, (d0 + this.posX * 1.0D) / 2.0D, (d1 + this.posY * 1.0D) / 2.0D, (d2 + this.posZ * 1.0D) / 2.0D, d3, d4, d5, new int[0]);
                      this.world.addParticle(EnumParticle.SMOKE_NORMAL, d0, d1, d2, d3, d4, d5, new int[0]);
                  }
@@ -186,7 +205,7 @@ index f4ccd8d4d..ae92db42e 100644
  
                  if (block.getMaterial() != Material.AIR) {
                      if (block.a(this)) {
-@@ -301,6 +358,82 @@ public class Explosion {
+@@ -301,23 +355,187 @@ public class Explosion {
      public List<BlockPosition> getBlocks() {
          return this.blocks;
      }
@@ -269,24 +288,88 @@ index f4ccd8d4d..ae92db42e 100644
  
      // PaperSpigot start - Optimize explosions
      private float getBlockDensity(Vec3D vec3d, AxisAlignedBB aabb) {
-@@ -308,9 +441,10 @@ public class Explosion {
-             return this.world.a(vec3d, aabb);
+         if (!this.world.paperSpigotConfig.optimizeExplosions) {
+-            return this.world.a(vec3d, aabb);
++            return calculateDensity(vec3d, aabb);
          }
  
 -        CacheKey key = new CacheKey(this, aabb);
 -        Float blockDensity = this.world.explosionDensityCache.get(key);
 -        if (blockDensity == null) {
-+        // IonSpigot start - Optimise Density Cache
+-            blockDensity = this.world.a(vec3d, aabb);
++        // IonSpigot start - Optimise Density
 +        int key = createKey(this, aabb);
 +        float blockDensity = this.world.explosionDensityCache.get(key);
 +        if (blockDensity == -1.0f) {
-             blockDensity = this.world.a(vec3d, aabb);
++            blockDensity = calculateDensity(vec3d, aabb);
              this.world.explosionDensityCache.put(key, blockDensity);
          }
-@@ -318,6 +452,31 @@ public class Explosion {
+ 
          return blockDensity;
      }
  
++    private float calculateDensity(Vec3D vec3d, AxisAlignedBB aabb) {
++        if (world.ionConfig.reducedDensityRays) {
++            return calculateDensityReducedRays(vec3d, aabb);
++        } else {
++            return this.world.a(vec3d, aabb);
++        }
++    }
++
++    private float calculateDensityReducedRays(Vec3D vec3d, AxisAlignedBB aabb) {
++        int arrived = 0;
++        int rays = 0;
++
++        for (Vec3D vector : calculateVectors(aabb)) {
++            // If rays from the corners don't hit a block
++            // it should be safe to return the best outcome
++            if (rays == 8 && arrived == 8) {
++                return 1.0F;
++            }
++
++            if (world.rayTrace(vector, vec3d) == null) {
++                ++arrived;
++            }
++
++            ++rays;
++        }
++
++        return (float) arrived / (float) rays;
++    }
++
++    private List<Vec3D> calculateVectors(AxisAlignedBB aabb) {
++        double d0 = 1.0D / ((aabb.d - aabb.a) * 2.0D + 1.0D);
++        double d1 = 1.0D / ((aabb.e - aabb.b) * 2.0D + 1.0D);
++        double d2 = 1.0D / ((aabb.f - aabb.c) * 2.0D + 1.0D);
++        double d3 = (1.0D - Math.floor(1.0D / d0) * d0) / 2.0D;
++        double d4 = (1.0D - Math.floor(1.0D / d2) * d2) / 2.0D;
++
++        if (d0 < 0.0 || d1 < 0.0 || d2 < 0.0) {
++            return Collections.emptyList();
++        }
++
++        List<Vec3D> vectors = new LinkedList<>();
++
++        for (float f = 0.0F; f <= 1.0F; f = (float) ((double) f + d0)) {
++            for (float f1 = 0.0F; f1 <= 1.0F; f1 = (float) ((double) f1 + d1)) {
++                for (float f2 = 0.0F; f2 <= 1.0F; f2 = (float) ((double) f2 + d2)) {
++                    double d5 = aabb.a + (aabb.d - aabb.a) * (double) f;
++                    double d6 = aabb.b + (aabb.e - aabb.b) * (double) f1;
++                    double d7 = aabb.c + (aabb.f - aabb.c) * (double) f2;
++                    Vec3D vector = new Vec3D(d5 + d3, d6, d7 + d4);
++
++                    if ((f == 0 || f + d0 > 1.0F) && (f1 == 0 || f1 + d1 > 1.0F) && (f2 == 0 || f2 + d2 > 1.0F)) {
++                        vectors.add(0, vector);
++                    } else {
++                        vectors.add(vector);
++                    }
++                }
++            }
++        }
++
++        return vectors;
++    }
++
 +    static int createKey(Explosion explosion, AxisAlignedBB aabb) {
 +        int result;
 +        long temp;
@@ -315,7 +398,7 @@ index f4ccd8d4d..ae92db42e 100644
      static class CacheKey {
          private final World world;
          private final double posX, posY, posZ;
-@@ -382,5 +541,7 @@ public class Explosion {
+@@ -382,5 +600,7 @@ public class Explosion {
              return result;
          }
      }

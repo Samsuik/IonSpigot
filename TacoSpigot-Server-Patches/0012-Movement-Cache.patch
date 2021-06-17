@@ -1,14 +1,14 @@
-From 920574a0b8c7cde7a5a79cbab3704289859ac235 Mon Sep 17 00:00:00 2001
+From 5581c4a9593f59daa016caa21882592a12c8e662 Mon Sep 17 00:00:00 2001
 From: SuicidalKids <kfian294ma4@gmail.com>
 Date: Sun, 25 Oct 2020 00:05:32 +0100
 Subject: [PATCH] Movement Cache
 
 
 diff --git a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-index 150e7e193..cc9bc1fbf 100644
+index 8a4e6f692..70ce5c82e 100644
 --- a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
 +++ b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-@@ -93,4 +93,9 @@ public class IonWorldConfig {
+@@ -98,4 +98,9 @@ public class IonWorldConfig {
          fixSandUnloading = getBoolean("sand.fix-unloading", false);
      }
  
