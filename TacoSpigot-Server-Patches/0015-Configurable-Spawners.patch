@@ -1,15 +1,15 @@
-From 7438454f8c5579d9bfc91b1d0df71843e86a73e7 Mon Sep 17 00:00:00 2001
+From f0efef8016154af058e3d6e095d8426001a344c2 Mon Sep 17 00:00:00 2001
 From: SuicidalKids <kfian294ma4@gmail.com>
 Date: Thu, 29 Oct 2020 20:47:08 +0000
 Subject: [PATCH] Configurable Spawners
 
 
 diff --git a/src/main/java/me/suicidalkids/ion/IonConfig.java b/src/main/java/me/suicidalkids/ion/IonConfig.java
-index ea6bc86f2..932a7c432 100644
+index 1e1f60110..3ad367fc2 100644
 --- a/src/main/java/me/suicidalkids/ion/IonConfig.java
 +++ b/src/main/java/me/suicidalkids/ion/IonConfig.java
-@@ -137,4 +137,19 @@ public class IonConfig {
-         usePandaWire = getBoolean("redstone.panda-wire", true);
+@@ -140,4 +140,19 @@ public class IonConfig {
+         optimisedGlowstone = getBoolean("redstone.panda-wire.optimised", false);
      }
  
 +    public static int minSpawnDelay;
