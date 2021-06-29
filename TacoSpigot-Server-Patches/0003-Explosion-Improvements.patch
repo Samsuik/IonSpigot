@@ -1,4 +1,4 @@
-From 2e8d28bccf28be9a7a965d42b71f4ca6dcf7b9db Mon Sep 17 00:00:00 2001
+From ac6047ad13738d27d338ab20720789b9286e7c3c Mon Sep 17 00:00:00 2001
 From: SuicidalKids <kfian294ma4@gmail.com>
 Date: Tue, 15 Sep 2020 05:06:25 +0100
 Subject: [PATCH] Explosion Improvements
@@ -49,7 +49,7 @@ index c4bfd5fe6..03bc6c5ab 100644
          this.datawatcher = new DataWatcher(this);
          this.datawatcher.a(0, Byte.valueOf((byte) 0));
 diff --git a/src/main/java/net/minecraft/server/Explosion.java b/src/main/java/net/minecraft/server/Explosion.java
-index f4ccd8d4d..ae20e8646 100644
+index f4ccd8d4d..ab6c76118 100644
 --- a/src/main/java/net/minecraft/server/Explosion.java
 +++ b/src/main/java/net/minecraft/server/Explosion.java
 @@ -3,11 +3,8 @@ package net.minecraft.server;
@@ -165,7 +165,8 @@ index f4ccd8d4d..ae20e8646 100644
 -                if (d7 <= 1.0D) {
 +                if (!entity.dead) {
                      double d8 = entity.locX - this.posX;
-                     double d9 = entity.locY + (double) entity.getHeadHeight() - this.posY;
+-                    double d9 = entity.locY + (double) entity.getHeadHeight() - this.posY;
++                    double d9 = entity.locY + entity.getHeadHeight() - this.posY;
                      double d10 = entity.locZ - this.posZ;
 -                    double d11 = (double) MathHelper.sqrt(d8 * d8 + d9 * d9 + d10 * d10);
 +                    double distanceSquared = d8 * d8 + d9 * d9 + d10 * d10;
@@ -173,7 +174,7 @@ index f4ccd8d4d..ae20e8646 100644
 -                    if (d11 != 0.0D) {
 +                    if (distanceSquared <= 64.0D && distanceSquared != 0.0D) {
 +                        double d11 = (double) MathHelper.sqrt(distanceSquared);
-+                        double d7 = d11 / f3;
++                        double d7 = d11 / (double) f3;
                          d8 /= d11;
                          d9 /= d11;
                          d10 /= d11;
