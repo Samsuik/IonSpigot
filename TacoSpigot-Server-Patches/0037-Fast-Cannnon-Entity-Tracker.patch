@@ -1,4 +1,4 @@
-From 752e3537f0c871b75b3cd30069bf1e91706c4def Mon Sep 17 00:00:00 2001
+From 243540cc8d4f1385bcb1c44a5bcff65dce8c1540 Mon Sep 17 00:00:00 2001
 From: "kfian294ma4@gmail.com" <kfian294ma4@gmail.com>
 Date: Thu, 22 Apr 2021 20:36:16 +0100
 Subject: [PATCH] Fast Cannnon Entity Tracker
@@ -20,7 +20,7 @@ index 1fa89153c..397f2c0de 100644
  }
 diff --git a/src/main/java/me/suicidalkids/ion/visuals/CannonTrackerEntry.java b/src/main/java/me/suicidalkids/ion/visuals/CannonTrackerEntry.java
 new file mode 100644
-index 000000000..3a5cab5d7
+index 000000000..111eff40e
 --- /dev/null
 +++ b/src/main/java/me/suicidalkids/ion/visuals/CannonTrackerEntry.java
 @@ -0,0 +1,110 @@
@@ -49,7 +49,7 @@ index 000000000..3a5cab5d7
 +    public CannonTrackerEntry(Entity entity, int i, int j, boolean flag) {
 +        super(entity, i, j, flag);
 +        this.movingX = entity.motX != 0.0;
-+        this.movingY = entity.motY != 0.0;
++        this.movingY = true;
 +        this.movingZ = entity.motZ != 0.0;
 +        this.updateX = entity.locX;
 +        this.updateY = entity.locY;
