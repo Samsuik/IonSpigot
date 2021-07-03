@@ -1,14 +1,14 @@
-From 2ba806841682033b301e44ebe347d25fd770c9c5 Mon Sep 17 00:00:00 2001
+From 25639fa00a10d8233518678fc0211aaa91d546b9 Mon Sep 17 00:00:00 2001
 From: "kfian294ma4@gmail.com" <kfian294ma4@gmail.com>
 Date: Sat, 19 Dec 2020 19:35:00 +0000
 Subject: [PATCH] Configurable Golems
 
 
 diff --git a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-index 3b83341a9..62f26616e 100644
+index 13cd6a473..ba8d8dfb1 100644
 --- a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
 +++ b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-@@ -194,4 +194,11 @@ public class IonWorldConfig {
+@@ -198,4 +198,11 @@ public class IonWorldConfig {
          lagCompensatedPearls = getBoolean("pearls.lag-compensated", true);
      }
  

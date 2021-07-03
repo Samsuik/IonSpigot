@@ -1,14 +1,14 @@
-From 243540cc8d4f1385bcb1c44a5bcff65dce8c1540 Mon Sep 17 00:00:00 2001
+From aa843c2ef2501c976652d2bc90594cd2001d351f Mon Sep 17 00:00:00 2001
 From: "kfian294ma4@gmail.com" <kfian294ma4@gmail.com>
 Date: Thu, 22 Apr 2021 20:36:16 +0100
 Subject: [PATCH] Fast Cannnon Entity Tracker
 
 
 diff --git a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-index 1fa89153c..397f2c0de 100644
+index 305dedc39..193809d7d 100644
 --- a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
 +++ b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-@@ -213,4 +213,9 @@ public class IonWorldConfig {
+@@ -217,4 +217,9 @@ public class IonWorldConfig {
          }
      }
  

@@ -1,14 +1,14 @@
-From f0efef8016154af058e3d6e095d8426001a344c2 Mon Sep 17 00:00:00 2001
+From 9af3b1e2d3b8e718be5cef28a6b1f02f0f53397d Mon Sep 17 00:00:00 2001
 From: SuicidalKids <kfian294ma4@gmail.com>
 Date: Thu, 29 Oct 2020 20:47:08 +0000
 Subject: [PATCH] Configurable Spawners
 
 
 diff --git a/src/main/java/me/suicidalkids/ion/IonConfig.java b/src/main/java/me/suicidalkids/ion/IonConfig.java
-index 1e1f60110..3ad367fc2 100644
+index efe7ae751..ac6cdea45 100644
 --- a/src/main/java/me/suicidalkids/ion/IonConfig.java
 +++ b/src/main/java/me/suicidalkids/ion/IonConfig.java
-@@ -140,4 +140,19 @@ public class IonConfig {
+@@ -144,4 +144,19 @@ public class IonConfig {
          optimisedGlowstone = getBoolean("redstone.panda-wire.optimised", false);
      }
  
@@ -29,10 +29,10 @@ index 1e1f60110..3ad367fc2 100644
 +
  }
 diff --git a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-index 70ce5c82e..08323f166 100644
+index 9615f6333..165b59485 100644
 --- a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
 +++ b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-@@ -103,4 +103,13 @@ public class IonWorldConfig {
+@@ -107,4 +107,13 @@ public class IonWorldConfig {
          movementCache = getBoolean("movement.cache", true);
      }
  

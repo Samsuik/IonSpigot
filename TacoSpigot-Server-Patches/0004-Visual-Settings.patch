@@ -1,11 +1,11 @@
-From 88b7e4b7c2d05baecde6eb699fff276f70c325ae Mon Sep 17 00:00:00 2001
+From c68c3ab4ac5120a660eb2cae401a11e8a8e1d5b6 Mon Sep 17 00:00:00 2001
 From: SuicidalKids <kfian294ma4@gmail.com>
 Date: Tue, 15 Sep 2020 19:36:22 +0100
 Subject: [PATCH] Visual Settings
 
 
 diff --git a/src/main/java/me/suicidalkids/ion/IonConfig.java b/src/main/java/me/suicidalkids/ion/IonConfig.java
-index 1c34112a6..87848edae 100644
+index 699f8d393..abd838857 100644
 --- a/src/main/java/me/suicidalkids/ion/IonConfig.java
 +++ b/src/main/java/me/suicidalkids/ion/IonConfig.java
 @@ -1,6 +1,9 @@
@@ -18,7 +18,7 @@ index 1c34112a6..87848edae 100644
  import net.minecraft.server.MinecraftServer;
  import org.bukkit.Bukkit;
  import org.bukkit.command.Command;
-@@ -56,6 +59,9 @@ public class IonConfig {
+@@ -57,6 +60,9 @@ public class IonConfig {
      }
  
      private static void commands() {

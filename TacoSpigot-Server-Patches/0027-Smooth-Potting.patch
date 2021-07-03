@@ -1,14 +1,14 @@
-From b3e9b790c6ccdacaed4cf371b4662ec91b65d27e Mon Sep 17 00:00:00 2001
+From 7c252a0e9b34155ebdbfe1164996e3d54a96590e Mon Sep 17 00:00:00 2001
 From: "kfian294ma4@gmail.com" <kfian294ma4@gmail.com>
 Date: Wed, 16 Dec 2020 18:38:26 +0000
 Subject: [PATCH] Smooth Potting
 
 
 diff --git a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-index 4beff7c1b..836c2e425 100644
+index 0f6d824fb..ed44f42c6 100644
 --- a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
 +++ b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-@@ -150,4 +150,9 @@ public class IonWorldConfig {
+@@ -154,4 +154,9 @@ public class IonWorldConfig {
          lagCompensatedPotions = getBoolean("potions.lag-compensated", true);
      }
  

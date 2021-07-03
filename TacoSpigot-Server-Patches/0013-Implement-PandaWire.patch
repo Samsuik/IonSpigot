@@ -1,14 +1,14 @@
-From 62d4fcf0011154053ced7c24a7c62757a1f29202 Mon Sep 17 00:00:00 2001
+From dc8c94aaf64a8a8f6cd92293627ca27dd8139a49 Mon Sep 17 00:00:00 2001
 From: SuicidalKids <kfian294ma4@gmail.com>
 Date: Sun, 25 Oct 2020 01:54:44 +0100
 Subject: [PATCH] Implement PandaWire
 
 
 diff --git a/src/main/java/me/suicidalkids/ion/IonConfig.java b/src/main/java/me/suicidalkids/ion/IonConfig.java
-index 607f21c88..1e1f60110 100644
+index abd838857..efe7ae751 100644
 --- a/src/main/java/me/suicidalkids/ion/IonConfig.java
 +++ b/src/main/java/me/suicidalkids/ion/IonConfig.java
-@@ -132,4 +132,12 @@ public class IonConfig {
+@@ -136,4 +136,12 @@ public class IonConfig {
          return config.getString(path, config.getString(path));
      }
  

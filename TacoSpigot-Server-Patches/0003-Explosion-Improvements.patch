@@ -1,14 +1,14 @@
-From ac6047ad13738d27d338ab20720789b9286e7c3c Mon Sep 17 00:00:00 2001
+From 48b843febecc5c99c6caebe713cc24ba0b4b181f Mon Sep 17 00:00:00 2001
 From: SuicidalKids <kfian294ma4@gmail.com>
 Date: Tue, 15 Sep 2020 05:06:25 +0100
 Subject: [PATCH] Explosion Improvements
 
 
 diff --git a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-index 194d35d2d..1b1d8e2da 100644
+index 7a3e812f4..bad9040fb 100644
 --- a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
 +++ b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-@@ -78,4 +78,19 @@ public class IonWorldConfig {
+@@ -82,4 +82,19 @@ public class IonWorldConfig {
          return config.getString("world-settings." + worldName + "." + path, config.getString(path));
      }
  

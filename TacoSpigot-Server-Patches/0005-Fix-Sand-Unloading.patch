@@ -1,14 +1,14 @@
-From d0dd535a175a98b2b49975029a66dfc9048a7366 Mon Sep 17 00:00:00 2001
+From d6f47723a53223f12bec5ba4d2c02553449b5b1e Mon Sep 17 00:00:00 2001
 From: SuicidalKids <kfian294ma4@gmail.com>
 Date: Mon, 21 Sep 2020 04:56:07 +0100
 Subject: [PATCH] Fix Sand Unloading
 
 
 diff --git a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-index 1b1d8e2da..8a4e6f692 100644
+index bad9040fb..507592f3b 100644
 --- a/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
 +++ b/src/main/java/me/suicidalkids/ion/IonWorldConfig.java
-@@ -93,4 +93,9 @@ public class IonWorldConfig {
+@@ -97,4 +97,9 @@ public class IonWorldConfig {
          reducedDensityRays = getBoolean("explosions.reduced-density-rays", false);
      }
  
