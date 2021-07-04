@@ -1,4 +1,4 @@
-From 579d697ed57320417e696e1864678109d87bf310 Mon Sep 17 00:00:00 2001
+From 607f64745714a7faef56ee32b5013a72af32f342 Mon Sep 17 00:00:00 2001
 From: SuicidalKids <kfian294ma4@gmail.com>
 Date: Mon, 21 Sep 2020 21:46:25 +0100
 Subject: [PATCH] Fix Chunk Loading
@@ -6,7 +6,7 @@ Subject: [PATCH] Fix Chunk Loading
 Fixed an oversight with loading surrounding chunks that caused entities to not load any chunks if the entity was travelling to the south or east.
 
 diff --git a/src/main/java/net/minecraft/server/Entity.java b/src/main/java/net/minecraft/server/Entity.java
-index 03bc6c5ab..a1a9421a8 100644
+index 03bc6c5ab..13dd5a703 100644
 --- a/src/main/java/net/minecraft/server/Entity.java
 +++ b/src/main/java/net/minecraft/server/Entity.java
 @@ -424,11 +424,31 @@ public abstract class Entity implements ICommandListener {
@@ -35,7 +35,7 @@ index 03bc6c5ab..a1a9421a8 100644
          }
 +        */
 +        int chunkX = org.bukkit.util.NumberConversions.floor(locX) >> 4;
-+        int chunkZ = org.bukkit.util.NumberConversions.floor(locX) >> 4;
++        int chunkZ = org.bukkit.util.NumberConversions.floor(locZ) >> 4;
 +        ((ChunkProviderServer) world.chunkProvider).getChunkAt(chunkX, chunkZ);
 +        // IonSpigot end
      }
