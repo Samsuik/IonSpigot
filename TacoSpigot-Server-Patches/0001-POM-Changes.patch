@@ -1,11 +1,11 @@
-From 5f73a1f09de887e5f4993c936a1559d91ba4e7ab Mon Sep 17 00:00:00 2001
+From 233a67c954369cd34a110b96c05b628968da64ef Mon Sep 17 00:00:00 2001
 From: SuicidalKids <kfian294ma4@gmail.com>
 Date: Tue, 15 Sep 2020 04:24:57 +0100
 Subject: [PATCH] POM-Changes
 
 
 diff --git a/pom.xml b/pom.xml
-index d116fa45..f28dbb2c 100644
+index d116fa455..d730fdb19 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -1,12 +1,12 @@
@@ -46,7 +46,19 @@ index d116fa45..f28dbb2c 100644
              <artifactId>api</artifactId>
              <version>${project.version}</version>
              <type>jar</type>
-@@ -123,7 +123,7 @@
+@@ -103,6 +103,11 @@
+ 
+     <!-- required until fixed plexus-compiler-eclipse is deployed -->
+     <pluginRepositories>
++        <!-- IonSpigot - temp workaround for checksum issue -->
++        <pluginRepository>
++            <id>maven-central</id>
++            <url>https://repo.maven.apache.org/maven2/</url>
++        </pluginRepository>
+         <pluginRepository>
+             <id>spigotmc-public</id>
+             <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
+@@ -123,7 +128,7 @@
              <artifactId>gitdescribe-maven-plugin</artifactId>
              <version>1.3</version>
              <configuration>
@@ -56,7 +68,7 @@ index d116fa45..f28dbb2c 100644
              </configuration>
              <executions>
 diff --git a/src/main/java/org/bukkit/craftbukkit/util/Versioning.java b/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
-index 6549e73b..94306d32 100644
+index 6549e73bc..94306d329 100644
 --- a/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
 +++ b/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
 @@ -11,7 +11,7 @@ public final class Versioning {
@@ -69,5 +81,5 @@ index 6549e73b..94306d32 100644
  
          if (stream != null) {
 -- 
-2.20.1.windows.1
+2.29.2.windows.2
 
