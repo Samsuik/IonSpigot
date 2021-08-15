@@ -1,11 +1,11 @@
-From 233a67c954369cd34a110b96c05b628968da64ef Mon Sep 17 00:00:00 2001
+From 2e9726f6876b664a9b91e58580fd7bc1b22f5ceb Mon Sep 17 00:00:00 2001
 From: SuicidalKids <kfian294ma4@gmail.com>
 Date: Tue, 15 Sep 2020 04:24:57 +0100
 Subject: [PATCH] POM-Changes
 
 
 diff --git a/pom.xml b/pom.xml
-index d116fa455..d730fdb19 100644
+index d116fa455..ff9a7bf34 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -1,12 +1,12 @@
@@ -24,7 +24,7 @@ index d116fa455..d730fdb19 100644
  
      <properties>
          <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-@@ -22,7 +22,7 @@
+@@ -22,13 +22,18 @@
      </properties>
  
      <parent>
@@ -33,12 +33,23 @@ index d116fa455..d730fdb19 100644
          <artifactId>parent</artifactId>
          <version>dev-SNAPSHOT</version>
          <relativePath>../pom.xml</relativePath>
-@@ -37,10 +37,10 @@
+     </parent>
+ 
+     <dependencies>
++        <dependency>
++            <groupId>org.apache.commons</groupId>
++            <artifactId>commons-lang3</artifactId>
++            <version>3.12.0</version>
++        </dependency>
+         <dependency>
+             <groupId>net.sf.trove4j</groupId>
+             <artifactId>trove4j</artifactId>
+@@ -37,10 +42,10 @@
          <dependency>
              <groupId>it.unimi.dsi</groupId>
              <artifactId>fastutil</artifactId>
 -            <version>7.0.12</version>
-+            <version>8.4.1</version>
++            <version>8.5.4</version>
          </dependency>
          <dependency>
 -            <groupId>net.techcable.tacospigot</groupId>
@@ -46,7 +57,7 @@ index d116fa455..d730fdb19 100644
              <artifactId>api</artifactId>
              <version>${project.version}</version>
              <type>jar</type>
-@@ -103,6 +103,11 @@
+@@ -103,6 +108,11 @@
  
      <!-- required until fixed plexus-compiler-eclipse is deployed -->
      <pluginRepositories>
@@ -58,7 +69,7 @@ index d116fa455..d730fdb19 100644
          <pluginRepository>
              <id>spigotmc-public</id>
              <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
-@@ -123,7 +128,7 @@
+@@ -123,7 +133,7 @@
              <artifactId>gitdescribe-maven-plugin</artifactId>
              <version>1.3</version>
              <configuration>

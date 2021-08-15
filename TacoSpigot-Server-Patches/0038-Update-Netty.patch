@@ -1,11 +1,11 @@
-From 48961883d51909119bdb203a07e921f89f948927 Mon Sep 17 00:00:00 2001
+From bb61b3a2dde189bbe00c83ccde84c42043978173 Mon Sep 17 00:00:00 2001
 From: SK <kfian294ma4@gmail.com>
 Date: Sun, 15 Aug 2021 20:07:31 +0100
 Subject: [PATCH] Update Netty
 
 
 diff --git a/pom.xml b/pom.xml
-index d730fdb19..3d7823633 100644
+index ff9a7bf34..ce65d7c2f 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -29,6 +29,12 @@
@@ -19,8 +19,8 @@ index d730fdb19..3d7823633 100644
 +            <version>4.1.66.Final</version>
 +        </dependency>
          <dependency>
-             <groupId>net.sf.trove4j</groupId>
-             <artifactId>trove4j</artifactId>
+             <groupId>org.apache.commons</groupId>
+             <artifactId>commons-lang3</artifactId>
 diff --git a/src/main/java/net/minecraft/server/PacketDataSerializer.java b/src/main/java/net/minecraft/server/PacketDataSerializer.java
 index 21ab829a6..a73d78b62 100644
 --- a/src/main/java/net/minecraft/server/PacketDataSerializer.java
