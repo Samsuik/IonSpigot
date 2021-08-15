@@ -1,11 +1,11 @@
-From bb61b3a2dde189bbe00c83ccde84c42043978173 Mon Sep 17 00:00:00 2001
-From: SK <kfian294ma4@gmail.com>
+From b2506ccf40f55fc349ca47b89eab42da60a88808 Mon Sep 17 00:00:00 2001
+From: "kfian294ma4@gmail.com" <kfian294ma4@gmail.com>
 Date: Sun, 15 Aug 2021 20:07:31 +0100
 Subject: [PATCH] Update Netty
 
 
 diff --git a/pom.xml b/pom.xml
-index ff9a7bf34..ce65d7c2f 100644
+index 42f3b86d7..f968661ac 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -29,6 +29,12 @@

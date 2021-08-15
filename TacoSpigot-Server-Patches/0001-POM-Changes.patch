@@ -1,11 +1,11 @@
-From 2e9726f6876b664a9b91e58580fd7bc1b22f5ceb Mon Sep 17 00:00:00 2001
+From 229c83affb1fd8ed91731bb32b0a2d4009c5d16a Mon Sep 17 00:00:00 2001
 From: SuicidalKids <kfian294ma4@gmail.com>
 Date: Tue, 15 Sep 2020 04:24:57 +0100
 Subject: [PATCH] POM-Changes
 
 
 diff --git a/pom.xml b/pom.xml
-index d116fa455..ff9a7bf34 100644
+index d116fa455..42f3b86d7 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -1,12 +1,12 @@
@@ -49,7 +49,7 @@ index d116fa455..ff9a7bf34 100644
              <groupId>it.unimi.dsi</groupId>
              <artifactId>fastutil</artifactId>
 -            <version>7.0.12</version>
-+            <version>8.5.4</version>
++            <version>8.4.1</version>
          </dependency>
          <dependency>
 -            <groupId>net.techcable.tacospigot</groupId>
