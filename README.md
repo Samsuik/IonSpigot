@@ -1,9 +1,13 @@
 Ion _Spigot_
 ===========
 
-Ion is a TacoSpigot fork designed for a wide range of gamemodes.
+Ion is a TacoSpigot fork designed for a wide range of gamemodes based on _1.8.8_.
 
 [Contribution Guidelines](Contributing.md)
+
+Archieved 
+-----
+General lack of motivation for this project. I ended up checking issues once a month, and there hasn't been any changes in over two months.
 
 How To (Server Admins)
 ------
@@ -19,5 +23,7 @@ Ion requires **Java 8** or above.
 How To (Compiling From Source)
 ------
 To compile Ion, you need JDK8, git, bash, maven, and an internet connection.
+
+* Currently this project cannot be built with maven 3.8.1 or higher. 
 
 Clone this repo, run ./build.sh from *bash*, get files.
